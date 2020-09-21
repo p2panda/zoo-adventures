@@ -1,12 +1,13 @@
 {
-  "name": "beep-boop",
+  "name": "@p2panda/beep-boop",
   "version": "1.0.0",
   "description": "hello",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "start:electron": "electron ./src/electron.js",
     "start": "webpack-dev-server",
     "build": "webpack",
+    "lint": "semistandard",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -14,18 +15,27 @@
     "url": "git+https://github.com/p2panda/beep-boop.git"
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/p2panda/beep-boop/issues"
   },
   "homepage": "https://github.com/p2panda/beep-boop#readme",
   "dependencies": {
-    "electron": "^10.1.2",
-    "html-webpack-plugin": "^4.4.1",
-    "webpack": "^4.44.2",
-    "webpack-dev-server": "^3.11.0"
+    "electron": "^10.1.2"
   },
   "devDependencies": {
-    "webpack-cli": "^3.3.12"
+    "@babel/cli": "^7.11.6",
+    "@babel/core": "^7.11.6",
+    "@babel/preset-env": "^7.11.5",
+    "@babel/preset-typescript": "^7.10.4",
+    "babel-loader": "^8.1.0",
+    "core-js": "^3.6.4",
+    "html-webpack-plugin": "^4.4.1",
+    "semistandard": "^14.2.3",
+    "ts-loader": "^8.0.4",
+    "typescript": "^4.0.3",
+    "webpack": "^4.44.2",
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-server": "^3.11.0"
   }
 }

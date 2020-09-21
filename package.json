@@ -1,0 +1,31 @@
+{
+  "name": "beep-boop",
+  "version": "1.0.0",
+  "description": "hello",
+  "main": "index.js",
+  "scripts": {
+    "start:electron": "electron ./src/electron.js",
+    "start": "webpack-dev-server",
+    "build": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/p2panda/beep-boop.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/p2panda/beep-boop/issues"
+  },
+  "homepage": "https://github.com/p2panda/beep-boop#readme",
+  "dependencies": {
+    "electron": "^10.1.2",
+    "html-webpack-plugin": "^4.4.1",
+    "webpack": "^4.44.2",
+    "webpack-dev-server": "^3.11.0"
+  },
+  "devDependencies": {
+    "webpack-cli": "^3.3.12"
+  }
+}

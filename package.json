@@ -2,12 +2,13 @@
   "name": "@p2panda/beep-boop",
   "version": "1.0.0",
   "description": "hello",
-  "main": "src/index.js",
+  "main": "./src/index.ts",
   "scripts": {
-    "start:electron": "electron ./src/electron.js",
+    "build": "webpack --mode production",
+    "lint": "standardx ./src/**/*.ts",
+    "serve": "serve ./dist",
     "start": "webpack-dev-server",
-    "build": "webpack",
-    "lint": "semistandard",
+    "start:electron": "electron ./src/electron.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,6 +21,12 @@
     "url": "https://github.com/p2panda/beep-boop/issues"
   },
   "homepage": "https://github.com/p2panda/beep-boop#readme",
+  "standardx": {
+    "parser": "@typescript-eslint/parser",
+    "plugins": [
+      "@typescript-eslint/eslint-plugin"
+    ]
+  },
   "dependencies": {
     "electron": "^10.1.2",
     "react": "^16.13.1",
@@ -32,10 +39,13 @@
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-react": "^7.10.4",
     "@babel/preset-typescript": "^7.10.4",
+    "@typescript-eslint/eslint-plugin": "^4.2.0",
+    "@typescript-eslint/parser": "^4.2.0",
     "babel-loader": "^8.1.0",
     "core-js": "^3.6.4",
+    "eslint-loader": "^4.0.2",
     "html-webpack-plugin": "^4.4.1",
-    "semistandard": "^14.2.3",
+    "standardx": "^5.0.0",
     "ts-loader": "^8.0.4",
     "typescript": "^4.0.3",
     "webpack": "^4.44.2",

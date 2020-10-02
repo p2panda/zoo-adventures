@@ -21,12 +21,16 @@
   },
   "homepage": "https://github.com/p2panda/beep-boop#readme",
   "dependencies": {
-    "electron": "^10.1.2"
+    "electron": "^10.1.2",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-router": "^5.2.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.11.6",
     "@babel/core": "^7.11.6",
     "@babel/preset-env": "^7.11.5",
+    "@babel/preset-react": "^7.10.4",
     "@babel/preset-typescript": "^7.10.4",
     "babel-loader": "^8.1.0",
     "core-js": "^3.6.4",

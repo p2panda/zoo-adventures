@@ -1,5 +1,11 @@
 {
   "compiler": {
-    "noImplicitAny": false
-  }
+    "jsx": "react",
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "module": "es6",
+    "esModuleInterop": true,
+    "target": "es5"
+  },
+  "include": ["src/**/*"]
 }

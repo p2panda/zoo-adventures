@@ -5,22 +5,19 @@ module.exports = {
   mode: 'development',
   target: 'web',
   devtool: 'eval-source-map',
-  entry: './src/index.ts',
+  entry: './src/index.jsx',
   resolve: {
-    extensions: ['.ts', '.js']
+    extensions: ['.js', '.jsx']
   },
   module: {
     rules: [
       {
-        test: /\.ts/,
+        test: /\.jsx?/,
         exclude: /node_modules/,
         use: [
           {
             loader: 'babel-loader'
           },
-          {
-            loader: 'ts-loader'
-          }
         ]
       }
     ]

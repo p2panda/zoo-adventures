@@ -7,6 +7,9 @@
     "build": "webpack --mode production",
     "lint": "standardx ./src/**/*.{ts,tsx,js,jsx}",
     "start": "webpack-dev-server",
+    "tauri:build": "tauri build",
+    "tauri:info": "tauri info",
+    "tauri:start": "tauri dev",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {

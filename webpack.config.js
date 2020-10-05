@@ -37,7 +37,7 @@ module.exports = () => {
       }),
     ],
     devServer: {
-      writeToDisk: true,
+      port: 4000,
     },
   };
 };

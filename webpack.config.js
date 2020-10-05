@@ -12,7 +12,7 @@ module.exports = () => {
     devtool: "eval-source-map",
     entry: getPath("index.tsx"),
     resolve: {
-      extensions: [".ts", ".tsx"],
+      extensions: [".js", ".ts", ".tsx"],
     },
     module: {
       rules: [
@@ -25,9 +25,6 @@ module.exports = () => {
             },
             {
               loader: "eslint-loader",
-            },
-            {
-              loader: "ts-loader",
             },
           ],
         },

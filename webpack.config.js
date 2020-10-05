@@ -12,19 +12,16 @@ module.exports = () => {
     devtool: 'eval-source-map',
     entry: getPath('index.jsx'),
     resolve: {
-      extensions: ['.ts', '.jsx'],
+      extensions: ['.js', '.jsx'],
     },
     module: {
       rules: [
         {
-          test: /\.ts/,
+          test: /\.jsx?/,
           exclude: /node_modules/,
           use: [
             {
               loader: 'babel-loader',
-            },
-            {
-              loader: 'ts-loader',
             },
             {
               loader: 'eslint-loader',

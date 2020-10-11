@@ -20,12 +20,6 @@
     "url": "https://github.com/p2panda/beep-boop/issues"
   },
   "homepage": "https://github.com/p2panda/beep-boop#readme",
-  "standardx": {
-    "parser": "@typescript-eslint/parser",
-    "plugins": [
-      "@typescript-eslint/eslint-plugin"
-    ]
-  },
   "dependencies": {
     "electron": "^10.1.2",
     "react": "^16.13.1",

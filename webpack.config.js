@@ -11,12 +11,12 @@ module.exports = (env, argv) => {
   const filename = isDevelopment ? '[name]' : '[name]-[contenthash:6]';
 
   return {
-    devtool: 'eval-source-map',
     entry: {
       app: getPath('index.tsx'),
     },
     output: {
       filename: `${filename}.js`,
+      sourceMapFilename: `${filename}.js.map`,
     },
     resolve: {
       extensions: ['.js', '.ts', '.tsx'],
@@ -43,6 +43,7 @@ module.exports = (env, argv) => {
         template: getPath('index.html'),
       }),
     ],
+    devtool: 'source-map',
     devServer: {
       port: 4000,
     },

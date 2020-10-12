@@ -2,10 +2,10 @@
   "name": "@p2panda/beep-boop",
   "version": "0.1.0",
   "description": "hello",
-  "main": "./src/index.jsx",
+  "main": "./src/index.tsx",
   "scripts": {
     "build": "webpack --mode production",
-    "lint": "standardx ./src/**/*.{ts,tsx,js,jsx}",
+    "lint": "standardx ./src/**/*.{ts,tsx}",
     "start": "webpack-dev-server",
     "tauri:build": "tauri build",
     "tauri:info": "tauri info",

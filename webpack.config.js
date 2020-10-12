@@ -1,18 +1,18 @@
-const path = require("path");
+const path = require('path');
 
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const getPath = (file) => {
-  return path.resolve(__dirname, "src", file);
+  return path.resolve(__dirname, 'src', file);
 };
 
 module.exports = () => {
   return {
-    target: "web",
-    devtool: "eval-source-map",
-    entry: getPath("index.tsx"),
+    target: 'web',
+    devtool: 'eval-source-map',
+    entry: getPath('index.tsx'),
     resolve: {
-      extensions: [".js", ".ts", ".tsx"],
+      extensions: ['.js', '.ts', '.tsx'],
     },
     module: {
       rules: [
@@ -21,10 +21,10 @@ module.exports = () => {
           exclude: /node_modules/,
           use: [
             {
-              loader: "babel-loader",
+              loader: 'babel-loader',
             },
             {
-              loader: "eslint-loader",
+              loader: 'eslint-loader',
             },
           ],
         },
@@ -32,8 +32,8 @@ module.exports = () => {
     },
     plugins: [
       new HtmlWebpackPlugin({
-        filename: "index.html",
-        template: getPath("index.html"),
+        filename: 'index.html',
+        template: getPath('index.html'),
       }),
     ],
     devServer: {

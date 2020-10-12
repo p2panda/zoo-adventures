@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack --mode production",
     "lint": "standardx ./src/**/*.{ts,tsx}",
-    "start": "webpack-dev-server",
+    "start": "webpack-dev-server --mode development",
     "tauri:build": "tauri build",
     "tauri:info": "tauri info",
     "tauri:start": "tauri dev",

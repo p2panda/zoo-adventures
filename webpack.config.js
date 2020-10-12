@@ -8,7 +8,6 @@ const getPath = (file) => {
 
 module.exports = () => {
   return {
-    target: 'web',
     devtool: 'eval-source-map',
     entry: getPath('index.tsx'),
     resolve: {

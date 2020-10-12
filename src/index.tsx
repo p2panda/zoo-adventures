@@ -7,22 +7,33 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
   BrowserRouter,
 } from "react-router-dom";
 import App from "./app";
+import CreateEvents from "./createevents";
+import CreateRes from "./createres";
 
 function MenuNavigator() {
   return (
     <Router>
       <Switch>
-        <Route exact path="/"></Route>
-        <Route exact path="/settings">
-          <Settings />
+        <Route exact path="/">
+          <App />
+        </Route>
+        <Route exact path="/createevents">
+          <CreateEvents />
+        </Route>
+        <Route exact path="/createres">
+          <CreateRes />
         </Route>
       </Switch>
     </Router>
   );
 }
 
-ReactDOM.render(<App />, document.getElementById("root"));
+ReactDOM.render(
+  <BrowserRouter>
+    <MenuNavigator />
+  </BrowserRouter>,
+  document.getElementById("root")
+);

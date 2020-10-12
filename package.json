@@ -4,7 +4,8 @@
   "description": "hello",
   "main": "./src/index.tsx",
   "scripts": {
-    "build": "webpack --mode production",
+    "build": "npm run clear && webpack --mode production",
+    "clear": "rimraf ./dist",
     "lint": "standardx ./src/**/*.{ts,tsx}",
     "start": "webpack-dev-server --mode development",
     "tauri:build": "tauri build",
@@ -40,6 +41,7 @@
     "core-js": "^3.6.5",
     "eslint-loader": "^4.0.2",
     "html-webpack-plugin": "^4.5.0",
+    "rimraf": "^3.0.2",
     "standardx": "^5.0.0",
     "typescript": "^4.0.3",
     "webpack": "^4.44.2",

@@ -12,7 +12,9 @@ module.exports = (env, argv) => {
 
   return {
     devtool: 'eval-source-map',
-    entry: getPath('index.tsx'),
+    entry: {
+      app: getPath('index.tsx'),
+    },
     output: {
       filename: `${filename}.js`,
     },

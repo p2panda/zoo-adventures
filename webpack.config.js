@@ -6,10 +6,16 @@ const getPath = (file) => {
   return path.resolve(__dirname, 'src', file);
 };
 
-module.exports = () => {
+module.exports = (env, argv) => {
+  const isDevelopment = argv.mode === 'development';
+  const filename = isDevelopment ? '[name]' : '[name]-[contenthash:6]';
+
   return {
     devtool: 'eval-source-map',
     entry: getPath('index.tsx'),
+    output: {
+      filename: `${filename}.js`,
+    },
     resolve: {
       extensions: ['.js', '.ts', '.tsx'],
     },

@@ -8,6 +8,6 @@
       }
     ],
     "@babel/typescript",
-    "@babel/preset-react"
+    "@babel/react"
   ]
 }

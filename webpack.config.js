@@ -19,6 +19,9 @@ module.exports = (env, argv) => {
       sourceMapFilename: `${filename}.js.map`,
     },
     resolve: {
+      alias: {
+        '~': path.resolve(__dirname, 'src'),
+      },
       extensions: ['.js', '.ts', '.tsx'],
     },
     module: {

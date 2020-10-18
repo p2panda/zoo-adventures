@@ -20,10 +20,10 @@ function MenuNavigator() {
         <Route exact path="/">
           <App />
         </Route>
-        <Route exact path="/createevents">
+        <Route path="/createevents">
           <CreateEvents />
         </Route>
-        <Route exact path="/createres">
+        <Route path="/createres">
           <CreateRes />
         </Route>
       </Switch>

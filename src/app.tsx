@@ -13,6 +13,14 @@ export default function App() {
       <p>
         <Link to="/createres">Create a Ressource</Link>
       </p>
+      <p>
+        List of created events:
+        <ul>
+          <li>pandaparty</li>
+          <li>gaming night</li>
+          <li>salsa tasting</li>
+        </ul>
+      </p>
     </section>
   );
 }

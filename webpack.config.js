@@ -33,6 +33,9 @@ module.exports = (env, argv) => {
             {
               loader: 'eslint-loader',
             },
+            {
+              loader: 'ts-loader',
+            },
           ],
         },
       ],

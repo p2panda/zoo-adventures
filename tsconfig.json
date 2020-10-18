@@ -1,8 +1,5 @@
 {
   "compilerOptions": {
-    "jsx": "react"
-  },
-  "compiler": {
     "jsx": "react",
     "noImplicitAny": false,
     "sourceMap": true,

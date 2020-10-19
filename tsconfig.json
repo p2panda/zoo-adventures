@@ -1,13 +1,15 @@
 {
   "compilerOptions": {
-    "jsx": "react"
-  },
-  "compiler": {
-    "jsx": "react",
-    "noImplicitAny": false,
-    "sourceMap": true,
-    "module": "es6",
+    "baseUrl": "./",
     "esModuleInterop": true,
+    "jsx": "react",
+    "module": "es6",
+    "moduleResolution": "node",
+    "noImplicitAny": false,
+    "paths": {
+      "~/*": ["./src/*"]
+    },
+    "sourceMap": true,
     "target": "es5"
   },
   "include": ["src/**/*"]

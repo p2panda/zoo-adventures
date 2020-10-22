@@ -1,6 +1,8 @@
 import React from "react";
 import { Link } from "react-router-dom";
 
+const date = new Date(Date.now()).toISOString().slice(0, 10);
+
 export default function CreateEvents() {
   return (
     <div>
@@ -9,11 +11,25 @@ export default function CreateEvents() {
       <p>create an event ^^</p>
 
       <form>
-        <label>
-          Eventtitle:
-          <input type="text" name="event" />
-        </label>
-        <input type="submit" value="Submit" />
+        <div>
+          <p>
+            <label>Eventtitle: </label>
+            <input type="text" name="eventtitle" />
+          </p>
+          <p>
+            <label>Description (optional): </label>
+            <textarea name="description">what's the plan?</textarea>
+          </p>
+          <p>
+            <label>start on:</label>
+            <input type="date" name="event-start" value={date}></input>
+          </p>
+          <p>
+            <label>end on:</label>
+            <input type="date" name="event-end" value={date}></input>
+          </p>
+          <input type="submit" value="Submit" />
+        </div>
       </form>
 
       <p>

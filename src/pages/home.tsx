@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   return (
@@ -16,7 +16,9 @@ const Home = () => {
       <p>
         List of created events:
         <ul>
-          <li>pandaparty</li>
+          <li>
+            <Link to="/eventdetails">pandaparty</Link>
+          </li>
           <li>gaming night</li>
           <li>salsa tasting</li>
         </ul>

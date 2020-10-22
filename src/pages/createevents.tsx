@@ -33,7 +33,7 @@ export default function CreateEvents() {
       </form>
 
       <p>
-        <Link to="/">back to landing page</Link>
+        <Link to="/eventdetail">back to landing page</Link>
       </p>
     </div>
   );

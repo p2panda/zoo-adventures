@@ -2,6 +2,7 @@ import React from "react";
 import { Switch, Route, Redirect } from "react-router-dom";
 import CreateEvents from "./pages/createevents";
 import CreateRes from "./pages/createres";
+import EventDetails from "./pages/eventdetails";
 import Home from "./pages/home";
 
 const Routes = () => (
@@ -12,6 +13,9 @@ const Routes = () => (
     </Route>
     <Route path="/createres">
       <CreateRes />
+    </Route>
+    <Route path="/eventdetails">
+      <EventDetails />
     </Route>
     <Redirect to="/" />
   </Switch>

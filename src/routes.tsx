@@ -4,6 +4,7 @@ import CreateEvents from "./pages/createevents";
 import CreateRes from "./pages/createres";
 import EventDetails from "./pages/eventdetails";
 import Home from "./pages/home";
+import ResDetails from "./pages/resdetails";
 
 const Routes = () => (
   <Switch>
@@ -16,6 +17,9 @@ const Routes = () => (
     </Route>
     <Route path="/eventdetails">
       <EventDetails />
+    </Route>
+    <Route path="/resdetails">
+      <ResDetails />
     </Route>
     <Redirect to="/" />
   </Switch>

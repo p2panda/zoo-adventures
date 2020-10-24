@@ -11,7 +11,7 @@ const Home = () => {
         <Link to="/createevents">Create an Event</Link>
       </p>
       <p>
-        <Link to="/createres">Create a Ressource</Link>
+        <Link to="/createres">Create a Resource</Link>
       </p>
       <p>
         List of created events:
@@ -21,6 +21,17 @@ const Home = () => {
           </li>
           <li>gaming night</li>
           <li>salsa tasting</li>
+        </ul>
+      </p>
+      <p>
+        List of resources:
+        <ul>
+          <li>
+            <Link to="/resdetails">time</Link>
+          </li>
+          <li>donuts and cinnamon rolls</li>
+          <li>well equiped kitchen</li>
+          <li>...</li>
         </ul>
       </p>
     </section>

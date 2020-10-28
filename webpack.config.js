@@ -16,13 +16,18 @@ module.exports = (env, argv) => {
     },
     output: {
       filename: `${filename}.js`,
-      sourceMapFilename: `${filename}.js.map`,
     },
     resolve: {
       alias: {
         '~': path.resolve(__dirname, 'src'),
       },
       extensions: ['.js', '.ts', '.tsx'],
+    },
+    experiments: {
+      // Support the new WebAssembly according to the updated specification, it
+      // makes a WebAssembly module an async module.
+      // See: https://webpack.js.org/configuration/experiments/
+      asyncWebAssembly: true,
     },
     module: {
       rules: [
@@ -51,6 +56,11 @@ module.exports = (env, argv) => {
     ],
     devtool: 'source-map',
     devServer: {
+      // Fixes confusing console log `webpack output is served from undefined`.
+      // See: https://github.com/webpack/webpack-dev-server/issues/2745
+      publicPath: '/',
+      // This has to be the same value as in `tauri.conf.json` to enable
+      // development within the native tauri webview container.
       port: 4000,
     },
   };

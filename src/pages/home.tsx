@@ -15,25 +15,25 @@ const Home = () => {
       </p>
       <p>
         List of created events:
-        <ul>
-          <li>
-            <Link to='/eventdetails'>pandaparty</Link>
-          </li>
-          <li>gaming night</li>
-          <li>salsa tasting</li>
-        </ul>
       </p>
+      <ul>
+        <li>
+          <Link to='/eventdetails'>pandaparty</Link>
+        </li>
+        <li>gaming night</li>
+        <li>salsa tasting</li>
+      </ul>
       <p>
         List of resources:
-        <ul>
-          <li>
-            <Link to='/resdetails'>time</Link>
-          </li>
-          <li>donuts and cinnamon rolls</li>
-          <li>well equiped kitchen</li>
-          <li>...</li>
-        </ul>
       </p>
+      <ul>
+        <li>
+          <Link to='/resdetails'>time</Link>
+        </li>
+        <li>donuts and cinnamon rolls</li>
+        <li>well equiped kitchen</li>
+        <li>...</li>
+      </ul>
     </section>
   );
 };

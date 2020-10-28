@@ -56,6 +56,7 @@ module.exports = (env, argv) => {
     ],
     devtool: 'source-map',
     devServer: {
+      historyApiFallback: true,
       // Fixes confusing console log `webpack output is served from undefined`.
       // See: https://github.com/webpack/webpack-dev-server/issues/2745
       publicPath: '/',

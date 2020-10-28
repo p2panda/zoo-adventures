@@ -1,7 +1,7 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Link } from 'react-router-dom';
 
-export default function EventDetails() {
+export default function EventDetails () {
   return (
     <div>
       <h3>pandaparty</h3>
@@ -17,7 +17,7 @@ export default function EventDetails() {
       </p>
       <p>Request more Resources (link?)</p>
       <p>
-        <Link to="/">back to eventslisting</Link>
+        <Link to='/'>back to eventslisting</Link>
       </p>
     </div>
   );

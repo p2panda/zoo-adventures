@@ -1,18 +1,18 @@
-const path = require("path");
+const path = require('path');
 
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const getPath = (file) => {
-  return path.resolve(__dirname, "src", file);
+  return path.resolve(__dirname, 'src', file);
 };
 
 module.exports = (env, argv) => {
-  const isDevelopment = argv.mode === "development";
-  const filename = isDevelopment ? "[name]" : "[name]-[contenthash:6]";
+  const isDevelopment = argv.mode === 'development';
+  const filename = isDevelopment ? '[name]' : '[name]-[contenthash:6]';
 
   return {
     entry: {
-      app: getPath("index.tsx"),
+      app: getPath('index.tsx'),
     },
     output: {
       filename: `${filename}.js`,
@@ -20,9 +20,9 @@ module.exports = (env, argv) => {
     },
     resolve: {
       alias: {
-        "~": path.resolve(__dirname, "src"),
+        '~': path.resolve(__dirname, 'src'),
       },
-      extensions: [".js", ".ts", ".tsx"],
+      extensions: ['.js', '.ts', '.tsx'],
     },
     module: {
       rules: [
@@ -31,13 +31,13 @@ module.exports = (env, argv) => {
           exclude: /node_modules/,
           use: [
             {
-              loader: "babel-loader",
+              loader: 'babel-loader',
             },
             {
-              loader: "eslint-loader",
+              loader: 'eslint-loader',
             },
             {
-              loader: "ts-loader",
+              loader: 'ts-loader',
             },
           ],
         },
@@ -45,11 +45,11 @@ module.exports = (env, argv) => {
     },
     plugins: [
       new HtmlWebpackPlugin({
-        filename: "index.html",
-        template: getPath("index.html"),
+        filename: 'index.html',
+        template: getPath('index.html'),
       }),
     ],
-    devtool: "source-map",
+    devtool: 'source-map',
     devServer: {
       port: 4000,
     },

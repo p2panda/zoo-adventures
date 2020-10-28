@@ -1,9 +1,9 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 const date = new Date(Date.now()).toISOString().slice(0, 10);
 
-export default function CreateEvents() {
+export default function CreateEvents () {
   return (
     <div>
       <h1>p2paradies, p2panda, p2parachute: hallo was geht!</h1>
@@ -14,26 +14,26 @@ export default function CreateEvents() {
         <div>
           <p>
             <label>Eventtitle: </label>
-            <input type="text" name="eventtitle" />
+            <input type='text' name='eventtitle' />
           </p>
           <p>
             <label>Description (optional): </label>
-            <textarea name="description">what's the plan?</textarea>
+            <textarea name='description'>what's the plan?</textarea>
           </p>
           <p>
             <label>start on:</label>
-            <input type="date" name="event-start" value={date}></input>
+            <input type='date' name='event-start' value={date} />
           </p>
           <p>
             <label>end on:</label>
-            <input type="date" name="event-end" value={date}></input>
+            <input type='date' name='event-end' value={date} />
           </p>
-          <input type="submit" value="Submit" />
+          <input type='submit' value='Submit' />
         </div>
       </form>
 
       <p>
-        <Link to="/eventdetail">back to landing page</Link>
+        <Link to='/eventdetail'>back to landing page</Link>
       </p>
     </div>
   );

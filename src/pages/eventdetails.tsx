@@ -9,12 +9,12 @@ export default function EventDetails () {
       <p>starting: tomorrow</p>
       <p>
         Resources confirmed:
-        <ul>
-          <li>lots of bamboo</li>
-          <li>meadow to roll ourselves on</li>
-          <li>more bamboo</li>
-        </ul>
       </p>
+      <ul>
+        <li>lots of bamboo</li>
+        <li>meadow to roll ourselves on</li>
+        <li>more bamboo</li>
+      </ul>
       <p>Request more Resources (link?)</p>
       <p>
         <Link to='/'>back to eventslisting</Link>

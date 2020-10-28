@@ -13,12 +13,12 @@ export default function CreateEvents () {
       <form>
         <div>
           <p>
-            <label>Eventtitle: </label>
+            <label>Eventtitle:</label>
             <input type='text' name='eventtitle' />
           </p>
           <p>
-            <label>Description (optional): </label>
-            <textarea name='description'>what's the plan?</textarea>
+            <label>Description (optional):</label>
+            <textarea name='description' placeholder="what's the plan?" />
           </p>
           <p>
             <label>start on:</label>

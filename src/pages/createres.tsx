@@ -11,14 +11,12 @@ export default function CreateRes () {
       <form>
         <div>
           <p>
-            <label>Resource: </label>
+            <label>Resource:</label>
             <input type='text' name='restitle' />
           </p>
           <p>
-            <label>Description (optional): </label>
-            <textarea name='description'>
-              what is it that you can provide, share, contribute?
-            </textarea>
+            <label>Description (optional):</label>
+            <textarea name='description' placeholder='what is it that you can provide, share, contribute?' />
           </p>
           <input type='submit' value='Submit' />
         </div>

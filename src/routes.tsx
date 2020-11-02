@@ -1,27 +1,28 @@
-import React from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
-import CreateEvents from './pages/createevents';
-import CreateRes from './pages/createres';
-import EventDetails from './pages/eventdetails';
-import Home from './pages/home';
-import ResDetails from './pages/resdetails';
+import React from "react";
+import { Switch, Route, Redirect } from "react-router-dom";
+
+import CreateEvents from "./pages/CreateEvents";
+import CreateResources from "./pages/CreateResources";
+import EventDetails from "./pages/EventDetails";
+import Home from "./pages/Home";
+import ResourceDetails from "./pages/ResourceDetails";
 
 const Routes = () => (
   <Switch>
-    <Route exact path='/' component={Home} />
-    <Route path='/createevents'>
+    <Route exact path="/" component={Home} />
+    <Route path="/createevents">
       <CreateEvents />
     </Route>
-    <Route path='/createres'>
-      <CreateRes />
+    <Route path="/createres">
+      <CreateResources />
     </Route>
-    <Route path='/eventdetails'>
+    <Route path="/eventdetails">
       <EventDetails />
     </Route>
-    <Route path='/resdetails'>
-      <ResDetails />
+    <Route path="/resdetails">
+      <ResourceDetails />
     </Route>
-    <Redirect to='/' />
+    <Redirect to="/" />
   </Switch>
 );
 

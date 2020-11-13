@@ -7,9 +7,7 @@ export default function CreateEvents () {
   return (
     <div>
       <h1>p2paradies, p2panda, p2parachute: hallo was geht!</h1>
-
       <p>create an event ^^</p>
-
       <form>
         <div>
           <p>
@@ -31,9 +29,8 @@ export default function CreateEvents () {
           <input type='submit' value='Submit' />
         </div>
       </form>
-
       <p>
-        <Link to='/eventdetail'>back to landing page</Link>
+        <Link to='/eventdetail' test={{ hello: 42 }}>back to landing page</Link>
       </p>
     </div>
   );

@@ -1,13 +1,14 @@
 {
   "name": "@p2panda/beep-boop",
   "version": "0.1.0",
-  "description": "hello",
+  "description": "Reference p2panda client",
   "main": "./src/index.tsx",
   "scripts": {
     "build": "npm run clear && webpack --mode production",
     "clear": "rimraf ./dist",
     "lint": "standardx ./src/**/*.{ts,tsx}",
-    "start": "webpack serve --mode development",
+    "serve": "webpack serve --mode development",
+    "start": "npm run serve",
     "tauri:build": "tauri build",
     "tauri:info": "tauri info",
     "tauri:start": "tauri dev",
@@ -17,7 +18,11 @@
     "type": "git",
     "url": "git+https://github.com/p2panda/beep-boop.git"
   },
-  "author": "",
+  "contributors": [
+    "sophiiistika <sophiiistika@mailbox.org>",
+    "adz <x1d@adz.garden>",
+    "cafca <cafca@001.land>"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/p2panda/beep-boop/issues"
@@ -28,28 +33,28 @@
     "react-dom": "^17.0.1",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
-    "tauri": "^0.12.0"
+    "tauri": "^0.13.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.1",
     "@babel/core": "^7.12.3",
     "@babel/preset-env": "^7.12.1",
-    "@babel/preset-react": "^7.12.1",
+    "@babel/preset-react": "^7.12.5",
     "@babel/preset-typescript": "^7.12.1",
-    "@types/react": "^16.9.54",
+    "@types/react": "^16.9.56",
     "@types/react-dom": "^16.9.9",
-    "@typescript-eslint/eslint-plugin": "^4.6.0",
-    "@typescript-eslint/parser": "^4.6.0",
-    "babel-loader": "^8.1.0",
-    "core-js": "^3.6.5",
+    "@typescript-eslint/eslint-plugin": "^4.7.0",
+    "@typescript-eslint/parser": "^4.7.0",
+    "babel-loader": "^8.2.1",
+    "core-js": "^3.7.0",
     "eslint-loader": "^4.0.2",
     "html-webpack-plugin": "^4.5.0",
     "rimraf": "^3.0.2",
-    "standardx": "^6.0.0",
-    "ts-loader": "^8.0.7",
+    "standardx": "^7.0.0",
+    "ts-loader": "^8.0.11",
     "typescript": "^4.0.5",
-    "webpack": "^5.3.0",
-    "webpack-cli": "^4.1.0",
+    "webpack": "^5.4.0",
+    "webpack-cli": "^4.2.0",
     "webpack-dev-server": "^3.11.0"
   },
   "engines": {

@@ -18,11 +18,11 @@ const LogWindow = () => {
       setWasmPanicHook();
 
       const keyPair = new KeyPair();
-      setMessage(`Sesamoid says: ${toHexString(keyPair.publicKeyBytes())} and ${toHexString(keyPair.privateKeyBytes())}`);
+      setMessage(`${toHexString(keyPair.publicKeyBytes())}, ${toHexString(keyPair.privateKeyBytes())}`);
     });
   }, []);
 
-  return message ? <p>{message}</p> : null;
+  return message ? <p>Sesamoid says: {message}</p> : null;
 };
 
 const Home = (): JSX.Element => {

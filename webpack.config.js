@@ -25,10 +25,11 @@ module.exports = (env, argv) => {
       extensions: ['.js', '.ts', '.tsx'],
     },
     experiments: {
-      // Support the new WebAssembly according to the updated specification, it
-      // makes a WebAssembly module an async module.
-      // See: https://webpack.js.org/configuration/experiments/
-      asyncWebAssembly: true,
+      // Use `syncWebAssembly` for now as the new WebAssembly
+      // `asyncWebAssembly` import does not work due to a bug in wasm-bindgen
+      // builds. See: https://github.com/rustwasm/wasm-bindgen/issues/2343 and
+      // https://webpack.js.org/configuration/experiments/
+      syncWebAssembly: true,
     },
     module: {
       rules: [

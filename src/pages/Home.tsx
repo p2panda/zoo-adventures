@@ -1,12 +1,28 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { set_panic_hook, PandaKeyPair } from 'sesamoid';
 
-set_panic_hook();
+function toHexString (byteArray: Uint8Array): string {
+  return Array.from(byteArray, (byte: number) => {
+    return ('0' + (byte & 0xff).toString(16)).slice(-2);
+  }).join('');
+}
 
 const LogWindow = () => {
-  const key_pair = new PandaKeyPair();
-  return <p>Sesamoid says: {key_pair.public_key_bytes()} {key_pair.private_key_bytes()} </p>;
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    // @ts-ignore
+    import('sesamoid').then(({ KeyPair, setWasmPanicHook }) => {
+      // Set panic hooks for better logging of wasm errors. See:
+      // https://github.com/rustwasm/console_error_panic_hook
+      setWasmPanicHook();
+
+      const keyPair = new KeyPair();
+      setMessage(`Sesamoid says: ${toHexString(keyPair.publicKeyBytes())} and ${toHexString(keyPair.privateKeyBytes())}`);
+    });
+  }, []);
+
+  return message ? <p>{message}</p> : null;
 };
 
 const Home = (): JSX.Element => {

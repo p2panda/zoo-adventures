@@ -5,15 +5,14 @@ const LogWindow = () => {
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    // @ts-ignore
-      import('sesamoid').then(({ KeyPair, setWasmPanicHook }) => {
-        // Set panic hooks for better logging of wasm errors. See:
-        // https://github.com/rustwasm/console_error_panic_hook
-        setWasmPanicHook();
+    import('sesamoid').then(({ KeyPair, setWasmPanicHook }) => {
+      // Set panic hooks for better logging of wasm errors. See:
+      // https://github.com/rustwasm/console_error_panic_hook
+      setWasmPanicHook();
 
-        const keyPair = new KeyPair();
-        setMessage(`${keyPair.publicKeyHex()}, ${keyPair.privateKeyHex()}`);
-      });
+      const keyPair = new KeyPair();
+      setMessage(`${keyPair.publicKeyHex()}, ${keyPair.privateKeyHex()}`);
+    });
   }, []);
 
   return message ? <p>Sesamoid says: {message}</p> : null;

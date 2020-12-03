@@ -1,19 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+
+import { useSesamoid } from '~/hooks/wasm';
 
 const LogWindow = () => {
   const [message, setMessage] = useState('');
 
-  useEffect(() => {
-    import('sesamoid').then(({ KeyPair, setWasmPanicHook }) => {
-      // Set panic hooks for better logging of wasm errors. See:
-      // https://github.com/rustwasm/console_error_panic_hook
-      setWasmPanicHook();
-
-      const keyPair = new KeyPair();
-      setMessage(`${keyPair.publicKeyHex()}, ${keyPair.privateKeyHex()}`);
-    });
-  }, []);
+  useSesamoid(({ KeyPair }) => {
+    const keyPair = new KeyPair();
+    setMessage(`${keyPair.publicKeyHex()}, ${keyPair.privateKeyHex()}`);
+  });
 
   return message ? <p>Sesamoid says: {message}</p> : null;
 };

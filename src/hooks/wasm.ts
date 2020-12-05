@@ -1,29 +1,21 @@
 import { useEffect } from 'react';
 
-let promise = null;
+const sesamoid = import('sesamoid').then(({ setWasmPanicHook, ...rest }) => {
+  // Set panic hooks for better logging of wasm errors. See:
+  // https://github.com/rustwasm/console_error_panic_hook
+  setWasmPanicHook();
 
+  // Resolve sesamoid library
+  return rest;
+});
+
+// This hook makes sure we only load the sesamoid library once even when it was
+// used multiple times (singleton). Also it sets the panic hook automatically
+// for better debugging.
 export function useSesamoid (fn: Function) {
   useEffect(() => {
-    // We already loaded the library or wait for it.
-    if (promise) {
-      return promise.then((sesamoidLib) => {
-        fn(sesamoidLib);
-      });
-    }
-
-    // Sesamoid Library doesn't exist yet and has to be dynamically imported.
-    promise = new Promise((resolve) => {
-      import('sesamoid').then(({ setWasmPanicHook, ...sesamoidLib }) => {
-        // Set panic hooks for better logging of wasm errors. See:
-        // https://github.com/rustwasm/console_error_panic_hook
-        setWasmPanicHook();
-
-        // Store instance of sesamoid library to only import it once.
-        resolve(sesamoidLib);
-
-        // Call hook function.
-        fn(sesamoidLib);
-      });
+    sesamoid.then((lib) => {
+      fn(lib);
     });
   }, []);
 }

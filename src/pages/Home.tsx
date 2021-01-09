@@ -1,17 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-import { useSesamoid } from '~/hooks/wasm';
+// import { useP2Panda } from '~/hooks/wasm';
+import loadP2Panda from 'p2panda-js';
 
 const LogWindow = () => {
   const [message, setMessage] = useState('');
 
-  useSesamoid(({ KeyPair }) => {
+  // useP2Panda(({ KeyPair }) => {
+  //   const keyPair = new KeyPair();
+  //   setMessage(`${keyPair.publicKey()}, ${keyPair.privateKey()}`);
+  // });
+
+  useEffect(() => {
+    loadP2Panda.then(({ KeyPair }) => {
     const keyPair = new KeyPair();
-    setMessage(`${keyPair.publicKeyHex()}, ${keyPair.privateKeyHex()}`);
+      setMessage(`${keyPair.publicKey()}, ${keyPair.privateKey()}`);
+  });
   });
 
-  return message ? <p>Sesamoid says: {message}</p> : null;
+  return message ? <p>Panda says: {message}</p> : null;
 };
 
 const Home = (): JSX.Element => {

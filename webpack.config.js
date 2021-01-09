@@ -1,5 +1,6 @@
 const path = require('path');
 
+const ESLintPlugin = require('eslint-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 const getPath = (file) => {
@@ -39,9 +40,6 @@ module.exports = (env, argv) => {
               loader: 'babel-loader',
             },
             {
-              loader: 'eslint-loader',
-            },
-            {
               loader: 'ts-loader',
             },
           ],
@@ -53,13 +51,13 @@ module.exports = (env, argv) => {
         filename: 'index.html',
         template: getPath('index.html'),
       }),
+      new ESLintPlugin({
+        extensions: ['.ts', '.tsx'],
+      }),
     ],
     devtool: 'source-map',
     devServer: {
       historyApiFallback: true,
-      // Fixes confusing console log `webpack output is served from undefined`.
-      // See: https://github.com/webpack/webpack-dev-server/issues/2745
-      publicPath: '/',
       // This has to be the same value as in `tauri.conf.json` to enable
       // development within the native tauri webview container.
       port: 4000,

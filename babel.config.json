@@ -4,10 +4,10 @@
       "@babel/preset-env",
       {
         "useBuiltIns": "usage",
-        "corejs": "3.6.5"
+        "corejs": "3.7.0"
       }
     ],
-    "@babel/typescript",
-    "@babel/preset-react"
+    "@babel/preset-react",
+    "@babel/preset-typescript"
   ]
 }

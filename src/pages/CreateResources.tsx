@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function CreateResources () {
+export default function CreateResources(): JSX.Element {
   return (
     <div>
       <h1>p2paradies, p2panda, p2parachute: jajaja</h1>
@@ -10,20 +10,20 @@ export default function CreateResources () {
         <div>
           <p>
             <label>Resource:</label>
-            <input type='text' name='restitle' />
+            <input type="text" name="restitle" />
           </p>
           <p>
             <label>Description (optional):</label>
             <textarea
-              name='description'
-              placeholder='what is it that you can provide, share, contribute?'
+              name="description"
+              placeholder="what is it that you can provide, share, contribute?"
             />
           </p>
-          <input type='submit' value='Submit' />
+          <input type="submit" value="Submit" />
         </div>
       </form>
       <p>
-        <Link to='/'>back to landing page</Link>
+        <Link to="/">back to landing page</Link>
       </p>
     </div>
   );

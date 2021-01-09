@@ -1,14 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function ResDetails () {
+export default function ResDetails(): JSX.Element {
   return (
     <div>
       <h3>time</h3>
       <p>you may request more time from me :)</p>
       <p>request / assign to event</p>
       <p>
-        <Link to='/'>back to eventslisting</Link>
+        <Link to="/">back to eventslisting</Link>
       </p>
     </div>
   );

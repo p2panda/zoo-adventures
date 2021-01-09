@@ -2,24 +2,42 @@ module.exports = {
   // Parser to lint TypeScript code, see:
   // https://standardjs.com/index.html#typescript
   parser: '@typescript-eslint/parser',
-  plugins: [
-    // Required plugin to lint TypeScript code
-    '@typescript-eslint',
+  parserOptions: {
+    ecmaVersion: 2020,
+    ecmaFeatures: {
+      jsx: true,
+    },
+  },
+  settings: {
+    react: {
+      version: 'detect',
+    },
+  },
+  extends: [
+    'eslint:recommended',
+    // Uses the recommended rules from @eslint-plugin-react
+    'plugin:react/recommended',
+    'plugin:@typescript-eslint/recommended',
+    // Keep prettier rules last to make sure its style changes are not
+    // overwritten by other rules
+    'plugin:prettier/recommended',
+    'prettier/@typescript-eslint',
   ],
+  plugins: ['@typescript-eslint', 'prettier'],
   rules: {
-    // Prevent wrong "React was used before it was defined" errors, see:
-    // https://stackoverflow.com/questions/63818415/react-was-used-before-it-was-defined
-    'no-use-before-define': 'off',
-    '@typescript-eslint/no-use-before-define': ['error'],
-    // Standard incorrectly emits unused-variable errors, see:
-    // https://github.com/standard/standard/issues/1283
-    'no-unused-vars': 'off',
-    '@typescript-eslint/no-unused-vars': 'error',
     // Always require dangling commas for multiline objects and arrays
     'comma-dangle': ['error', 'always-multiline'],
-    // Standard does not like semicolons, semistandard likes them, we like
-    // semicolons as well, but we're using standardx, therefore we have to
-    // require them here manually
-    semi: ['error', 'always'],
+    // This react rule helps with typos but requires escaping all kinds
+    // of characters which makes the source code less readable. I left only
+    // the rules for '>' and '}' because these are probably the most common
+    // typos but they could also be removed.
+    'react/no-unescaped-entities': [
+      'error',
+      {
+        forbid: ['>', '}'],
+      },
+    ],
+    // Warn on prettier violations and continue with build
+    'prettier/prettier': 1,
   },
 };

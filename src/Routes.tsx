@@ -7,22 +7,22 @@ import EventDetails from '~/pages/EventDetails';
 import Home from '~/pages/Home';
 import ResourceDetails from '~/pages/ResourceDetails';
 
-const Routes = () => (
+const Routes = (): JSX.Element => (
   <Switch>
-    <Route exact path='/' component={Home} />
-    <Route path='/createevents'>
+    <Route exact path="/" component={Home} />
+    <Route path="/createevents">
       <CreateEvents />
     </Route>
-    <Route path='/createres'>
+    <Route path="/createres">
       <CreateResources />
     </Route>
-    <Route path='/eventdetails'>
+    <Route path="/eventdetails">
       <EventDetails />
     </Route>
-    <Route path='/resdetails'>
+    <Route path="/resdetails">
       <ResourceDetails />
     </Route>
-    <Redirect to='/' />
+    <Redirect to="/" />
   </Switch>
 );
 

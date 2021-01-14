@@ -1,16 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-
-// import { useP2Panda } from '~/hooks/wasm';
 import p2panda from 'p2panda-js';
+import { Link } from 'react-router-dom';
 
 const LogWindow = () => {
   const [message, setMessage] = useState('');
-
-  // useP2Panda(({ KeyPair }) => {
-  //   const keyPair = new KeyPair();
-  //   setMessage(`${keyPair.publicKey()}, ${keyPair.privateKey()}`);
-  // });
 
   useEffect(() => {
     p2panda.then(({ KeyPair }) => {

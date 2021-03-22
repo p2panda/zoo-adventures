@@ -65,7 +65,7 @@ const sendMessage = async (privateKey: string, message: string) => {
   console.log(entry);
   // Push entry to log
   log.push(entry);
-  return entry.encoded_entry;
+  return entry;
 };
 
 const Home = (): JSX.Element => {
@@ -73,6 +73,8 @@ const Home = (): JSX.Element => {
   const [privateKey, setPrivateKey] = useState<string>();
   const [entryEncoded, setEntryEncoded] = useState<string>();
   const [entry, setEntry] = useState<string>();
+  const [messageEncoded, setMessageEncoded] = useState<string>();
+  const [hash, setHash] = useState<string>();
 
   useEffect(() => {
     const asyncEffect = async () => {
@@ -87,9 +89,11 @@ const Home = (): JSX.Element => {
   }, []);
 
   const handleClick = async () => {
-    const entry = await sendMessage(privateKey, currentMessage);
+    const result = await sendMessage(privateKey, currentMessage);
     setCurrentMessage('');
-    setEntryEncoded(entry);
+    setEntryEncoded(result.encoded_entry);
+    setMessageEncoded(result.encoded_message);
+    setHash(result.entry_hash);
   };
 
   useEffect(() => {
@@ -102,24 +106,35 @@ const Home = (): JSX.Element => {
   }, [entryEncoded]);
 
   return (
-    <section>
-      <h1>p2paradies, p2panda, p2parachute</h1>
-      <h2>Hallo, hier ist alles schön :)</h2>
-      <input
-        type="text"
-        onChange={({ target: { value } }) => setCurrentMessage(value)}
-        value={currentMessage}
-      />
-      <button onClick={() => handleClick()}>bœp</button>
-      <h2>hier beginnt das Abenteuer:</h2>
-      <textarea
-        rows={20}
-        cols={80}
-        onChange={({ target: { value } }) => setEntryEncoded(value)}
-        value={entryEncoded}
-      ></textarea>
-      <pre>{entry}</pre>
-      <LogWindow />
+    <section style={{ display: 'grid', gridTemplateColumns: '50% 50%' }}>
+      <div>
+        <h1>p2paradies, p2panda, p2parachute</h1>
+        <h2>Hallo, hier ist alles schön :)</h2>
+        <input
+          type="text"
+          onChange={({ target: { value } }) => setCurrentMessage(value)}
+          value={currentMessage}
+        />
+        <button onClick={() => handleClick()}>bœp</button>
+        <h2>hier beginnt das Abenteuer:</h2>
+        <textarea
+          rows={20}
+          cols={80}
+          onChange={({ target: { value } }) => setEntryEncoded(value)}
+          value={entryEncoded}
+        ></textarea>
+
+        <LogWindow />
+      </div>
+      <div>
+        <pre>{entry}</pre>
+        <p style={{ maxWidth: '30em', wordBreak: 'break-all' }}>
+          {hash && 'Hash:'} {hash}
+        </p>
+        <p style={{ maxWidth: '30em', wordBreak: 'break-all' }}>
+          {messageEncoded && 'Message:'} {messageEncoded}
+        </p>
+      </div>
     </section>
   );
 };

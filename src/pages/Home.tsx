@@ -3,6 +3,8 @@ import p2panda from 'p2panda-js';
 
 const NUM_ITERATIONS = 250;
 
+const log = [];
+
 const LogWindow = () => {
   const [debugMsg, setDebugMsg] = useState('');
 
@@ -56,15 +58,21 @@ const LogWindow = () => {
 
 const sendMessage = async (privateKey: string, message: string) => {
   const { signEncode } = await p2panda;
+  // @TODO
+  // 1. Get the skiplink sequence number from wasm method first
+  // 2. Pass over backlink entry hash, skiplink entry hash, sequence number from log ..
   const entry = await signEncode(privateKey, message);
-  return entry;
+  console.log(entry);
+  // Push entry to log
+  log.push(entry);
+  return entry.encoded_entry;
 };
 
 const Home = (): JSX.Element => {
   const [currentMessage, setCurrentMessage] = useState('');
   const [privateKey, setPrivateKey] = useState<string>();
   const [entryEncoded, setEntryEncoded] = useState<string>();
-  const [entry, setEntry] = useState<any>();
+  const [entry, setEntry] = useState<string>();
 
   useEffect(() => {
     const asyncEffect = async () => {

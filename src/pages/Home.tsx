@@ -4,15 +4,34 @@ import { Link } from 'react-router-dom';
 
 const LogWindow = () => {
   const [message, setMessage] = useState('');
+  const [perfLoad, setPerfLoad] = useState<number>();
+  const [perfKeyPair, setPerfKeyPair] = useState<number>();
 
   useEffect(() => {
-    p2panda.then(({ KeyPair }) => {
+    const asyncEffect = async () => {
+      const timeStart = performance.now();
+      const { KeyPair } = await p2panda;
+
+      const timeP2PandaLoaded = performance.now();
+      setPerfLoad(timeP2PandaLoaded - timeStart);
+
       const keyPair = new KeyPair();
       setMessage(`${keyPair.publicKey()}, ${keyPair.privateKey()}`);
-    });
+      const timeKeyPair = performance.now();
+      setPerfKeyPair(timeKeyPair - timeP2PandaLoaded);
+    };
+    asyncEffect();
   }, []);
 
-  return message ? <p>Panda says: {message}</p> : null;
+  return (
+    <div>
+      <h2>Key pair</h2>
+      <p>p2panda says: {message ? message : 'Generating key pair...'}</p>
+      <h2>Performance</h2>
+      <p>Loading p2panda lib: {perfLoad}ms</p>
+      <p>Generating key pair: {perfKeyPair}ms</p>
+    </div>
+  );
 };
 
 const Home = (): JSX.Element => {

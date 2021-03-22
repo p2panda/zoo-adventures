@@ -34,35 +34,62 @@ const LogWindow = () => {
   );
 };
 
+const sendMessage = async (privateKey: string, message: string) => {
+  const { signEncode } = await p2panda;
+  const entry = await signEncode(privateKey, message);
+  return entry;
+};
+
 const Home = (): JSX.Element => {
+  const [currentMessage, setCurrentMessage] = useState('');
+  const [privateKey, setPrivateKey] = useState<string>();
+  const [entryEncoded, setEntryEncoded] = useState<string>();
+  const [entry, setEntry] = useState<any>();
+
+  useEffect(() => {
+    const asyncEffect = async () => {
+      const { KeyPair } = await p2panda;
+      if (!window.localStorage.getItem('privateKey')) {
+        const keyPair = new KeyPair();
+        window.localStorage.setItem('privateKey', keyPair.privateKey());
+      }
+      setPrivateKey(window.localStorage.getItem('privateKey'));
+    };
+    asyncEffect();
+  }, []);
+
+  const handleClick = async () => {
+    const entry = await sendMessage(privateKey, currentMessage);
+    setCurrentMessage('');
+    console.log(entry);
+  };
+
+  useEffect(() => {
+    const asyncEffect = async () => {
+      const { decodeEntry } = await p2panda;
+      const decodedEntry = await decodeEntry(entryEncoded);
+      setEntry(decodedEntry);
+    };
+    asyncEffect();
+  }, [entryEncoded]);
+
   return (
     <section>
       <h1>p2paradies, p2panda, p2parachute</h1>
       <h2>Hallo, hier ist alles schön :)</h2>
-      <p>this is the landing page</p>
-      <p>
-        <Link to="/createevents">Create an Event</Link>
-      </p>
-      <p>
-        <Link to="/createres">Create a Resource</Link>
-      </p>
-      <p>List of created events:</p>
-      <ul>
-        <li>
-          <Link to="/eventdetails">pandaparty</Link>
-        </li>
-        <li>gaming night</li>
-        <li>salsa tasting</li>
-      </ul>
-      <p>List of resources:</p>
-      <ul>
-        <li>
-          <Link to="/resdetails">time</Link>
-        </li>
-        <li>donuts and cinnamon rolls</li>
-        <li>well equiped kitchen</li>
-        <li>...</li>
-      </ul>
+      <input
+        type="text"
+        onChange={({ target: { value } }) => setCurrentMessage(value)}
+        value={currentMessage}
+      />
+      <button onClick={() => handleClick()}>bœp</button>
+      <h2>hier beginnt das Abenteuer:</h2>
+      <textarea
+        rows={20}
+        cols={80}
+        onChange={({ target: { value } }) => setEntryEncoded(value)}
+      ></textarea>
+      <pre>{entry}</pre>
       <LogWindow />
     </section>
   );

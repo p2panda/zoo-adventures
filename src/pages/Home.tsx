@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import p2panda from 'p2panda-js';
-import { Link } from 'react-router-dom';
+
+const NUM_ITERATIONS = 100;
 
 const LogWindow = () => {
-  const [message, setMessage] = useState('');
+  const [debugMsg, setDebugMsg] = useState('');
+
   const [perfLoad, setPerfLoad] = useState<number>();
   const [perfKeyPair, setPerfKeyPair] = useState<number>();
+  const [perfEncodeEntry, setPerfEncodeEntry] = useState<number>();
 
   useEffect(() => {
     const asyncEffect = async () => {
@@ -16,9 +19,16 @@ const LogWindow = () => {
       setPerfLoad(timeP2PandaLoaded - timeStart);
 
       const keyPair = new KeyPair();
-      setMessage(`${keyPair.publicKey()}, ${keyPair.privateKey()}`);
+      setDebugMsg(`${keyPair.publicKey()}, ${keyPair.privateKey()}`);
       const timeKeyPair = performance.now();
       setPerfKeyPair(timeKeyPair - timeP2PandaLoaded);
+
+      const private_key = keyPair.privateKey();
+      const timeBeforeEntry = performance.now();
+      for (const i of new Array(NUM_ITERATIONS).fill(1))
+        await sendMessage(private_key, 'test');
+      const timeAfterEntry = performance.now();
+      setPerfEncodeEntry((timeAfterEntry - timeBeforeEntry) / NUM_ITERATIONS);
     };
     asyncEffect();
   }, []);
@@ -26,10 +36,11 @@ const LogWindow = () => {
   return (
     <div>
       <h2>Key pair</h2>
-      <p>p2panda says: {message ? message : 'Generating key pair...'}</p>
+      <p>p2panda says: {debugMsg ? debugMsg : 'Generating key pair...'}</p>
       <h2>Performance</h2>
       <p>Loading p2panda lib: {perfLoad}ms</p>
       <p>Generating key pair: {perfKeyPair}ms</p>
+      <p>Encoding entries: {perfEncodeEntry}ms</p>
     </div>
   );
 };

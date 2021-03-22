@@ -81,7 +81,7 @@ const Home = (): JSX.Element => {
   const handleClick = async () => {
     const entry = await sendMessage(privateKey, currentMessage);
     setCurrentMessage('');
-    console.log(entry);
+    setEntryEncoded(entry);
   };
 
   useEffect(() => {
@@ -108,6 +108,7 @@ const Home = (): JSX.Element => {
         rows={20}
         cols={80}
         onChange={({ target: { value } }) => setEntryEncoded(value)}
+        value={entryEncoded}
       ></textarea>
       <pre>{entry}</pre>
       <LogWindow />

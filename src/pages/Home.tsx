@@ -33,10 +33,10 @@ const LogWindow = () => {
       const timeAfterEntry = performance.now();
       setPerfEncodeEntry((timeAfterEntry - timeBeforeEntry) / NUM_ITERATIONS);
 
-      const testEntry = await sendMessage(private_key, 'test');
+      const result = await sendMessage(private_key, 'test');
       const timeBeforeDecode = performance.now();
       for (const i of new Array(NUM_ITERATIONS).fill(1))
-        await decodeEntry(testEntry);
+        await decodeEntry(result.encoded_entry);
       const timeAfterDecode = performance.now();
       setPerfDecodeEntry((timeAfterDecode - timeBeforeDecode) / NUM_ITERATIONS);
     };

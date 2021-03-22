@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import p2panda from 'p2panda-js';
 
-const NUM_ITERATIONS = 100;
+const NUM_ITERATIONS = 250;
 
 const LogWindow = () => {
   const [debugMsg, setDebugMsg] = useState('');
@@ -9,11 +9,12 @@ const LogWindow = () => {
   const [perfLoad, setPerfLoad] = useState<number>();
   const [perfKeyPair, setPerfKeyPair] = useState<number>();
   const [perfEncodeEntry, setPerfEncodeEntry] = useState<number>();
+  const [perfDecodeEntry, setPerfDecodeEntry] = useState<number>();
 
   useEffect(() => {
     const asyncEffect = async () => {
       const timeStart = performance.now();
-      const { KeyPair } = await p2panda;
+      const { KeyPair, decodeEntry, signEncode } = await p2panda;
 
       const timeP2PandaLoaded = performance.now();
       setPerfLoad(timeP2PandaLoaded - timeStart);
@@ -26,9 +27,16 @@ const LogWindow = () => {
       const private_key = keyPair.privateKey();
       const timeBeforeEntry = performance.now();
       for (const i of new Array(NUM_ITERATIONS).fill(1))
-        await sendMessage(private_key, 'test');
+        await signEncode(private_key, 'test');
       const timeAfterEntry = performance.now();
       setPerfEncodeEntry((timeAfterEntry - timeBeforeEntry) / NUM_ITERATIONS);
+
+      const testEntry = await sendMessage(private_key, 'test');
+      const timeBeforeDecode = performance.now();
+      for (const i of new Array(NUM_ITERATIONS).fill(1))
+        await decodeEntry(testEntry);
+      const timeAfterDecode = performance.now();
+      setPerfDecodeEntry((timeAfterDecode - timeBeforeDecode) / NUM_ITERATIONS);
     };
     asyncEffect();
   }, []);
@@ -40,7 +48,8 @@ const LogWindow = () => {
       <h2>Performance</h2>
       <p>Loading p2panda lib: {perfLoad}ms</p>
       <p>Generating key pair: {perfKeyPair}ms</p>
-      <p>Encoding entries: {perfEncodeEntry}ms</p>
+      <p>Encoding an entry: {perfEncodeEntry}ms</p>
+      <p>Decoding an entry: {perfDecodeEntry}ms</p>
     </div>
   );
 };

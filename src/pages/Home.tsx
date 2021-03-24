@@ -62,6 +62,7 @@ const sendMessage = async (privateKey: string, message: string) => {
   // 1. Get the skiplink sequence number from wasm method first
   // 2. Pass over backlink entry hash, skiplink entry hash, sequence number from log ..
   const entry = await signEncode(privateKey, message);
+  console.log('entry');
   console.log(entry);
   // Push entry to log
   log.push(entry);
@@ -99,11 +100,11 @@ const Home = (): JSX.Element => {
   useEffect(() => {
     const asyncEffect = async () => {
       const { decodeEntry } = await p2panda;
-      const decodedEntry = await decodeEntry(entryEncoded);
+      const decodedEntry = await decodeEntry(entryEncoded, messageEncoded);
       setEntry(decodedEntry);
     };
     asyncEffect();
-  }, [entryEncoded]);
+  }, [entryEncoded, messageEncoded]);
 
   return (
     <section style={{ display: 'grid', gridTemplateColumns: '50% 50%' }}>
@@ -127,7 +128,15 @@ const Home = (): JSX.Element => {
         <LogWindow />
       </div>
       <div>
-        <pre>{entry}</pre>
+        <pre
+          style={{
+            maxWidth: '30em',
+            whiteSpace: 'pre-wrap',
+            wordBreak: 'break-all',
+          }}
+        >
+          {entry}
+        </pre>
         <p style={{ maxWidth: '30em', wordBreak: 'break-all' }}>
           {hash && 'Hash:'} {hash}
         </p>

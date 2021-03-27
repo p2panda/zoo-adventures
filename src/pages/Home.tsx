@@ -56,16 +56,36 @@ const LogWindow = () => {
   );
 };
 
+const getEntryHash = (seqNum, log) => {
+  return log[seqNum - 1].entry_hash;
+};
+
 const sendMessage = async (privateKey: string, message: string) => {
-  const { signEncode } = await p2panda;
+  const { signEncode, getSkipLink } = await p2panda;
   // @TODO
-  // 1. Get the skiplink sequence number from wasm method first
-  // 2. Pass over backlink entry hash, skiplink entry hash, sequence number from log ..
+  // 1. Pass over backlink entry hash, skiplink entry hash, sequence number from log ..
+  const seqNum = log.length;
+  let skipLink: number;
+  let skipLinkHash: string;
+  let backLinkHash: string;
+
+  if (seqNum >= 1) {
+    // Get skipLink sequence number
+    skipLink = getSkipLink(seqNum);
+    // Calculate skiplink entry hash
+    skipLinkHash = getEntryHash(skipLink, log);
+    // Calculate backlink entry hash
+    backLinkHash = getEntryHash(seqNum, log);
+  }
+
+  console.log(`skiplink: ${skipLink}`);
+  console.log({ skipLinkHash, backLinkHash });
+
   const entry = await signEncode(privateKey, message);
-  console.log('entry');
   console.log(entry);
   // Push entry to log
   log.push(entry);
+  console.log(log);
   return entry;
 };
 

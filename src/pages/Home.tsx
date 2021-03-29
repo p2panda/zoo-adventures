@@ -29,7 +29,7 @@ const LogWindow = () => {
       const private_key = keyPair.privateKey();
       const timeBeforeEntry = performance.now();
       for (const i of new Array(NUM_ITERATIONS).fill(1))
-        await signEncode(private_key, 'test');
+        await sendMessage(private_key, 'test');
       const timeAfterEntry = performance.now();
       setPerfEncodeEntry((timeAfterEntry - timeBeforeEntry) / NUM_ITERATIONS);
 
@@ -57,6 +57,7 @@ const LogWindow = () => {
 };
 
 const getEntryHash = (seqNum, log) => {
+  // Offset seqNum by -1 to retrieve correct entry from log array
   return log[seqNum - 1].entry_hash;
 };
 
@@ -64,25 +65,32 @@ const sendMessage = async (privateKey: string, message: string) => {
   const { signEncode, getSkipLink } = await p2panda;
   // @TODO
   // 1. Pass over backlink entry hash, skiplink entry hash, sequence number from log ..
-  const seqNum = log.length;
-  let skipLink: number;
-  let skipLinkHash: string;
-  let backLinkHash: string;
+  const logLength = log.length;
+  let skipLink: number = null;
+  let skipLinkHash: string = null;
+  let backLinkHash: string = null;
+  let seqNum: number = null;
+  let backLink: number = null;
 
-  if (seqNum >= 1) {
+  if (logLength > 0) {
+    // Seq num for entry we are about to create
+    seqNum = logLength + 1;
+    // Backlink seq num for the entry preceeding the new entry (current end of log)
+    backLink = logLength;
     // Get skipLink sequence number
-    skipLink = getSkipLink(seqNum);
+    // this -1 corrects an error when calculating the skiplink in p2panda-rs i think....
+    skipLink = getSkipLink(seqNum) - 1;
     // Calculate skiplink entry hash
     skipLinkHash = getEntryHash(skipLink, log);
     // Calculate backlink entry hash
-    backLinkHash = getEntryHash(seqNum, log);
+    backLinkHash = getEntryHash(backLink, log);
   }
 
   console.log(`skiplink: ${skipLink}`);
+  console.log(`backLink: ${backLink}`);
   console.log({ skipLinkHash, backLinkHash });
 
   const entry = await signEncode(privateKey, message);
-  console.log(entry);
   // Push entry to log
   log.push(entry);
   console.log(log);

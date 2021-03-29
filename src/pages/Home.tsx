@@ -26,19 +26,19 @@ const LogWindow = () => {
       const timeKeyPair = performance.now();
       setPerfKeyPair(timeKeyPair - timeP2PandaLoaded);
 
-      const private_key = keyPair.privateKey();
-      const timeBeforeEntry = performance.now();
-      for (const i of new Array(NUM_ITERATIONS).fill(1))
-        await sendMessage(private_key, 'test');
-      const timeAfterEntry = performance.now();
-      setPerfEncodeEntry((timeAfterEntry - timeBeforeEntry) / NUM_ITERATIONS);
+      // const private_key = keyPair.privateKey();
+      // const timeBeforeEntry = performance.now();
+      // for (const i of new Array(NUM_ITERATIONS).fill(1))
+      //   await sendMessage(private_key, 'test');
+      // const timeAfterEntry = performance.now();
+      // setPerfEncodeEntry((timeAfterEntry - timeBeforeEntry) / NUM_ITERATIONS);
 
-      const result = await sendMessage(private_key, 'test');
-      const timeBeforeDecode = performance.now();
-      for (const i of new Array(NUM_ITERATIONS).fill(1))
-        await decodeEntry(result.encoded_entry);
-      const timeAfterDecode = performance.now();
-      setPerfDecodeEntry((timeAfterDecode - timeBeforeDecode) / NUM_ITERATIONS);
+      // const result = await sendMessage(private_key, 'test');
+      // const timeBeforeDecode = performance.now();
+      // for (const i of new Array(NUM_ITERATIONS).fill(1))
+      //   await decodeEntry(result.encoded_entry);
+      // const timeAfterDecode = performance.now();
+      // setPerfDecodeEntry((timeAfterDecode - timeBeforeDecode) / NUM_ITERATIONS);
     };
     asyncEffect();
   }, []);
@@ -62,38 +62,45 @@ const getEntryHash = (seqNum, log) => {
 };
 
 const sendMessage = async (privateKey: string, message: string) => {
-  const { signEncode, getSkipLink } = await p2panda;
-  // @TODO
-  // 1. Pass over backlink entry hash, skiplink entry hash, sequence number from log ..
+  const { signEncode, getSkipLink, decodeEntry } = await p2panda;
+
   const logLength = log.length;
+  let seqNum: number = null;
   let skipLink: number = null;
   let skipLinkHash: string = null;
   let backLinkHash: string = null;
-  let seqNum: number = null;
   let backLink: number = null;
 
   if (logLength > 0) {
-    // Seq num for entry we are about to create
     seqNum = logLength + 1;
-    // Backlink seq num for the entry preceeding the new entry (current end of log)
     backLink = logLength;
     // Get skipLink sequence number
-    // this -1 corrects an error when calculating the skiplink in p2panda-rs i think....
-    skipLink = getSkipLink(seqNum) - 1;
+    skipLink = getSkipLink(seqNum);
     // Calculate skiplink entry hash
     skipLinkHash = getEntryHash(skipLink, log);
+    console.log({ skipLinkHash });
     // Calculate backlink entry hash
     backLinkHash = getEntryHash(backLink, log);
+    console.log({ backLinkHash });
   }
 
-  console.log(`skiplink: ${skipLink}`);
-  console.log(`backLink: ${backLink}`);
-  console.log({ skipLinkHash, backLinkHash });
+  // Create signed & encoded entry
+  const entry = await signEncode(
+    privateKey,
+    message,
+    skipLinkHash,
+    backLinkHash,
+    seqNum,
+  );
 
-  const entry = await signEncode(privateKey, message);
+  console.log(entry);
   // Push entry to log
   log.push(entry);
-  console.log(log);
+  const decodedEntry = await decodeEntry(
+    entry.encoded_entry,
+    entry.encoded_message,
+  );
+  console.log({ decodedEntry });
   return entry;
 };
 
@@ -125,14 +132,20 @@ const Home = (): JSX.Element => {
     setHash(result.entry_hash);
   };
 
-  useEffect(() => {
-    const asyncEffect = async () => {
-      const { decodeEntry } = await p2panda;
-      const decodedEntry = await decodeEntry(entryEncoded, messageEncoded);
-      setEntry(decodedEntry);
-    };
-    asyncEffect();
-  }, [entryEncoded, messageEncoded]);
+  // useEffect(() => {
+  //   const asyncEffect = async () => {
+  //     const { decodeEntry } = await p2panda;
+  //     let decodedEntry;
+  //     if (entryEncoded && messageEncoded) {
+  //       console.log({ entryEncoded });
+  //       console.log({ messageEncoded });
+  //       decodedEntry = await decodeEntry(entryEncoded, messageEncoded);
+  //       console.log({ decodedEntry });
+  //     }
+  //     setEntry(decodedEntry);
+  //   };
+  //   asyncEffect();
+  // }, [entryEncoded, messageEncoded]);
 
   return (
     <section style={{ display: 'grid', gridTemplateColumns: '50% 50%' }}>

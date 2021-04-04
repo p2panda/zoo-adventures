@@ -1,192 +1,182 @@
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+/* eslint-disable react/prop-types */
+// import '../../static/styles/app.css';
+
 import React, { useState, useEffect } from 'react';
 import p2panda from 'p2panda-js';
 
-const NUM_ITERATIONS = 250;
+// Dummy API calls
 
-const log = [];
+const getEntryArgs = async (author, entry) => {
+  return {
+    entryHashBacklink:
+      '0040485ff3de6b39bf43eca318e220d7e6ffbf903b0277a53feb0940c523afcd05d144353f14db8bed63d1c442945e008992e049d959a2e0d8f34ccb6fa02fddc5c7',
+    entryHashSkiplink:
+      '0040533d218ac2c654a22ddb3c90c7e4f4c9fcc850bdaf64efbd86290947de9f3d0b1c2189351bc28cdc7094dd0c54083c0fb652386f4149e195854ec47807882e73',
+    lastSeqNum: 12,
+    logId: 1,
+  };
+};
 
-const LogWindow = () => {
-  const [debugMsg, setDebugMsg] = useState('');
-
-  const [perfLoad, setPerfLoad] = useState<number>();
-  const [perfKeyPair, setPerfKeyPair] = useState<number>();
-  const [perfEncodeEntry, setPerfEncodeEntry] = useState<number>();
-  const [perfDecodeEntry, setPerfDecodeEntry] = useState<number>();
-
-  useEffect(() => {
-    const asyncEffect = async () => {
-      const timeStart = performance.now();
-      const { KeyPair, decodeEntry, signEncode } = await p2panda;
-
-      const timeP2PandaLoaded = performance.now();
-      setPerfLoad(timeP2PandaLoaded - timeStart);
-
-      const keyPair = new KeyPair();
-      setDebugMsg(`${keyPair.publicKey()}, ${keyPair.privateKey()}`);
-      const timeKeyPair = performance.now();
-      setPerfKeyPair(timeKeyPair - timeP2PandaLoaded);
-
-      // const private_key = keyPair.privateKey();
-      // const timeBeforeEntry = performance.now();
-      // for (const i of new Array(NUM_ITERATIONS).fill(1))
-      //   await sendMessage(private_key, 'test');
-      // const timeAfterEntry = performance.now();
-      // setPerfEncodeEntry((timeAfterEntry - timeBeforeEntry) / NUM_ITERATIONS);
-
-      // const result = await sendMessage(private_key, 'test');
-      // const timeBeforeDecode = performance.now();
-      // for (const i of new Array(NUM_ITERATIONS).fill(1))
-      //   await decodeEntry(result.encoded_entry);
-      // const timeAfterDecode = performance.now();
-      // setPerfDecodeEntry((timeAfterDecode - timeBeforeDecode) / NUM_ITERATIONS);
-    };
-    asyncEffect();
-  }, []);
-
+const KeyPair = (props) => {
   return (
     <div>
       <h2>Key pair</h2>
-      <p>p2panda says: {debugMsg ? debugMsg : 'Generating key pair...'}</p>
-      <h2>Performance</h2>
-      <p>Loading p2panda lib: {perfLoad}ms</p>
-      <p>Generating key pair: {perfKeyPair}ms</p>
-      <p>Encoding an entry: {perfEncodeEntry}ms</p>
-      <p>Decoding an entry: {perfDecodeEntry}ms</p>
+      <p>
+        private key:{' '}
+        {props.privateKey ? props.privateKey : 'Generating key pair...'}
+      </p>
+      <p>
+        public key:{' '}
+        {props.publicKey ? props.publicKey : 'Generating key pair...'}
+      </p>
     </div>
   );
 };
 
-const getEntryHash = (seqNum, log) => {
-  // Offset seqNum by -1 to retrieve correct entry from log array
-  return log[seqNum - 1].entry_hash;
-};
+const PublishEntry = (props) => {
+  const [backlinkHash, setBacklinkHash] = useState<string>();
+  const [skiplinkHash, setSkiplinkHash] = useState<string>();
+  const [lastSeqNum, setLastSeqNum] = useState<number>();
+  const [logId, setLogId] = useState<number>();
+  const [draftMessage, setDraftMessage] = useState<string>();
+  const [entryMessage, setEntryMessage] = useState<string>();
+  const [newMessageHash, setNewMessageHash] = useState<string>();
+  const [newEntryHash, setNewEntryHash] = useState<string>();
 
-const sendMessage = async (privateKey: string, message: string) => {
-  const { signEncode, getSkipLink, decodeEntry } = await p2panda;
+  const handleSubmit = (event) => {
+    setEntryMessage(draftMessage);
+    event.preventDefault();
+  };
 
-  const logLength = log.length;
-  let seqNum: number = null;
-  let skipLink: number = null;
-  let skipLinkHash: string = null;
-  let backLinkHash: string = null;
-  let backLink: number = null;
-
-  if (logLength > 0) {
-    seqNum = logLength + 1;
-    backLink = logLength;
-    // Get skipLink sequence number
-    skipLink = getSkipLink(seqNum);
-    // Calculate skiplink entry hash
-    skipLinkHash = getEntryHash(skipLink, log);
-    console.log({ skipLinkHash });
-    // Calculate backlink entry hash
-    backLinkHash = getEntryHash(backLink, log);
-    console.log({ backLinkHash });
-  }
-
-  // Create signed & encoded entry
-  const entry = await signEncode(
-    privateKey,
-    message,
-    skipLinkHash,
-    backLinkHash,
-    seqNum,
-  );
-
-  console.log(entry);
-  // Push entry to log
-  log.push(entry);
-  const decodedEntry = await decodeEntry(
-    entry.encoded_entry,
-    entry.encoded_message,
-  );
-  console.log({ decodedEntry });
-  return entry;
-};
-
-const Home = (): JSX.Element => {
-  const [currentMessage, setCurrentMessage] = useState('');
-  const [privateKey, setPrivateKey] = useState<string>();
-  const [entryEncoded, setEntryEncoded] = useState<string>();
-  const [entry, setEntry] = useState<string>();
-  const [messageEncoded, setMessageEncoded] = useState<string>();
-  const [hash, setHash] = useState<string>();
+  const handleChange = (event) => {
+    setDraftMessage(event.target.value);
+  };
 
   useEffect(() => {
     const asyncEffect = async () => {
-      const { KeyPair } = await p2panda;
-      if (!window.localStorage.getItem('privateKey')) {
-        const keyPair = new KeyPair();
-        window.localStorage.setItem('privateKey', keyPair.privateKey());
-      }
-      setPrivateKey(window.localStorage.getItem('privateKey'));
+      const args = await getEntryArgs(props.publicKey, null);
+      setBacklinkHash(args.entryHashBacklink);
+      setSkiplinkHash(args.entryHashSkiplink);
+      setLastSeqNum(args.lastSeqNum);
+      setLogId(args.logId);
     };
     asyncEffect();
   }, []);
 
-  const handleClick = async () => {
-    const result = await sendMessage(privateKey, currentMessage);
-    setCurrentMessage('');
-    setEntryEncoded(result.encoded_entry);
-    setMessageEncoded(result.encoded_message);
-    setHash(result.entry_hash);
-  };
+  useEffect(() => {
+    const asyncEffect = async () => {
+      const { signEncode } = await p2panda;
 
-  // useEffect(() => {
-  //   const asyncEffect = async () => {
-  //     const { decodeEntry } = await p2panda;
-  //     let decodedEntry;
-  //     if (entryEncoded && messageEncoded) {
-  //       console.log({ entryEncoded });
-  //       console.log({ messageEncoded });
-  //       decodedEntry = await decodeEntry(entryEncoded, messageEncoded);
-  //       console.log({ decodedEntry });
-  //     }
-  //     setEntry(decodedEntry);
-  //   };
-  //   asyncEffect();
-  // }, [entryEncoded, messageEncoded]);
+      // Create signed & encoded entry
+      const entry = await signEncode(
+        props.privateKey,
+        entryMessage,
+        skiplinkHash,
+        backlinkHash,
+        lastSeqNum + 1,
+      );
+      console.log(entry);
+      setNewEntryHash(entry.encoded_entry);
+      setNewMessageHash(entry.encoded_message);
+    };
+    asyncEffect();
+  }, [entryMessage]);
+
+  useEffect(() => {
+    props.onNewEntry(newEntryHash, newMessageHash);
+  }, [newMessageHash, newEntryHash]);
 
   return (
-    <section style={{ display: 'grid', gridTemplateColumns: '50% 50%' }}>
-      <div>
-        <h1>p2paradies, p2panda, p2parachute</h1>
-        <h2>Hallo, hier ist alles schön :)</h2>
-        <input
-          type="text"
-          onChange={({ target: { value } }) => setCurrentMessage(value)}
-          value={currentMessage}
-        />
-        <button onClick={() => handleClick()}>bœp</button>
-        <h2>hier beginnt das Abenteuer:</h2>
-        <textarea
-          rows={20}
-          cols={80}
-          onChange={({ target: { value } }) => setEntryEncoded(value)}
-          value={entryEncoded}
-        ></textarea>
-
-        <LogWindow />
-      </div>
-      <div>
-        <pre
-          style={{
-            maxWidth: '30em',
-            whiteSpace: 'pre-wrap',
-            wordBreak: 'break-all',
-          }}
-        >
-          {entry}
-        </pre>
-        <p style={{ maxWidth: '30em', wordBreak: 'break-all' }}>
-          {hash && 'Hash:'} {hash}
-        </p>
-        <p style={{ maxWidth: '30em', wordBreak: 'break-all' }}>
-          {messageEncoded && 'Message:'} {messageEncoded}
-        </p>
-      </div>
-    </section>
+    <div>
+      <h2>Entry Arguments</h2>
+      <p>
+        entryHashBacklink:{' '}
+        {backlinkHash ? backlinkHash : 'Fetching entry backlink hash'}
+      </p>
+      <p>
+        entryHashSkiplink:{' '}
+        {skiplinkHash ? skiplinkHash : 'Fetching entry skipling hash'}
+      </p>
+      <p>
+        lastSeqNum:{' '}
+        {lastSeqNum
+          ? lastSeqNum
+          : 'Fetching last sequence number of bamboo log'}
+      </p>
+      <p>logId: {logId ? logId : 'Fetching bamboo log ID'}</p>
+      <h2>Publish Entry</h2>
+      <form onSubmit={handleSubmit}>
+        {' '}
+        <label>
+          Name:
+          <input type="text" onChange={handleChange} />{' '}
+        </label>
+        <input type="submit" value="Submit" />
+      </form>{' '}
+    </div>
   );
 };
+
+const NewEntry = (props) => {
+  return (
+    <div>
+      <h2>New Entry</h2>
+      <p>
+        Entry hash: {props.entryHash ? props.entryHash : 'No entries created.'}
+      </p>
+      <p>
+        Message hash:{' '}
+        {props.messageHash ? props.messageHash : 'No entries created.'}
+      </p>
+    </div>
+  );
+};
+
+class Home extends React.Component<any, any> {
+  constructor(props) {
+    super(props);
+    this.onNewEntry = this.onNewEntry.bind(this);
+    this.state = {
+      publicKey: '',
+      privateKey: '',
+      newEntryHash: '',
+      newMessageHash: '',
+    };
+  }
+
+  async componentDidMount() {
+    const { KeyPair } = await p2panda;
+    const keyPair = new KeyPair();
+    this.setState({
+      publicKey: keyPair.publicKey(),
+      privateKey: keyPair.privateKey(),
+    });
+  }
+
+  onNewEntry(newEntryHash, newMessageHash) {
+    this.setState({ newEntryHash, newMessageHash });
+  }
+
+  render() {
+    return (
+      <section>
+        <KeyPair
+          privateKey={this.state.privateKey}
+          publicKey={this.state.publicKey}
+        />
+        <PublishEntry
+          privateKey={this.state.privateKey}
+          publicKey={this.state.publicKey}
+          onNewEntry={this.onNewEntry}
+        />
+        <NewEntry
+          entryHash={this.state.newEntryHash}
+          messageHash={this.state.newMessageHash}
+        />
+      </section>
+    );
+  }
+}
 
 export default Home;

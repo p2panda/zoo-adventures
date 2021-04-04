@@ -18,6 +18,15 @@ const getEntryArgs = async (author, entry) => {
   };
 };
 
+const getFirstEntryArgs = async (author, entry) => {
+  return {
+    entryHashBacklink: null,
+    entryHashSkiplink: null,
+    lastSeqNum: null,
+    logId: 1,
+  };
+};
+
 const KeyPair = (props) => {
   return (
     <div>
@@ -41,12 +50,14 @@ const PublishEntry = (props) => {
   const [logId, setLogId] = useState<number>();
   const [draftMessage, setDraftMessage] = useState<string>();
   const [entryMessage, setEntryMessage] = useState<string>();
-  const [newMessageHash, setNewMessageHash] = useState<string>();
-  const [newEntryHash, setNewEntryHash] = useState<string>();
+  const [newEntryHashes, setNewEntryHashes] = useState({
+    entry: null,
+    message: null,
+  });
 
   const handleSubmit = (event) => {
-    setEntryMessage(draftMessage);
     event.preventDefault();
+    setEntryMessage(draftMessage);
   };
 
   const handleChange = (event) => {
@@ -55,7 +66,7 @@ const PublishEntry = (props) => {
 
   useEffect(() => {
     const asyncEffect = async () => {
-      const args = await getEntryArgs(props.publicKey, null);
+      const args = await getFirstEntryArgs(props.publicKey, null);
       setBacklinkHash(args.entryHashBacklink);
       setSkiplinkHash(args.entryHashSkiplink);
       setLastSeqNum(args.lastSeqNum);
@@ -65,27 +76,32 @@ const PublishEntry = (props) => {
   }, []);
 
   useEffect(() => {
+    if (!entryMessage) {
+      return;
+    }
     const asyncEffect = async () => {
       const { signEncode } = await p2panda;
-
       // Create signed & encoded entry
       const entry = await signEncode(
-        props.privateKey,
+        props.publicKey,
         entryMessage,
         skiplinkHash,
         backlinkHash,
-        lastSeqNum + 1,
+        null,
       );
-      console.log(entry);
-      setNewEntryHash(entry.encoded_entry);
-      setNewMessageHash(entry.encoded_message);
+      setNewEntryHashes({
+        entry: entry.encoded_entry,
+        message: entry.encoded_message,
+      });
     };
     asyncEffect();
   }, [entryMessage]);
 
   useEffect(() => {
-    props.onNewEntry(newEntryHash, newMessageHash);
-  }, [newMessageHash, newEntryHash]);
+    if (newEntryHashes) {
+      props.onNewEntry(newEntryHashes);
+    }
+  }, [newEntryHashes]);
 
   return (
     <div>
@@ -118,17 +134,34 @@ const PublishEntry = (props) => {
   );
 };
 
-const NewEntry = (props) => {
+const Entry = (props) => {
   return (
     <div>
       <h2>New Entry</h2>
-      <p>
+      <p style={{ maxWidth: '30em', wordBreak: 'break-all' }}>
         Entry hash: {props.entryHash ? props.entryHash : 'No entries created.'}
       </p>
-      <p>
+      <p style={{ maxWidth: '30em', wordBreak: 'break-all' }}>
         Message hash:{' '}
         {props.messageHash ? props.messageHash : 'No entries created.'}
       </p>
+    </div>
+  );
+};
+
+const DecodedEntry = (props) => {
+  return (
+    <div>
+      <h2>Decoded Entry</h2>
+      <pre
+        style={{
+          maxWidth: '30em',
+          whiteSpace: 'pre-wrap',
+          wordBreak: 'break-all',
+        }}
+      >
+        {props.decodedEntry ? props.decodedEntry : 'No entries to decode.'}
+      </pre>
     </div>
   );
 };
@@ -138,10 +171,11 @@ class Home extends React.Component<any, any> {
     super(props);
     this.onNewEntry = this.onNewEntry.bind(this);
     this.state = {
-      publicKey: '',
-      privateKey: '',
-      newEntryHash: '',
-      newMessageHash: '',
+      publicKey: null,
+      privateKey: null,
+      newEntryHash: null,
+      newMessageHash: null,
+      decodedEntry: null,
     };
   }
 
@@ -154,8 +188,15 @@ class Home extends React.Component<any, any> {
     });
   }
 
-  onNewEntry(newEntryHash, newMessageHash) {
-    this.setState({ newEntryHash, newMessageHash });
+  async onNewEntry(newEntryHashes) {
+    const { decodeEntry } = await p2panda;
+    const { entry, message } = newEntryHashes;
+    const decodedEntry = decodeEntry(entry, message);
+    this.setState({
+      newEntryHash: entry,
+      newMessageHash: message,
+      decodedEntry,
+    });
   }
 
   render() {
@@ -170,10 +211,11 @@ class Home extends React.Component<any, any> {
           publicKey={this.state.publicKey}
           onNewEntry={this.onNewEntry}
         />
-        <NewEntry
+        <Entry
           entryHash={this.state.newEntryHash}
           messageHash={this.state.newMessageHash}
         />
+        <DecodedEntry decodedEntry={this.state.decodedEntry} />
       </section>
     );
   }

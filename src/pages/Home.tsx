@@ -2,6 +2,9 @@
 /* eslint-disable react/prop-types */
 import '../../static/styles/main.css';
 
+import SyntaxHighlighter from 'react-syntax-highlighter';
+import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+
 import React, { useState, useEffect } from 'react';
 import p2panda from 'p2panda-js';
 

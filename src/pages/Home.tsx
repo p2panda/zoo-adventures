@@ -7,17 +7,6 @@ import p2panda from 'p2panda-js';
 
 // Dummy API calls
 
-const getEntryArgs = async (author, entry) => {
-  return {
-    entryHashBacklink:
-      '0040485ff3de6b39bf43eca318e220d7e6ffbf903b0277a53feb0940c523afcd05d144353f14db8bed63d1c442945e008992e049d959a2e0d8f34ccb6fa02fddc5c7',
-    entryHashSkiplink:
-      '0040533d218ac2c654a22ddb3c90c7e4f4c9fcc850bdaf64efbd86290947de9f3d0b1c2189351bc28cdc7094dd0c54083c0fb652386f4149e195854ec47807882e73',
-    lastSeqNum: 12,
-    logId: 1,
-  };
-};
-
 const getFirstEntryArgs = async (author, entry) => {
   return {
     entryHashBacklink: null,
@@ -55,15 +44,19 @@ const PublishEntry = (props) => {
     message: null,
   });
 
+  // Set entry message on form submit
   const handleSubmit = (event) => {
     event.preventDefault();
     setEntryMessage(draftMessage);
   };
 
+  // Set draft entry message on input change
   const handleChange = (event) => {
     setDraftMessage(event.target.value);
   };
 
+  // Get next entryArgs when newEntryHash changes
+  // This needs to be hooked up to aquadoggo getEntryArgs API call
   useEffect(() => {
     const asyncEffect = async () => {
       const args = await getFirstEntryArgs(props.publicKey, null);
@@ -73,8 +66,9 @@ const PublishEntry = (props) => {
       setLogId(args.logId);
     };
     asyncEffect();
-  }, []);
+  }, [newEntryHashes]);
 
+  // When entryMessage is set encode new entry
   useEffect(() => {
     if (!entryMessage) {
       return;
@@ -97,6 +91,7 @@ const PublishEntry = (props) => {
     asyncEffect();
   }, [entryMessage]);
 
+  // When new entry is encoded call method passed from parent
   useEffect(() => {
     if (newEntryHashes.entry) {
       props.onNewEntry(newEntryHashes);
@@ -173,6 +168,7 @@ class Home extends React.Component<any, any> {
     };
   }
 
+  // Create keypair when component is mounted
   async componentDidMount() {
     const { KeyPair } = await p2panda;
     const keyPair = new KeyPair();
@@ -182,6 +178,7 @@ class Home extends React.Component<any, any> {
     });
   }
 
+  // Set entry and message hashes and decoded data
   async onNewEntry(newEntryHashes) {
     const { decodeEntry } = await p2panda;
     const { entry, message } = newEntryHashes;

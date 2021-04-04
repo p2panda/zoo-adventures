@@ -1,3 +1,9 @@
+body {
+    padding: 20px;
+    font-family: "Droid Sans Mono", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-size: 18px;
+  }
+
 p {
     word-break: 'break-all';
 }

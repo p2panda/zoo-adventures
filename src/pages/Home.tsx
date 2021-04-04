@@ -125,7 +125,7 @@ const PublishEntry = (props) => {
       <form onSubmit={handleSubmit}>
         {' '}
         <label>
-          Name:
+          Message:
           <input type="text" onChange={handleChange} />{' '}
         </label>
         <input type="submit" value="Submit" />

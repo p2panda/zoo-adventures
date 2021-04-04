@@ -98,7 +98,7 @@ const PublishEntry = (props) => {
   }, [entryMessage]);
 
   useEffect(() => {
-    if (newEntryHashes) {
+    if (newEntryHashes.entry) {
       props.onNewEntry(newEntryHashes);
     }
   }, [newEntryHashes]);

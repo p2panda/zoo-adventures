@@ -3,10 +3,29 @@
 import '../../static/styles/main.css';
 
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
 
 import React, { useState, useEffect } from 'react';
 import p2panda from 'p2panda-js';
+
+// Code snippets
+const keyPairSnippet = `const { KeyPair } = await p2panda;
+const keyPair = new KeyPair();
+const publicKey = keyPair.publicKey();
+const privateKey = keyPair.privateKey();`;
+const getEntryArgsSnippet = `// JSON-RPC call to server node
+const entryArgs = await getFirstEntryArgs(publicKey, schema);`;
+const signEncodeSnippet = `const { signEncode } = await p2panda;
+const message = 'Hello Panda!'
+const {encodedEntryHash, encodedMessageHash} = await signEncode(
+  publicKey,
+  message,
+  entryArgs.skiplinkHash,
+  entryArgs.backlinkHash,
+  entryArgs.lastSeqNum,
+);`;
+const decodeEntrySnippet = `const { decodeEntry } = await p2panda;
+const decodedEntry = decodeEntry(encodedEntryHash, encodedMessageHash);`;
 
 // Dummy API calls
 
@@ -23,6 +42,9 @@ const KeyPair = (props) => {
   return (
     <div>
       <h2>Key pair</h2>
+      <SyntaxHighlighter language="javascript" style={vs2015}>
+        {keyPairSnippet}
+      </SyntaxHighlighter>
       <p>
         private key:{' '}
         {props.privateKey ? props.privateKey : 'Generating key pair...'}
@@ -104,6 +126,9 @@ const PublishEntry = (props) => {
   return (
     <div>
       <h2>Entry Arguments</h2>
+      <SyntaxHighlighter language="javascript" style={vs2015}>
+        {getEntryArgsSnippet}
+      </SyntaxHighlighter>
       <p>
         entryHashBacklink:{' '}
         {backlinkHash ? backlinkHash : 'Not present on first entry'}
@@ -117,14 +142,15 @@ const PublishEntry = (props) => {
       </p>
       <p>logId: {logId ? logId : 'Fetching bamboo log ID'}</p>
       <h2>Publish Entry</h2>
+      <SyntaxHighlighter language="javascript" style={vs2015}>
+        {signEncodeSnippet}
+      </SyntaxHighlighter>
       <form onSubmit={handleSubmit}>
-        {' '}
         <label>
-          Message:
-          <input type="text" onChange={handleChange} />{' '}
+          Message: <input type="text" onChange={handleChange} />
         </label>
         <input type="submit" value="Submit" />
-      </form>{' '}
+      </form>
     </div>
   );
 };
@@ -132,7 +158,6 @@ const PublishEntry = (props) => {
 const Entry = (props) => {
   return (
     <div>
-      <h2>New Entry</h2>
       <p>
         Entry hash: {props.entryHash ? props.entryHash : 'No entries created.'}
       </p>
@@ -148,6 +173,9 @@ const DecodedEntry = (props) => {
   return (
     <div>
       <h2>Decoded Entry</h2>
+      <SyntaxHighlighter language="javascript" style={vs2015}>
+        {decodeEntrySnippet}
+      </SyntaxHighlighter>
       <pre>
         {props.decodedEntry ? props.decodedEntry : 'No entries to decode.'}
       </pre>

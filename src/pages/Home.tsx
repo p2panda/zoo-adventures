@@ -103,17 +103,14 @@ const PublishEntry = (props) => {
       <h2>Entry Arguments</h2>
       <p>
         entryHashBacklink:{' '}
-        {backlinkHash ? backlinkHash : 'Fetching entry backlink hash'}
+        {backlinkHash ? backlinkHash : 'Not present on first entry'}
       </p>
       <p>
         entryHashSkiplink:{' '}
-        {skiplinkHash ? skiplinkHash : 'Fetching entry skipling hash'}
+        {skiplinkHash ? skiplinkHash : 'Not present on first entry'}
       </p>
       <p>
-        lastSeqNum:{' '}
-        {lastSeqNum
-          ? lastSeqNum
-          : 'Fetching last sequence number of bamboo log'}
+        lastSeqNum: {lastSeqNum ? lastSeqNum : 'Not present on first entry'}
       </p>
       <p>logId: {logId ? logId : 'Fetching bamboo log ID'}</p>
       <h2>Publish Entry</h2>

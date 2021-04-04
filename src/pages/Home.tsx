@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable react/prop-types */
-// import '../../static/styles/app.css';
+import '../../static/styles/main.css';
 
 import React, { useState, useEffect } from 'react';
 import p2panda from 'p2panda-js';
@@ -138,10 +138,10 @@ const Entry = (props) => {
   return (
     <div>
       <h2>New Entry</h2>
-      <p style={{ maxWidth: '30em', wordBreak: 'break-all' }}>
+      <p>
         Entry hash: {props.entryHash ? props.entryHash : 'No entries created.'}
       </p>
-      <p style={{ maxWidth: '30em', wordBreak: 'break-all' }}>
+      <p>
         Message hash:{' '}
         {props.messageHash ? props.messageHash : 'No entries created.'}
       </p>
@@ -153,13 +153,7 @@ const DecodedEntry = (props) => {
   return (
     <div>
       <h2>Decoded Entry</h2>
-      <pre
-        style={{
-          maxWidth: '30em',
-          whiteSpace: 'pre-wrap',
-          wordBreak: 'break-all',
-        }}
-      >
+      <pre>
         {props.decodedEntry ? props.decodedEntry : 'No entries to decode.'}
       </pre>
     </div>

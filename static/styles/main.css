@@ -5,10 +5,27 @@ body {
   }
 
 p {
-    word-break: 'break-all';
+    word-break: break-all;
 }
 
 pre {
-    white-space: 'pre-wrap';
-    word-break: 'break-all';
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.home-wrapper{
+    display: flex;
+    width: 100%;
+    max-height: 90vh;
+}
+.panel-one{
+    flex: 1;
+    flex-direction: column;
+    background-color: aqua;
+    overflow-y: scroll;
+}
+.panel-two{
+    flex: 1;
+    background-color:blue;
+    overflow-y: scroll;
 }

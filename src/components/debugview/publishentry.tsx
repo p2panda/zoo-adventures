@@ -32,13 +32,19 @@ export const PublishEntry = (props) => {
   // Set entry message on form submit
   const handleSubmit = async () => {
     const { signEncode } = await p2panda;
+
+    const args = await p2pandaApi.getNextEntryArgs(
+      props.publicKey,
+      CHAT_SCHEMA,
+    );
+
     // Create signed & encoded entry
     const entry = await signEncode(
       props.publicKey,
       entryMessage,
-      skiplinkHash,
-      backlinkHash,
-      null,
+      args.entryHashSkiplink,
+      args.entryHashBacklink,
+      args.lastSeqNum,
     );
 
     await p2pandaApi.publishEntry(entry.encoded_entry, entry.encoded_message);
@@ -57,20 +63,20 @@ export const PublishEntry = (props) => {
 
   // Get next entryArgs when newEntryHash changes
   // This needs to be hooked up to aquadoggo getEntryArgs API call
-  useEffect(() => {
-    if (props.publicKey == null) return;
-    const asyncEffect = async () => {
-      const args = await p2pandaApi.getNextEntryArgs(
-        props.publicKey,
-        CHAT_SCHEMA,
-      );
-      setBacklinkHash(args.entryHashBacklink);
-      setSkiplinkHash(args.entryHashSkiplink);
-      setLastSeqNum(args.lastSeqNum);
-      setLogId(args.logId);
-    };
-    asyncEffect();
-  }, [newEntryHashes, props.publicKey]);
+  // useEffect(() => {
+  //   if (props.publicKey == null) return;
+  //   const asyncEffect = async () => {
+  //     const args = await p2pandaApi.getNextEntryArgs(
+  //       props.publicKey,
+  //       CHAT_SCHEMA,
+  //     );
+  //     setBacklinkHash(args.entryHashBacklink);
+  //     setSkiplinkHash(args.entryHashSkiplink);
+  //     setLastSeqNum(args.lastSeqNum);
+  //     setLogId(args.logId);
+  //   };
+  //   asyncEffect();
+  // }, [newEntryHashes, props.publicKey]);
 
   // When new entry is encoded call method passed from parent
   useEffect(() => {

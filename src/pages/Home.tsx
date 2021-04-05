@@ -219,6 +219,7 @@ class Home extends React.Component<any, any> {
       <section>
         <div className="home-wrapper">
           <div className="panel-one">
+            <h1>p2🐼</h1>
             <KeyPair
               privateKey={this.state.privateKey}
               publicKey={this.state.publicKey}

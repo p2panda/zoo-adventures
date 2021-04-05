@@ -5,6 +5,10 @@ body, html {
     font-size: 18px;
   }
 
+h1 {
+    font-size: 40px;
+}
+  
 .break-line * {
     white-space: pre-wrap;
     word-break: break-all;

@@ -29,6 +29,7 @@
   },
   "homepage": "https://github.com/p2panda/beep-boop#readme",
   "dependencies": {
+    "@open-rpc/client-js": "^1.6.2",
     "p2panda-js": "^0.1.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",

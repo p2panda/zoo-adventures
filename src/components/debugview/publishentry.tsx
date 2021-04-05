@@ -2,18 +2,8 @@ import React, { useEffect, useState } from 'react';
 import p2panda from 'p2panda-js';
 
 import { SyntaxHighlighter } from '~/syntaxHighlighter';
+import p2pandaApi from '~/p2panda-api';
 
-const getFirstEntryArgs = async (author, entry) => {
-  return {
-    entryHashBacklink: null,
-    entryHashSkiplink: null,
-    lastSeqNum: null,
-    logId: 1,
-  };
-};
-
-const getEntryArgsSnippet = `// JSON-RPC call to server node
-const entryArgs = await getFirstEntryArgs(publicKey, schema);`;
 const signEncodeSnippet = `const { signEncode } =
 await p2panda;
 const message = 'Hello Panda!'
@@ -25,12 +15,14 @@ const {encodedEntryHash, encodedMessageHash} = await signEncode(
   entryArgs.lastSeqNum,
 );`;
 
+const CHAT_SCHEMA =
+  '0040cf94f6d605657e90c543b0c919070cdaaf7209c5e1ea58acb8f3568fa2114268dc9ac3bafe12af277d286fce7dc59b7c0c348973c4e9dacbe79485e56ac2a702';
+
 export const PublishEntry = (props) => {
   const [backlinkHash, setBacklinkHash] = useState<string>();
   const [skiplinkHash, setSkiplinkHash] = useState<string>();
   const [lastSeqNum, setLastSeqNum] = useState<number>();
   const [logId, setLogId] = useState<number>();
-  const [draftMessage, setDraftMessage] = useState<string>();
   const [entryMessage, setEntryMessage] = useState<string>();
   const [newEntryHashes, setNewEntryHashes] = useState({
     entry: null,
@@ -38,51 +30,47 @@ export const PublishEntry = (props) => {
   });
 
   // Set entry message on form submit
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    setEntryMessage(draftMessage);
+  const handleSubmit = async () => {
+    const { signEncode } = await p2panda;
+    // Create signed & encoded entry
+    const entry = await signEncode(
+      props.publicKey,
+      entryMessage,
+      skiplinkHash,
+      backlinkHash,
+      null,
+    );
+
+    await p2pandaApi.publishEntry(entry.encoded_entry, entry.encoded_message);
+
+    setEntryMessage('');
+    setNewEntryHashes({
+      entry: entry.encoded_entry,
+      message: entry.encoded_message,
+    });
   };
 
   // Set draft entry message on input change
   const handleChange = (event) => {
-    setDraftMessage(event.target.value);
+    setEntryMessage(event.target.value);
   };
 
   // Get next entryArgs when newEntryHash changes
   // This needs to be hooked up to aquadoggo getEntryArgs API call
   useEffect(() => {
+    if (props.publicKey == null) return;
     const asyncEffect = async () => {
-      const args = await getFirstEntryArgs(props.publicKey, null);
+      const args = await p2pandaApi.getNextEntryArgs(
+        props.publicKey,
+        CHAT_SCHEMA,
+      );
       setBacklinkHash(args.entryHashBacklink);
       setSkiplinkHash(args.entryHashSkiplink);
       setLastSeqNum(args.lastSeqNum);
       setLogId(args.logId);
     };
     asyncEffect();
-  }, [newEntryHashes]);
-
-  // When entryMessage is set encode new entry
-  useEffect(() => {
-    if (!entryMessage) {
-      return;
-    }
-    const asyncEffect = async () => {
-      const { signEncode } = await p2panda;
-      // Create signed & encoded entry
-      const entry = await signEncode(
-        props.publicKey,
-        entryMessage,
-        skiplinkHash,
-        backlinkHash,
-        null,
-      );
-      setNewEntryHashes({
-        entry: entry.encoded_entry,
-        message: entry.encoded_message,
-      });
-    };
-    asyncEffect();
-  }, [entryMessage]);
+  }, [newEntryHashes, props.publicKey]);
 
   // When new entry is encoded call method passed from parent
   useEffect(() => {
@@ -93,22 +81,19 @@ export const PublishEntry = (props) => {
 
   return (
     <div>
-      <h2>Entry Arguments</h2>
-      <SyntaxHighlighter>{getEntryArgsSnippet}</SyntaxHighlighter>
-      <span className="break-line">
-        <SyntaxHighlighter>
-          {`{ backlinkHash: ${backlinkHash}, \nskiplinkHash: ${skiplinkHash}, \nlastSeqNum: ${lastSeqNum}, \nlogId: ${logId} }`}
-        </SyntaxHighlighter>
-      </span>
+      <h2>Request next entry arguments</h2>
+      <p>Sends a JSON-RPC call to p2panda node</p>
+      <SyntaxHighlighter>
+        {`const entryArgs = await getNextEntryArgs(publicKey, schema);
+// => { backlinkHash: ${backlinkHash}, \n// skiplinkHash: ${skiplinkHash}, \n// lastSeqNum: ${lastSeqNum}, \n// logId: ${logId} }`}
+      </SyntaxHighlighter>
 
       <h2>Publish Entry</h2>
       <SyntaxHighlighter>{signEncodeSnippet}</SyntaxHighlighter>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Message: <input type="text" onChange={handleChange} />
-        </label>
-        <input type="submit" value="Submit" />
-      </form>
+      <label>
+        Message: <input type="text" onChange={handleChange} />
+      </label>
+      <input type="submit" value="Submit" onClick={handleSubmit} />
     </div>
   );
 };

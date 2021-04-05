@@ -1,8 +1,8 @@
 import React from 'react';
-import { DecodedEntry } from './decodedentry';
-import { Entry } from './entry';
-import { KeyPair } from './keypair';
-import { PublishEntry } from './publishentry';
+import { DecodedEntry } from './DecodedEntry';
+import { Entry } from './Entry';
+import { KeyPair } from './KeyPair';
+import { PublishEntry } from './PublishEntry';
 
 type Props = any;
 
@@ -16,6 +16,7 @@ export const DebugView = ({
 }: Props): JSX.Element => (
   <div className="panel-one">
     <h1>p2🐼</h1>
+    <p>How to publish messages using p2panda:</p>
     <KeyPair privateKey={privateKey} publicKey={publicKey} />
     <PublishEntry
       privateKey={privateKey}

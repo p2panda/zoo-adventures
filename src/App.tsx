@@ -14,12 +14,16 @@ const App = (): JSX.Element => {
   const [log, setLog] = useState([]);
 
   useEffect(() => {
-    // Create keypair when component is mounted
     const asyncEffect = async () => {
       const { KeyPair } = await p2panda;
-      const keyPair = new KeyPair();
-      setPublicKey(keyPair.publicKey());
-      setPrivateKey(keyPair.privateKey());
+      let pKey = window.localStorage.getItem('privateKey');
+      if (!pKey) {
+        const keyPair = new KeyPair();
+        pKey = keyPair.privateKey();
+        window.localStorage.setItem('privateKey', pKey);
+      }
+      setPrivateKey(pKey);
+      setPublicKey(KeyPair.fromPrivateKey(pKey).publicKey());
     };
     asyncEffect();
   }, []);

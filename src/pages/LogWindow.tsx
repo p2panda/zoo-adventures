@@ -1,3 +1,5 @@
+// Pulled this out of our earlier version, thought we might want to use the perf code somewhere
+
 import React, { useState, useEffect } from 'react';
 import p2panda from 'p2panda-js';
 

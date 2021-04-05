@@ -2,8 +2,11 @@
 /* eslint-disable react/prop-types */
 import '../../static/styles/main.css';
 
-import SyntaxHighlighter from 'react-syntax-highlighter';
-import { vs2015 } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import { Light as SyntaxHighlighter } from 'react-syntax-highlighter';
+import js from 'react-syntax-highlighter/dist/esm/languages/hljs/javascript';
+import vs2015 from 'react-syntax-highlighter/dist/esm/styles/hljs/vs2015';
+
+SyntaxHighlighter.registerLanguage('javascript', js);
 
 import React, { useState, useEffect } from 'react';
 import p2panda from 'p2panda-js';

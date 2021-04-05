@@ -204,16 +204,6 @@ class Home extends React.Component<any, any> {
     });
   }
 
-  onUpdateItems = () => {
-    this.setState((state) => {
-      const list = state.list.map((item) => item + 1);
-
-      return {
-        list,
-      };
-    });
-  };
-
   render() {
     return (
       <section>

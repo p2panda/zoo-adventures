@@ -221,20 +221,25 @@ class Home extends React.Component<any, any> {
   render() {
     return (
       <section>
-        <KeyPair
-          privateKey={this.state.privateKey}
-          publicKey={this.state.publicKey}
-        />
-        <PublishEntry
-          privateKey={this.state.privateKey}
-          publicKey={this.state.publicKey}
-          onNewEntry={this.onNewEntry}
-        />
-        <Entry
-          entryHash={this.state.newEntryHash}
-          messageHash={this.state.newMessageHash}
-        />
-        <DecodedEntry decodedEntry={this.state.decodedEntry} />
+        <div className="home-wrapper">
+          <div className="panel-one">
+            <KeyPair
+              privateKey={this.state.privateKey}
+              publicKey={this.state.publicKey}
+            />
+            <PublishEntry
+              privateKey={this.state.privateKey}
+              publicKey={this.state.publicKey}
+              onNewEntry={this.onNewEntry}
+            />
+            <Entry
+              entryHash={this.state.newEntryHash}
+              messageHash={this.state.newMessageHash}
+            />
+            <DecodedEntry decodedEntry={this.state.decodedEntry} />
+          </div>
+          <div className="panel-two"></div>
+        </div>
       </section>
     );
   }

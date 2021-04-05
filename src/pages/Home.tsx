@@ -9,7 +9,7 @@ import React, { useState, useEffect } from 'react';
 import p2panda from 'p2panda-js';
 
 // Code snippets
-const keyPairSnippet = `const { KeyPair } = await p2panda;
+const keyPairSnippet = `const { KeyPair } = await p2panda; 
 const keyPair = new KeyPair();
 const publicKey = keyPair.publicKey();
 const privateKey = keyPair.privateKey();`;
@@ -45,14 +45,9 @@ const KeyPair = (props) => {
       <SyntaxHighlighter language="javascript" style={vs2015}>
         {keyPairSnippet}
       </SyntaxHighlighter>
-      <p>
-        private key:{' '}
-        {props.privateKey ? props.privateKey : 'Generating key pair...'}
-      </p>
-      <p>
-        public key:{' '}
-        {props.publicKey ? props.publicKey : 'Generating key pair...'}
-      </p>
+      <SyntaxHighlighter language="javascript" style={vs2015}>
+        {`{ privateKey: ${props.privateKey}, \npublicKey: ${props.publicKey} }`}
+      </SyntaxHighlighter>
     </div>
   );
 };
@@ -129,18 +124,10 @@ const PublishEntry = (props) => {
       <SyntaxHighlighter language="javascript" style={vs2015}>
         {getEntryArgsSnippet}
       </SyntaxHighlighter>
-      <p>
-        entryHashBacklink:{' '}
-        {backlinkHash ? backlinkHash : 'Not present on first entry'}
-      </p>
-      <p>
-        entryHashSkiplink:{' '}
-        {skiplinkHash ? skiplinkHash : 'Not present on first entry'}
-      </p>
-      <p>
-        lastSeqNum: {lastSeqNum ? lastSeqNum : 'Not present on first entry'}
-      </p>
-      <p>logId: {logId ? logId : 'Fetching bamboo log ID'}</p>
+      <SyntaxHighlighter language="javascript" style={vs2015}>
+        {`{ backlinkHash: ${backlinkHash}, \nskiplinkHash: ${skiplinkHash}, \nlastSeqNum: ${lastSeqNum}, \nlogId: ${logId} }`}
+      </SyntaxHighlighter>
+
       <h2>Publish Entry</h2>
       <SyntaxHighlighter language="javascript" style={vs2015}>
         {signEncodeSnippet}
@@ -158,13 +145,9 @@ const PublishEntry = (props) => {
 const Entry = (props) => {
   return (
     <div>
-      <p>
-        Entry hash: {props.entryHash ? props.entryHash : 'No entries created.'}
-      </p>
-      <p>
-        Message hash:{' '}
-        {props.messageHash ? props.messageHash : 'No entries created.'}
-      </p>
+      <SyntaxHighlighter language="javascript" style={vs2015}>
+        {`{ entryHash: ${props.entryHash}, \nmessageHash: ${props.messageHash}}`}
+      </SyntaxHighlighter>
     </div>
   );
 };
@@ -172,13 +155,13 @@ const Entry = (props) => {
 const DecodedEntry = (props) => {
   return (
     <div>
-      <h2>Decoded Entry</h2>
+      <h2>Decode Entry</h2>
       <SyntaxHighlighter language="javascript" style={vs2015}>
         {decodeEntrySnippet}
       </SyntaxHighlighter>
-      <pre>
-        {props.decodedEntry ? props.decodedEntry : 'No entries to decode.'}
-      </pre>
+      <SyntaxHighlighter language="javascript" style={vs2015}>
+        {`{decodedEntry: ${props.decodedEntry}}`}
+      </SyntaxHighlighter>
     </div>
   );
 };

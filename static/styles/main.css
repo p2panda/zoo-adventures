@@ -2,14 +2,9 @@ body {
     padding: 20px;
     font-family: "Droid Sans Mono", Consolas, "Liberation Mono", Menlo, Courier, monospace;
     font-size: 18px;
-    word-break: break-all;
   }
 
-p {
-    word-break: break-all;
-}
-
-pre {
+.break-line * {
     white-space: pre-wrap;
     word-break: break-all;
 }

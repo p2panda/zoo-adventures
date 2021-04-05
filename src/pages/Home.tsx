@@ -18,7 +18,8 @@ const publicKey = keyPair.publicKey();
 const privateKey = keyPair.privateKey();`;
 const getEntryArgsSnippet = `// JSON-RPC call to server node
 const entryArgs = await getFirstEntryArgs(publicKey, schema);`;
-const signEncodeSnippet = `const { signEncode } = await p2panda;
+const signEncodeSnippet = `const { signEncode } = 
+await p2panda;
 const message = 'Hello Panda!'
 const {encodedEntryHash, encodedMessageHash} = await signEncode(
   publicKey,
@@ -127,9 +128,11 @@ const PublishEntry = (props) => {
       <SyntaxHighlighter language="javascript" style={vs2015}>
         {getEntryArgsSnippet}
       </SyntaxHighlighter>
-      <SyntaxHighlighter language="javascript" style={vs2015}>
-        {`{ backlinkHash: ${backlinkHash}, \nskiplinkHash: ${skiplinkHash}, \nlastSeqNum: ${lastSeqNum}, \nlogId: ${logId} }`}
-      </SyntaxHighlighter>
+      <span className="break-line">
+        <SyntaxHighlighter language="javascript" style={vs2015}>
+          {`{ backlinkHash: ${backlinkHash}, \nskiplinkHash: ${skiplinkHash}, \nlastSeqNum: ${lastSeqNum}, \nlogId: ${logId} }`}
+        </SyntaxHighlighter>
+      </span>
 
       <h2>Publish Entry</h2>
       <SyntaxHighlighter language="javascript" style={vs2015}>
@@ -148,9 +151,11 @@ const PublishEntry = (props) => {
 const Entry = (props) => {
   return (
     <div>
-      <SyntaxHighlighter language="javascript" style={vs2015}>
-        {`{ entryHash: ${props.entryHash}, \nmessageHash: ${props.messageHash}}`}
-      </SyntaxHighlighter>
+      <span className="break-line">
+        <SyntaxHighlighter language="javascript" style={vs2015}>
+          {`{ entryHash: ${props.entryHash}, \nmessageHash: ${props.messageHash}}`}
+        </SyntaxHighlighter>
+      </span>
     </div>
   );
 };
@@ -162,9 +167,11 @@ const DecodedEntry = (props) => {
       <SyntaxHighlighter language="javascript" style={vs2015}>
         {decodeEntrySnippet}
       </SyntaxHighlighter>
-      <SyntaxHighlighter language="javascript" style={vs2015}>
-        {`{decodedEntry: ${props.decodedEntry}}`}
-      </SyntaxHighlighter>
+      <span className="break-line">
+        <SyntaxHighlighter language="javascript" style={vs2015}>
+          {`{decodedEntry: ${props.decodedEntry}}`}
+        </SyntaxHighlighter>
+      </span>
     </div>
   );
 };

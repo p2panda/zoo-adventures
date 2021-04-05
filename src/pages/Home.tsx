@@ -226,11 +226,15 @@ class Home extends React.Component<any, any> {
           </div>
           <div className="panel-two">
             <h2>Entry Log</h2>{' '}
-            <ul>
-              {this.state.log.map((entry) => (
-                <li key={entry}>{entry}</li>
-              ))}
-            </ul>
+            {this.state.log.map((entry) => (
+              <div key={entry}>
+                <ul>
+                  <li>ENTRY HASH</li>
+                  <li>SEQUENCE NUMBER</li>
+                  <li>MESSAGE</li>
+                </ul>
+              </div>
+            ))}
           </div>
         </div>
       </section>

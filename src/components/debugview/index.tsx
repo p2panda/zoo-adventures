@@ -3,6 +3,7 @@ import { DecodedEntry } from './DecodedEntry';
 import { Entry } from './Entry';
 import { KeyPair } from './KeyPair';
 import { PublishEntry } from './PublishEntry';
+import { EntryArgs } from './EntryArgs';
 
 type Props = any;
 
@@ -18,6 +19,7 @@ export const DebugView = ({
     <h1>p2🐼</h1>
     <p>How to publish messages using p2panda:</p>
     <KeyPair privateKey={privateKey} publicKey={publicKey} />
+    <EntryArgs entryArgs={{}} />
     <PublishEntry
       privateKey={privateKey}
       publicKey={publicKey}

@@ -193,6 +193,7 @@ class Home extends React.Component<any, any> {
       newEntryHash: null,
       newMessageHash: null,
       decodedEntry: null,
+      log: [],
     };
   }
 
@@ -211,12 +212,24 @@ class Home extends React.Component<any, any> {
     const { decodeEntry } = await p2panda;
     const { entry, message } = newEntryHashes;
     const decodedEntry = decodeEntry(entry, message);
+    const updatedLog = [...this.state.log, decodedEntry];
     this.setState({
       newEntryHash: entry,
       newMessageHash: message,
       decodedEntry,
+      log: updatedLog,
     });
   }
+
+  onUpdateItems = () => {
+    this.setState((state) => {
+      const list = state.list.map((item) => item + 1);
+
+      return {
+        list,
+      };
+    });
+  };
 
   render() {
     return (
@@ -238,7 +251,14 @@ class Home extends React.Component<any, any> {
             />
             <DecodedEntry decodedEntry={this.state.decodedEntry} />
           </div>
-          <div className="panel-two"></div>
+          <div className="panel-two">
+            <h2>Entry Log</h2>{' '}
+            <ul>
+              {this.state.log.map((entry) => (
+                <li key={entry}>{entry}</li>
+              ))}
+            </ul>
+          </div>
         </div>
       </section>
     );

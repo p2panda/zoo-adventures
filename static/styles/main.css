@@ -2,6 +2,7 @@ body {
     padding: 20px;
     font-family: "Droid Sans Mono", Consolas, "Liberation Mono", Menlo, Courier, monospace;
     font-size: 18px;
+    word-break: break-all;
   }
 
 p {
@@ -21,11 +22,9 @@ pre {
 .panel-one{
     flex: 1;
     flex-direction: column;
-    background-color: aqua;
     overflow-y: scroll;
 }
 .panel-two{
     flex: 1;
-    background-color:blue;
     overflow-y: scroll;
 }

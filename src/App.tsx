@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import p2panda from 'p2panda-js';
 import { Entry, Instance, Session } from '~/p2panda-api';
-import { DebugView } from '~/components/DebugView';
+import { Instructions } from '~/components/Instructions';
 import { Chatlog } from './components/chatlog';
 
 import '~/styles.css';
@@ -45,7 +45,7 @@ const App = (): JSX.Element => {
 
   return (
     <div className="home-wrapper">
-      <DebugView
+      <Instructions
         currentMessage={currentMessage}
         debugEntry={debugEntry}
         entries={log}

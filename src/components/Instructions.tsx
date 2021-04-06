@@ -10,7 +10,7 @@ type Props = {
   debugEntry: Entry | null;
 };
 
-export const DebugView = ({
+export const Instructions = ({
   keyPair,
   session,
   currentMessage,

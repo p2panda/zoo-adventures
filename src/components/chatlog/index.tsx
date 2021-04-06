@@ -18,6 +18,10 @@ export const Chatlog = ({
 }: Props): JSX.Element => (
   <div className="panel-two">
     <h2>Entry Log</h2>{' '}
+    <PublishEntry
+      handlePublish={handlePublish}
+      setCurrentMessage={setCurrentMessage}
+    />
     <div className="messages">
       {log.reverse().map((entry) => (
         <div key={entry.entry_hash} onClick={() => setDebugEntry(entry)}>
@@ -25,9 +29,5 @@ export const Chatlog = ({
         </div>
       ))}
     </div>
-    <PublishEntry
-      handlePublish={handlePublish}
-      setCurrentMessage={setCurrentMessage}
-    />
   </div>
 );

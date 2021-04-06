@@ -1,6 +1,5 @@
 import React from 'react';
 import { Entry } from '~/p2panda-api';
-import { SyntaxHighlighter } from '~/syntaxHighlighter';
 import { PublishEntry } from './PublishEntry';
 
 type Props = {
@@ -9,6 +8,11 @@ type Props = {
   setDebugEntry: (entry: Entry) => void;
   handlePublish: (message: string) => Promise<void>;
 };
+
+const formatEntryHash = (hash: string): string =>
+  `<Entry ${hash.slice(hash.length - 8, hash.length - 4)} ${hash.slice(
+    hash.length - 4,
+  )}>`;
 
 export const Chatlog = ({
   log,
@@ -25,7 +29,7 @@ export const Chatlog = ({
     <div className="messages">
       {log.reverse().map((entry) => (
         <div key={entry.entry_hash} onClick={() => setDebugEntry(entry)}>
-          <h3>Entry {entry.entry_hash.slice(0, 8)}</h3>
+          <h3>{formatEntryHash(entry.entry_hash)}</h3>
         </div>
       ))}
     </div>

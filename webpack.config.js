@@ -24,12 +24,6 @@ module.exports = (env, argv) => {
       },
       extensions: ['.js', '.ts', '.tsx'],
     },
-    experiments: {
-      // Support the new WebAssembly according to the updated specification, it
-      // makes a WebAssembly module an async module.
-      // See: https://webpack.js.org/configuration/experiments/
-      asyncWebAssembly: true,
-    },
     module: {
       rules: [
         {
@@ -43,6 +37,10 @@ module.exports = (env, argv) => {
               loader: 'ts-loader',
             },
           ],
+        },
+        {
+          test: /\.css$/,
+          use: ['style-loader', 'css-loader'],
         },
       ],
     },
@@ -61,6 +59,7 @@ module.exports = (env, argv) => {
       // This has to be the same value as in `tauri.conf.json` to enable
       // development within the native tauri webview container.
       port: 4000,
+      clientLogLevel: 'error',
     },
   };
 };

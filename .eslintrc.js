@@ -39,5 +39,6 @@ module.exports = {
     ],
     // Warn on prettier violations and continue with build
     'prettier/prettier': 1,
+    'react/prop-types': 0,
   },
 };

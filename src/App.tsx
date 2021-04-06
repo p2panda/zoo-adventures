@@ -12,6 +12,7 @@ const CHAT_SCHEMA =
 
 const App = (): JSX.Element => {
   const [currentMessage, setCurrentMessage] = useState<string>('');
+  const [debugEntry, setDebugEntry] = useState<Entry>(null);
   const [keyPair, setKeyPair] = useState(null);
   const [log, setLog] = useState<Entry[]>([]);
   const [session, setSession] = useState(null);
@@ -45,15 +46,17 @@ const App = (): JSX.Element => {
   return (
     <div className="home-wrapper">
       <DebugView
+        currentMessage={currentMessage}
+        debugEntry={debugEntry}
+        entries={log}
         keyPair={keyPair}
         session={session}
-        currentMessage={currentMessage}
-        entries={log}
       />
       <Chatlog
+        handlePublish={handlePublish}
         log={log}
         setCurrentMessage={setCurrentMessage}
-        handlePublish={handlePublish}
+        setDebugEntry={setDebugEntry}
       />
     </div>
   );

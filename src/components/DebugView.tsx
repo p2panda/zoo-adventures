@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Entry, Session } from '~/p2panda-api';
 import { SyntaxHighlighter } from '~/syntaxHighlighter';
 
@@ -7,6 +7,7 @@ type Props = {
   session: Session;
   currentMessage: string;
   entries: Entry[];
+  debugEntry: Entry | null;
 };
 
 export const DebugView = ({
@@ -14,9 +15,19 @@ export const DebugView = ({
   session,
   currentMessage,
   entries,
+  debugEntry,
 }: Props): JSX.Element => {
   const publicKey = keyPair ? keyPair.publicKey() : null;
   const privateKey = keyPair ? keyPair.privateKey() : null;
+
+  // Scroll to debug entry anchor when it changes
+  useEffect(() => {
+    location.hash = '#debugEntry';
+    setTimeout(() => {
+      location.hash = '';
+    }, 50);
+  }, [debugEntry]);
+
   return (
     <div className="panel-one">
       <h1>p2🐼</h1>
@@ -68,6 +79,17 @@ const entry = await Instance.create(
 
       <div>
         <h2>Query entries</h2>
+        <p>
+          <span
+            role="img"
+            aria-label="pointy finger"
+            style={{ marginRight: '5px' }}
+          >
+            👉
+          </span>
+          Click a chat message on the right to display its debug representation
+          below.
+        </p>
         <SyntaxHighlighter>
           {`const entries = await Instance.query({}, {
   schema: CHAT_SCHEMA,
@@ -75,6 +97,14 @@ const entry = await Instance.create(
 });
 // entries.length => ${entries.length}`}
         </SyntaxHighlighter>
+        {debugEntry && (
+          <>
+            <p id="debugEntry">
+              This is the entry for the message you clicked:
+            </p>
+            <SyntaxHighlighter>{debugEntry.debugDecoded}</SyntaxHighlighter>
+          </>
+        )}
       </div>
     </div>
   );

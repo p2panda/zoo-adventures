@@ -91,7 +91,7 @@ export class Instance {
     fields: Fields,
     { keyPair, schema, session }: InstanceArgs,
   ): Promise<Entry> {
-    this._init();
+    await this._init();
 
     const args = await session.getNextEntryArgs(keyPair.publicKey(), schema);
     const entry = await this.p2panda.signEncode(

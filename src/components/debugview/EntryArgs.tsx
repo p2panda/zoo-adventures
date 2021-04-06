@@ -9,7 +9,7 @@ export const EntryArgs = ({ entryArgs }) => {
       <p>Sends a JSON-RPC call to p2panda node</p>
       <SyntaxHighlighter>
         {`const entryArgs = await getNextEntryArgs(publicKey, schema);
-// => { backlinkEntry: ${entryArgs.backlinkEntry}, \n// skiplinkEntry: ${entryArgs.skiplinkEntry}, \n// lastSeqNum: ${entryArgs.lastSeqNum}, \n// logId: ${entryArgs.logId} }`}
+// => { entryHashBacklink: ${entryArgs.entryHashBacklink}, \n// entryHashSkiplink: ${entryArgs.entryHashSkiplink}, \n// lastSeqNum: ${entryArgs.lastSeqNum}, \n// logId: ${entryArgs.logId} }`}
       </SyntaxHighlighter>
     </div>
   );

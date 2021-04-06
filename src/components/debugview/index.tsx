@@ -10,22 +10,19 @@ type Props = any;
 export const DebugView = ({
   publicKey,
   privateKey,
-  newEntryHash,
-  newMessageHash,
+  encodedEntry,
+  encodedMessage,
   decodedEntry,
-  handleNewEntry,
+  entryArgs,
+  handlePublish,
 }: Props): JSX.Element => (
   <div className="panel-one">
     <h1>p2🐼</h1>
     <p>How to publish messages using p2panda:</p>
     <KeyPair privateKey={privateKey} publicKey={publicKey} />
-    <EntryArgs entryArgs={{}} />
-    <PublishEntry
-      privateKey={privateKey}
-      publicKey={publicKey}
-      onNewEntry={handleNewEntry}
-    />
-    <Entry entryHash={newEntryHash} messageHash={newMessageHash} />
+    <EntryArgs entryArgs={entryArgs} />
+    <PublishEntry handlePublish={handlePublish} />
+    <Entry encodedEntry={encodedEntry} encodedMessage={encodedMessage} />
     <DecodedEntry decodedEntry={decodedEntry} />
   </div>
 );

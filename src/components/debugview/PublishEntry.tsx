@@ -15,78 +15,26 @@ const {encodedEntryHash, encodedMessageHash} = await signEncode(
   entryArgs.lastSeqNum,
 );`;
 
-const CHAT_SCHEMA =
-  '0040cf94f6d605657e90c543b0c919070cdaaf7209c5e1ea58acb8f3568fa2114268dc9ac3bafe12af277d286fce7dc59b7c0c348973c4e9dacbe79485e56ac2a702';
-
-export const PublishEntry = (props) => {
-  const [entryMessage, setEntryMessage] = useState<string>();
-  const [newEntryHashes, setNewEntryHashes] = useState({
-    entry: null,
-    message: null,
-  });
-
-  // Set entry message on form submit
-  const handleSubmit = async () => {
-    const { signEncode } = await p2panda;
-
-    const args = await p2pandaApi.getNextEntryArgs(
-      props.publicKey,
-      CHAT_SCHEMA,
-    );
-
-    // Create signed & encoded entry
-    const entry = await signEncode(
-      props.publicKey,
-      entryMessage,
-      args.entryHashSkiplink,
-      args.entryHashBacklink,
-      args.lastSeqNum,
-    );
-
-    await p2pandaApi.publishEntry(entry.encoded_entry, entry.encoded_message);
-
-    setEntryMessage('');
-    setNewEntryHashes({
-      entry: entry.encoded_entry,
-      message: entry.encoded_message,
-    });
-  };
+export const PublishEntry = ({ handlePublish }) => {
+  const [entryMessage, setEntryMessage] = useState<string>('');
 
   // Set draft entry message on input change
   const handleChange = (event) => {
     setEntryMessage(event.target.value);
   };
 
-  // Get next entryArgs when newEntryHash changes
-  // This needs to be hooked up to aquadoggo getEntryArgs API call
-  // useEffect(() => {
-  //   if (props.publicKey == null) return;
-  //   const asyncEffect = async () => {
-  //     const args = await p2pandaApi.getNextEntryArgs(
-  //       props.publicKey,
-  //       CHAT_SCHEMA,
-  //     );
-  //     setBacklinkHash(args.entryHashBacklink);
-  //     setSkiplinkHash(args.entryHashSkiplink);
-  //     setLastSeqNum(args.lastSeqNum);
-  //     setLogId(args.logId);
-  //   };
-  //   asyncEffect();
-  // }, [newEntryHashes, props.publicKey]);
-
-  // When new entry is encoded call method passed from parent
-  useEffect(() => {
-    if (newEntryHashes.entry) {
-      props.onNewEntry(newEntryHashes);
-    }
-  }, [newEntryHashes]);
+  const handleSubmit = () => {
+    setEntryMessage('');
+    handlePublish(entryMessage);
+  };
 
   return (
     <div>
       <h2>Publish Entry</h2>
       <SyntaxHighlighter>{signEncodeSnippet}</SyntaxHighlighter>
       <label>
-        Message: <input type="text" onChange={handleChange} />
+        Message:{' '}
+        <input type="text" onChange={handleChange} value={entryMessage} />
       </label>
       <input type="submit" value="Submit" onClick={handleSubmit} />
     </div>

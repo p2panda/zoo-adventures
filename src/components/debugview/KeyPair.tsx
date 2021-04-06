@@ -1,7 +1,9 @@
 import React from 'react';
 import { SyntaxHighlighter } from '~/syntaxHighlighter';
 
-export const KeyPair = ({ privateKey, publicKey }) => {
+export const KeyPair = ({ keyPair }) => {
+  const publicKey = keyPair ? keyPair.publicKey() : null;
+  const privateKey = keyPair ? keyPair.privateKey() : null;
   return (
     <div>
       <h2>Make a key pair</h2>

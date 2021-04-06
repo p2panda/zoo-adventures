@@ -1,7 +1,8 @@
 import { RequestManager, HTTPTransport, Client } from '@open-rpc/client-js';
 import p2panda from 'p2panda-js';
+import debug from 'debug';
 
-const endpoint = 'http://localhost:2020';
+const log = debug('p2panda');
 
 type SessionProps = {
   keyPair: string;
@@ -15,12 +16,18 @@ export type Entry = {
   debugDecoded?: string;
 };
 
-type EntryArgs = any;
+type EntryArgs = {
+  entryHashSkiplink: string | null;
+  entryHashBacklink: string | null;
+  lastSeqNum: number | null;
+};
 export class Session {
+  endpoint: string = null;
   private client = null;
   log = [];
 
   constructor({ endpoint }: SessionProps) {
+    this.endpoint = endpoint;
     const transport = new HTTPTransport(endpoint);
     this.client = new Client(new RequestManager([transport]));
   }
@@ -31,7 +38,7 @@ export class Session {
       method: 'panda_getEntryArguments',
       params: { author, schema },
     });
-    console.log('panda_getEntryArguments', result);
+    log('panda_getEntryArguments', result);
     return result;
   }
 
@@ -43,15 +50,20 @@ export class Session {
       method: 'panda_publishEntry',
       params: { entryEncoded, messageEncoded },
     });
-    console.log('panda_publishEntry');
+    log('panda_publishEntry');
   }
 
   async queryEntries(): Promise<Entry[]> {
     return this.log;
   }
+
+  toString(): string {
+    return `<Session ${this.endpoint}>`;
+  }
 }
 
 type InstanceArgs = {
+  // @ts-expect requires types exported from rust
   keyPair: any;
   schema: string;
   session: Session;
@@ -63,7 +75,9 @@ type Fields = {
   message: string;
 };
 
-type SearchParams = any;
+// this is just an empty object now, but it will contain search params once we
+// have an api for that
+type SearchParams = Record<string, unknown>;
 
 export class Instance {
   static p2panda = null;
@@ -78,6 +92,7 @@ export class Instance {
     { keyPair, schema, session }: InstanceArgs,
   ): Promise<Entry> {
     this._init();
+
     const args = await session.getNextEntryArgs(keyPair.publicKey(), schema);
     const entry = await this.p2panda.signEncode(
       keyPair.privateKey(),
@@ -88,25 +103,14 @@ export class Instance {
     );
     await session.publishEntry(entry.encoded_entry, entry.encoded_message);
     session.log.push(entry);
-    console.log('Instance.create session log', session.log);
     return entry;
   }
 
-  // static async update(
-  //   instanceId: string,
-  //   fields: Fields,
-  //   { author, schema, session }: InstanceArgs,
-  // ): Promise<Entry> {
-  //   this._init();
-  //   //
-  // }
-
   static async query(
     searchParams: SearchParams,
-    { session }: Pick<InstanceArgs, 'session'>,
+    { session }: Pick<InstanceArgs, 'session' | 'schema'>,
   ): Promise<Entry[]> {
     this._init();
-    console.log('query', searchParams);
     const entries = await session.queryEntries();
     return Promise.all(
       entries.map(async (entry) => ({

@@ -18,12 +18,9 @@ export type Entry = {
 type EntryArgs = any;
 export class Session {
   private client = null;
-  keyPair = null;
   log = [];
 
-  constructor({ keyPair, endpoint }: SessionProps) {
-    this.keyPair = keyPair;
-
+  constructor({ endpoint }: SessionProps) {
     const transport = new HTTPTransport(endpoint);
     this.client = new Client(new RequestManager([transport]));
   }
@@ -83,7 +80,7 @@ export class Instance {
     this._init();
     const args = await session.getNextEntryArgs(keyPair.publicKey(), schema);
     const entry = await this.p2panda.signEncode(
-      session.keyPair.privateKey(),
+      keyPair.privateKey(),
       fields.message,
       args.entryHashSkiplink,
       args.entryHashBacklink,

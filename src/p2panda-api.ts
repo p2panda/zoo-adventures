@@ -12,7 +12,7 @@ export type Entry = {
   encoded_entry: string;
   encoded_message: string;
   entry_hash: string;
-  decoded?: any;
+  debugDecoded?: string;
 };
 
 type EntryArgs = any;
@@ -111,7 +111,7 @@ export class Instance {
     return Promise.all(
       entries.map(async (entry) => ({
         ...entry,
-        decoded: await this.p2panda.decodeEntry(
+        debugDecoded: await this.p2panda.decodeEntry(
           entry.encoded_entry,
           entry.encoded_message,
         ),

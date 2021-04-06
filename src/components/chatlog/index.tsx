@@ -10,9 +10,9 @@ export const Chatlog = ({ log }: Props): JSX.Element => (
     {log.reverse().map((entry) => (
       <div key={entry.entry_hash}>
         <ul>
-          <li>Hash: {entry.entry_hash}</li>
+          <li>Hash: {entry.entry_hash.slice(0, 8)}</li>
           <li>
-            <pre>{entry.decoded}</pre>
+            <pre>{entry.debugDecoded}</pre>
           </li>
         </ul>
       </div>

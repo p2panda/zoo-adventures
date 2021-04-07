@@ -97,7 +97,7 @@ export class Instance {
     const {
       MessageFields,
       encodeCreateMessage,
-      signEntry,
+      signEncodeEntry,
       KeyPair,
     } = await this.p2panda;
 
@@ -120,7 +120,7 @@ export class Instance {
     const encodedMessage = encodeCreateMessage(schema, messageFields);
 
     // Sign and encode entry passing in copy of keyPair
-    const { entryEncoded, entryHash } = signEntry(
+    const { entryEncoded, entryHash } = signEncodeEntry(
       KeyPair.fromPrivateKey(keyPair.privateKey()),
       encodedMessage,
       args.entryHashSkiplink,

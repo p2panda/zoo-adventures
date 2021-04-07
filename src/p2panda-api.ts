@@ -110,6 +110,11 @@ export class Instance {
 
     // Fetch next entry args from aquadoggo
     const args = await session.getNextEntryArgs(keyPair.publicKey(), schema);
+    // If lastSeqNum is null don't try and convert to BigInt
+    // Can this be handled better in the wasm code?
+    const lastSeqNum = args.lastSeqNum
+      ? BigInt(args.lastSeqNum)
+      : args.lastSeqNum;
 
     // Encode message
     const encodedMessage = encodeCreateMessage(schema, messageFields);
@@ -120,7 +125,7 @@ export class Instance {
       encodedMessage,
       args.entryHashSkiplink,
       args.entryHashBacklink,
-      BigInt(args.lastSeqNum),
+      lastSeqNum,
       BigInt(args.logId),
     );
 

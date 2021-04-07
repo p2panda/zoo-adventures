@@ -27,7 +27,7 @@ export const Chatlog = ({
       setCurrentMessage={setCurrentMessage}
     />
     <div className="messages">
-      {log.reverse().map((entry) => (
+      {log.map((entry) => (
         <div key={entry.entry_hash} onClick={() => setDebugEntry(entry)}>
           <h3>{formatEntryHash(entry.entry_hash)}</h3>
         </div>

@@ -13,13 +13,14 @@ export type Entry = {
   encoded_entry: string;
   encoded_message: string;
   entry_hash: string;
-  debugDecoded?: string;
+  debugDecoded?: any;
 };
 
 type EntryArgs = {
   entryHashSkiplink: string | null;
   entryHashBacklink: string | null;
   lastSeqNum: number | null;
+  logId: number;
 };
 export class Session {
   endpoint: string = null;
@@ -91,26 +92,62 @@ export class Instance {
     fields: Fields,
     { keyPair, schema, session }: InstanceArgs,
   ): Promise<Entry> {
-    this._init();
+    await this._init();
 
+    const {
+      MessageFields,
+      encodeCreateMessage,
+      signEncodeEntry,
+      KeyPair,
+    } = await this.p2panda;
+
+    // Hard coded field type for now
+    const FIELD_TYPE = 'text';
+
+    // Create message
+    const messageFields = new MessageFields();
+    messageFields.add(FIELD_TYPE, fields.message);
+
+    // Fetch next entry args from aquadoggo
     const args = await session.getNextEntryArgs(keyPair.publicKey(), schema);
-    const entry = await this.p2panda.signEncode(
-      keyPair.privateKey(),
-      fields.message,
+    // If lastSeqNum is null don't try and convert to BigInt
+    // Can this be handled better in the wasm code?
+    const lastSeqNum = args.lastSeqNum
+      ? BigInt(args.lastSeqNum)
+      : args.lastSeqNum;
+
+    // Encode message
+    const encodedMessage = encodeCreateMessage(schema, messageFields);
+
+    // Sign and encode entry passing in copy of keyPair
+    const { entryEncoded, entryHash } = signEncodeEntry(
+      KeyPair.fromPrivateKey(keyPair.privateKey()),
+      encodedMessage,
       args.entryHashSkiplink,
       args.entryHashBacklink,
-      args.lastSeqNum,
+      lastSeqNum,
+      BigInt(args.logId),
     );
-    await session.publishEntry(entry.encoded_entry, entry.encoded_message);
-    session.log.push(entry);
-    return entry;
+
+    // Publish entry
+    await session.publishEntry(entryEncoded, encodedMessage);
+
+    const newEntry = {
+      encoded_entry: entryEncoded,
+      entry_hash: entryHash,
+      encoded_message: encodedMessage,
+    };
+
+    session.log.push(newEntry);
+
+    return newEntry;
   }
 
   static async query(
     searchParams: SearchParams,
     { session }: Pick<InstanceArgs, 'session' | 'schema'>,
   ): Promise<Entry[]> {
-    this._init();
+    await this._init();
     const entries = await session.queryEntries();
     return Promise.all(
       entries.map(async (entry) => ({

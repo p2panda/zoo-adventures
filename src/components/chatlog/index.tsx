@@ -20,7 +20,7 @@ export const Chatlog = ({
   setDebugEntry,
   handlePublish,
 }: Props): JSX.Element => (
-  <div className="panel-two">
+  <div className="chat-log flex-column">
     <h2>Entry Log</h2>{' '}
     <PublishEntry
       handlePublish={handlePublish}

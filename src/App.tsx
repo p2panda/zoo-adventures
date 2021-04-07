@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import p2panda from 'p2panda-js';
 import { Entry, Instance, Session } from '~/p2panda-api';
 import { Instructions } from '~/components/Instructions';
+import { BambooLog } from '~/components/BambooLog';
 import { Chatlog } from './components/chatlog';
 
 import '~/styles.css';
@@ -44,20 +45,25 @@ const App = (): JSX.Element => {
   };
 
   return (
-    <div className="home-wrapper">
-      <Instructions
-        currentMessage={currentMessage}
-        debugEntry={debugEntry}
-        entries={log}
-        keyPair={keyPair}
-        session={session}
-      />
-      <Chatlog
-        handlePublish={handlePublish}
-        log={log}
-        setCurrentMessage={setCurrentMessage}
-        setDebugEntry={setDebugEntry}
-      />
+    <div className="home-wrapper flex-row">
+      <div className="left-panel-wrapper flex-column">
+        <Instructions
+          currentMessage={currentMessage}
+          debugEntry={debugEntry}
+          entries={log}
+          keyPair={keyPair}
+          session={session}
+        />
+      </div>
+      <div className="right-panel-wrapper flex-column">
+        <Chatlog
+          handlePublish={handlePublish}
+          log={log}
+          setCurrentMessage={setCurrentMessage}
+          setDebugEntry={setDebugEntry}
+        />
+        <BambooLog log={log} />
+      </div>
     </div>
   );
 };

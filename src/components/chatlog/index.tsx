@@ -16,7 +16,7 @@ export const Chatlog = ({
   handlePublish,
 }: Props): JSX.Element => (
   <div className="chat-log flex-column">
-    <h2>Entry Log</h2>{' '}
+    <h2>Message Log</h2>{' '}
     <PublishEntry
       handlePublish={handlePublish}
       setCurrentMessage={setCurrentMessage}

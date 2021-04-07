@@ -110,7 +110,7 @@ export class Instance {
     searchParams: SearchParams,
     { session }: Pick<InstanceArgs, 'session' | 'schema'>,
   ): Promise<Entry[]> {
-    this._init();
+    await this._init();
     const entries = await session.queryEntries();
     return Promise.all(
       entries.map(async (entry) => ({

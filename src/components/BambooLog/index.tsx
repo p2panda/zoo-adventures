@@ -7,11 +7,11 @@ type Props = {
 };
 
 export const BambooLog = ({ log }: Props): JSX.Element => (
-  <div className="bamboo-log-wrapper flex-column">
+  <div className="bamboo-log flex-column">
     <h2>Bamboo Log</h2>{' '}
-    <div className="bamboo-log flex-row">
+    <div className="flex-row">
       {log.map((entry) => (
-        <div className="log-item-wrapper" key={entry.entry_hash}>
+        <div className="log-item" key={entry.entry_hash}>
           <LogEntry entry={entry} />
         </div>
       ))}

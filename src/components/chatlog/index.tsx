@@ -9,11 +9,6 @@ type Props = {
   handlePublish: (message: string) => Promise<void>;
 };
 
-const formatEntryHash = (hash: string): string =>
-  `<Entry ${hash.slice(hash.length - 8, hash.length - 4)} ${hash.slice(
-    hash.length - 4,
-  )}>`;
-
 export const Chatlog = ({
   log,
   setCurrentMessage,
@@ -29,7 +24,7 @@ export const Chatlog = ({
     <div className="messages">
       {log.map((entry) => (
         <div key={entry.entry_hash} onClick={() => setDebugEntry(entry)}>
-          <h3>{formatEntryHash(entry.entry_hash)}</h3>
+          <h3>{`< ${entry.decoded_entry.message.fields.text.Text} >`}</h3>
         </div>
       ))}
     </div>

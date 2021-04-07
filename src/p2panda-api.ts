@@ -126,17 +126,16 @@ export class Instance {
 
     // Publish entry
     await session.publishEntry(entryEncoded, encodedMessage);
-    session.log.push({
-      encoded_entry: entryEncoded,
-      entry_hash: entryHash,
-      encoded_message: encodedMessage,
-    });
 
-    return {
+    const newEntry = {
       encoded_entry: entryEncoded,
       entry_hash: entryHash,
       encoded_message: encodedMessage,
     };
+
+    session.log.push(newEntry);
+
+    return newEntry;
   }
 
   static async query(

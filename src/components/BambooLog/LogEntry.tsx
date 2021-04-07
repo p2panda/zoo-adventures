@@ -12,7 +12,12 @@ const formatEntryHash = (hash: string): string =>
 
 const formatCheckHash = (hash: string): string => {
     if (!hash) return 'null';
-    return `${hash.slice(-4)}`
+    return `#${hash.slice(-4)}`
+}
+
+const formatMessage = (message: string): string => {
+    if (message.length <= 12) return `'${message}'`;
+    return `'${message.slice(-12)}...'`
 }
   
 export const LogEntry = ({ entry }: Props): JSX.Element => {
@@ -27,8 +32,8 @@ export const LogEntry = ({ entry }: Props): JSX.Element => {
             <div className="flex-column">
                 <b>{message.action}</b>
                 <ul>
-                    <li>Schema: #{formatCheckHash(message.schema)}</li>
-                    <li>Message: '{message.fields.text.Text}'</li>
+                    <li>Schema: {formatCheckHash(message.schema)}</li>
+                    <li>Message: {formatMessage(message.fields.text.Text)}</li>
                     <li>BackLink: {formatCheckHash(entryHashBacklink)}</li>
                     <li>SkipLink: {formatCheckHash(entryHashSkiplink)}</li>
                 </ul>

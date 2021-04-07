@@ -5,21 +5,34 @@ type Props = {
   entry: Entry;
 };
 
-export const LogEntry = ({ entry }: Props): JSX.Element => (
-  <div className="log-item flex-column">
-    <div className="entry-data flex-row">
-      <div>1</div>
-      <div>{entry.entry_hash.slice(0, 8)}</div>
+const formatEntryHash = (hash: string): string =>
+  `${hash.slice(hash.length - 8, hash.length - 4)} ${hash.slice(
+    hash.length - 4,
+  )}`;
+
+const formatCheckHash = (hash: string): string => {
+    if (!hash) return 'null';
+    return `${hash.slice(-4)}`
+}
+  
+export const LogEntry = ({ entry }: Props): JSX.Element => {
+    const { message, entryHashBacklink, entryHashSkiplink } = entry.decoded_entry
+    return (
+    <div className="flex-column">
+        <div className="entry-data flex-row">
+            <div>{entry.seq_num}</div>
+            <div>{formatEntryHash(entry.entry_hash)}</div>
+        </div>
+        <div className="entry-content flex-row">
+            <div className="flex-column">
+                <b>{message.action}</b>
+                <ul>
+                    <li>Schema: #{formatCheckHash(message.schema)}</li>
+                    <li>Message: '{message.fields.text.Text}'</li>
+                    <li>BackLink: {formatCheckHash(entryHashBacklink)}</li>
+                    <li>SkipLink: {formatCheckHash(entryHashSkiplink)}</li>
+                </ul>
+            </div>
+        </div>
     </div>
-    <div className="entry-content-wrapper flex-row">
-      <div className="entry-content flex-column">
-        <b>Create</b>
-        <ul>
-          <li>Schema: Post</li>
-          <li>Id: #7G3H</li>
-          <li>Message: "hello"</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-);
+    )}

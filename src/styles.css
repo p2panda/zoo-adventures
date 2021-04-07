@@ -48,24 +48,31 @@ li {
 }
 
 .right-panel-wrapper {
-  align-content: stretch;
+  align-content: space-between;
   padding: 20px;
   overflow: hidden;
 }
 
 .chat-log {
-  flex: 2;
+  flex: 1 1 50vh;
+  overflow-y: auto;
+}
+
+.messages {
+  flex: 1 1 40vh;
+  max-height: 100%;
   overflow-y: auto;
 }
 
 .bamboo-log {
   flex: 0 0 15rem;
   max-width: 100%;
-  overflow-y: auto;
+  overflow-x: auto;
 }
 
 .log-item {
   flex: 0 0 15rem;
+  max-height: 12rem;
   padding-right: 6px;
 }
 

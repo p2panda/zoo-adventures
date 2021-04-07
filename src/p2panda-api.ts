@@ -13,13 +13,14 @@ export type Entry = {
   encoded_entry: string;
   encoded_message: string;
   entry_hash: string;
-  debugDecoded?: string;
+  debugDecoded?: any;
 };
 
 type EntryArgs = {
   entryHashSkiplink: string | null;
   entryHashBacklink: string | null;
   lastSeqNum: number | null;
+  logId: number;
 };
 export class Session {
   endpoint: string = null;
@@ -93,17 +94,49 @@ export class Instance {
   ): Promise<Entry> {
     await this._init();
 
+    const {
+      MessageFields,
+      encodeCreateMessage,
+      signEntry,
+      KeyPair,
+    } = await this.p2panda;
+
+    // Hard coded field type for now
+    const FIELD_TYPE = 'text';
+
+    // Create message
+    const messageFields = new MessageFields();
+    messageFields.add(FIELD_TYPE, fields.message);
+
+    // Fetch next entry args from aquadoggo
     const args = await session.getNextEntryArgs(keyPair.publicKey(), schema);
-    const entry = await this.p2panda.signEncode(
-      keyPair.privateKey(),
-      fields.message,
+
+    // Encode message
+    const encodedMessage = encodeCreateMessage(schema, messageFields);
+
+    // Sign and encode entry passing in copy of keyPair
+    const { entryEncoded, entryHash } = signEntry(
+      KeyPair.fromPrivateKey(keyPair.privateKey()),
+      encodedMessage,
       args.entryHashSkiplink,
       args.entryHashBacklink,
-      args.lastSeqNum,
+      BigInt(args.lastSeqNum),
+      BigInt(args.logId),
     );
-    await session.publishEntry(entry.encoded_entry, entry.encoded_message);
-    session.log.push(entry);
-    return entry;
+
+    // Publish entry
+    await session.publishEntry(entryEncoded, encodedMessage);
+    session.log.push({
+      encoded_entry: entryEncoded,
+      entry_hash: entryHash,
+      encoded_message: encodedMessage,
+    });
+
+    return {
+      encoded_entry: entryEncoded,
+      entry_hash: entryHash,
+      encoded_message: encodedMessage,
+    };
   }
 
   static async query(

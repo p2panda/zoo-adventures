@@ -13,6 +13,8 @@ export type Entry = {
   encoded_entry: string;
   encoded_message: string;
   entry_hash: string;
+  seq_num: number;
+  decoded_entry: any;
   debugDecoded?: any;
 };
 
@@ -99,6 +101,7 @@ export class Instance {
       encodeCreateMessage,
       signEncodeEntry,
       KeyPair,
+      decodeEntry,
     } = await this.p2panda;
 
     // Hard coded field type for now
@@ -136,6 +139,8 @@ export class Instance {
       encoded_entry: entryEncoded,
       entry_hash: entryHash,
       encoded_message: encodedMessage,
+      decoded_entry: decodeEntry(entryEncoded, encodedMessage),
+      seq_num: args.lastSeqNum ? args.lastSeqNum + 1 : 1,
     };
 
     session.log.push(newEntry);

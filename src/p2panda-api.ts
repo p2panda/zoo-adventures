@@ -149,7 +149,7 @@ export class Instance {
       entry_hash: entryHash,
       encoded_message: encodedMessage,
       decoded_entry: decodeEntry(entryEncoded, encodedMessage),
-      seq_num: args.lastSeqNum ? args.lastSeqNum + 1 : 1,
+      seq_num: this.entryArgs.lastSeqNum ? this.entryArgs.lastSeqNum + 1 : 1,
     };
 
     session.log.push(newEntry);

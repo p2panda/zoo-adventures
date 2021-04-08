@@ -47,11 +47,12 @@ export class Session {
     entryEncoded: string,
     messageEncoded: string,
   ): Promise<void> {
-    await this.client.request({
+    const result = await this.client.request({
       method: 'panda_publishEntry',
       params: { entryEncoded, messageEncoded },
     });
     log('panda_publishEntry');
+    return result;
   }
 
   async queryEntries(): Promise<Entry[]> {
@@ -82,6 +83,7 @@ type SearchParams = Record<string, unknown>;
 
 export class Instance {
   static p2panda = null;
+  static entryArgs = null;
 
   static async _init(): Promise<void> {
     if (this.p2panda != null) return;
@@ -104,33 +106,40 @@ export class Instance {
     // Hard coded field type for now
     const FIELD_TYPE = 'text';
 
+    if (!this.entryArgs) {
+      // Fetch next entry args from aquadoggo if they don't already exist
+      // This only happens on the first call to aquadoggo
+      this.entryArgs = await session.getNextEntryArgs(
+        keyPair.publicKey(),
+        schema,
+      );
+    }
+
     // Create message
     const messageFields = new MessageFields();
     messageFields.add(FIELD_TYPE, fields.message);
 
-    // Fetch next entry args from aquadoggo
-    const args = await session.getNextEntryArgs(keyPair.publicKey(), schema);
-    // If lastSeqNum is null don't try and convert to BigInt
-    // Can this be handled better in the wasm code?
-    const lastSeqNum = args.lastSeqNum
-      ? BigInt(args.lastSeqNum)
-      : args.lastSeqNum;
-
     // Encode message
     const encodedMessage = encodeCreateMessage(schema, messageFields);
+
+    // If lastSeqNum is null don't try and convert to BigInt
+    // Can this be handled better in the wasm code?
+    const lastSeqNum = this.entryArgs.lastSeqNum
+      ? BigInt(this.entryArgs.lastSeqNum)
+      : this.entryArgs.lastSeqNum;
 
     // Sign and encode entry passing in copy of keyPair
     const { entryEncoded, entryHash } = signEncodeEntry(
       KeyPair.fromPrivateKey(keyPair.privateKey()),
       encodedMessage,
-      args.entryHashSkiplink,
-      args.entryHashBacklink,
+      this.entryArgs.entryHashSkiplink,
+      this.entryArgs.entryHashBacklink,
       lastSeqNum,
-      BigInt(args.logId),
+      BigInt(this.entryArgs.logId),
     );
 
-    // Publish entry
-    await session.publishEntry(entryEncoded, encodedMessage);
+    // Publish entry and store returned entryArgs for next entry
+    this.entryArgs = await session.publishEntry(entryEncoded, encodedMessage);
 
     const newEntry = {
       encoded_entry: entryEncoded,

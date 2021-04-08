@@ -68,7 +68,7 @@ export const Instructions = ({
   }, [debugEntry]);
 
   return (
-    <div className="panel-one">
+    <div className="debug-view flex-column">
       <h1>p2🐼</h1>
       <p>How to publish messages using p2panda:</p>
 

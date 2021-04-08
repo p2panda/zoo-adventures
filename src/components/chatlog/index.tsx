@@ -9,19 +9,14 @@ type Props = {
   handlePublish: (message: string) => Promise<void>;
 };
 
-const formatEntryHash = (hash: string): string =>
-  `<Entry ${hash.slice(hash.length - 8, hash.length - 4)} ${hash.slice(
-    hash.length - 4,
-  )}>`;
-
 export const Chatlog = ({
   log,
   setCurrentMessage,
   setDebugEntry,
   handlePublish,
 }: Props): JSX.Element => (
-  <div className="panel-two">
-    <h2>Entry Log</h2>{' '}
+  <div className="chat-log flex-column">
+    <h2>Message Log</h2>{' '}
     <PublishEntry
       handlePublish={handlePublish}
       setCurrentMessage={setCurrentMessage}
@@ -29,7 +24,7 @@ export const Chatlog = ({
     <div className="messages">
       {log.map((entry) => (
         <div key={entry.entry_hash} onClick={() => setDebugEntry(entry)}>
-          <h3>{formatEntryHash(entry.entry_hash)}</h3>
+          <h3>{`< ${entry.decoded_entry.message.fields.text.Text} >`}</h3>
         </div>
       ))}
     </div>

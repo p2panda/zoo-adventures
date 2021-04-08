@@ -109,18 +109,11 @@ export class Instance {
     if (!this.entryArgs) {
       // Fetch next entry args from aquadoggo if they don't already exist
       // This only happens on the first call to aquadoggo
-      console.log('getNextEntryArgs called');
       this.entryArgs = await session.getNextEntryArgs(
         keyPair.publicKey(),
         schema,
       );
     }
-
-    // If lastSeqNum is null don't try and convert to BigInt
-    // Can this be handled better in the wasm code?
-    const lastSeqNum = this.entryArgs.lastSeqNum
-      ? BigInt(this.entryArgs.lastSeqNum)
-      : this.entryArgs.lastSeqNum;
 
     // Create message
     const messageFields = new MessageFields();
@@ -128,6 +121,12 @@ export class Instance {
 
     // Encode message
     const encodedMessage = encodeCreateMessage(schema, messageFields);
+
+    // If lastSeqNum is null don't try and convert to BigInt
+    // Can this be handled better in the wasm code?
+    const lastSeqNum = this.entryArgs.lastSeqNum
+      ? BigInt(this.entryArgs.lastSeqNum)
+      : this.entryArgs.lastSeqNum;
 
     // Sign and encode entry passing in copy of keyPair
     const { entryEncoded, entryHash } = signEncodeEntry(

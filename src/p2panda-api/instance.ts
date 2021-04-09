@@ -1,90 +1,9 @@
-import { RequestManager, HTTPTransport, Client } from '@open-rpc/client-js';
-import p2panda from 'p2panda-js';
-import debug from 'debug';
-
-const log = debug('p2panda');
-
-type SessionProps = {
-  keyPair: string;
-  endpoint: string;
-};
-
-export type Entry = {
-  author: string;
-  encoded: string;
-  messageEncoded: string;
-  hash: string;
-  logId: number;
-  seqNum: number;
-  decoded: any;
-};
-
-type EntryRecord = {
-  author: string;
-  entryBytes: string;
-  entryHash: string;
-  logId: number;
-  payloadBytes: string;
-  payloadHash: string;
-  seqNum: number;
-};
-
-type EntryArgs = {
-  entryHashSkiplink: string | null;
-  entryHashBacklink: string | null;
-  lastSeqNum: number | null;
-  logId: number;
-};
-export class Session {
-  endpoint: string = null;
-  private client = null;
-  log = [];
-
-  constructor({ endpoint }: SessionProps) {
-    this.endpoint = endpoint;
-    const transport = new HTTPTransport(endpoint);
-    this.client = new Client(new RequestManager([transport]));
-  }
-
-  async getNextEntryArgs(author: string, schema: string): Promise<EntryArgs> {
-    // do rpc call
-    const result = await this.client.request({
-      method: 'panda_getEntryArguments',
-      params: { author, schema },
-    });
-    log('panda_getEntryArguments', result);
-    return result;
-  }
-
-  async publishEntry(
-    entryEncoded: string,
-    messageEncoded: string,
-  ): Promise<void> {
-    const result = await this.client.request({
-      method: 'panda_publishEntry',
-      params: { entryEncoded, messageEncoded },
-    });
-    log('panda_publishEntry');
-    return result;
-  }
-
-  async queryEntries(schema: string): Promise<EntryRecord[]> {
-    const result = await this.client.request({
-      method: 'panda_queryEntries',
-      params: { schema },
-    });
-    log('panda_queryEntries', result);
-    return result.entries;
-  }
-
-  toString(): string {
-    return `<Session ${this.endpoint}>`;
-  }
-}
+import { Resolved } from '~/typescript/helpers';
+import { Entry, Session } from '.';
 
 type InstanceArgs = {
   // @ts-expect requires types exported from rust
-  keyPair: any;
+  keyPair: Resolved<Session['p2panda']['KeyPair']>;
   schema: string;
   session: Session;
 };
@@ -99,28 +18,21 @@ type Fields = {
 // have an api for that
 type SearchParams = Record<string, null>;
 
-export class Instance {
-  static p2panda = null;
+export default class Instance {
   static entryArgs = null;
-
-  static async _init(): Promise<void> {
-    if (this.p2panda != null) return;
-    this.p2panda = await p2panda;
-  }
 
   static async create(
     fields: Fields,
     { keyPair, schema, session }: InstanceArgs,
   ): Promise<void> {
-    await this._init();
+    await session._init();
 
     const {
       MessageFields,
       encodeCreateMessage,
       signEncodeEntry,
       KeyPair,
-      decodeEntry,
-    } = await this.p2panda;
+    } = session.p2panda;
 
     // Hard coded field type for now
     const FIELD_TYPE = 'text';
@@ -165,7 +77,7 @@ export class Instance {
     _searchParams: SearchParams,
     { session, schema }: Pick<InstanceArgs, 'session' | 'schema'>,
   ): Promise<Entry[]> {
-    await this._init();
+    await session._init();
     const entries = await session.queryEntries(schema);
     return Promise.all(
       entries.map(
@@ -178,7 +90,7 @@ export class Instance {
           seqNum,
         }) => ({
           author,
-          decoded: await this.p2panda.decodeEntry(entryBytes, payloadBytes),
+          decoded: await session.p2panda.decodeEntry(entryBytes, payloadBytes),
           encoded: entryBytes,
           messageEncoded: payloadBytes,
           hash: entryHash,

@@ -43,7 +43,7 @@ const App = (): JSX.Element => {
     if (!session) return;
     const asyncEffect = async () => {
       const entries = await Instance.query(
-        { schema: CHAT_SCHEMA },
+        {},
         { session, schema: CHAT_SCHEMA },
       );
       setLog(entries);

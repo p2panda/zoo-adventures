@@ -1,13 +1,14 @@
 import React, { useEffect } from 'react';
-import { Entry, Session } from '~/p2panda-api';
+import { Session } from '~/p2panda-api';
 import { SyntaxHighlighter } from '~/syntaxHighlighter';
+import type { EntryRecord } from '~/p2panda-api/types';
 
 type Props = {
-  keyPair: any;
+  keyPair: Session['p2panda']['KeyPair'];
   session: Session;
   currentMessage: string;
-  entries: Entry[];
-  debugEntry: Entry | null;
+  entries: EntryRecord[];
+  debugEntry: EntryRecord | null;
 };
 
 // This is all just to format the entry object nicely so it can be displayed correctly
@@ -89,9 +90,7 @@ const privateKey = keyPair.privateKey();
         <p>Running on your own computer or in the cloud.</p>
         <SyntaxHighlighter>
           {`const endpoint = 'http://localhost:2020';
-const session = new Session({
-endpoint: ENDPOINT
-});
+const session = new Session(ENDPOINT);
 ${session ? `// => ${session}` : ''}`}
         </SyntaxHighlighter>
       </div>

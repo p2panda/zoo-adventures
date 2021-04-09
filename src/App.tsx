@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import p2panda from 'p2panda-js';
-import { Entry, Instance, Session } from '~/p2panda-api';
+
+import { Instance, Session } from '~/p2panda-api';
 import { Instructions } from '~/components/Instructions';
 import { BambooLog } from '~/components/BambooLog';
 import { Chatlog } from './components/Chatlog';
+
+import type { EntryRecord } from './p2panda-api/types';
 
 import '~/styles.css';
 
@@ -13,9 +16,9 @@ const CHAT_SCHEMA =
 
 const App = (): JSX.Element => {
   const [currentMessage, setCurrentMessage] = useState<string>('');
-  const [debugEntry, setDebugEntry] = useState<Entry>(null);
+  const [debugEntry, setDebugEntry] = useState<EntryRecord>(null);
   const [keyPair, setKeyPair] = useState(null);
-  const [log, setLog] = useState<Entry[]>([]);
+  const [log, setLog] = useState<EntryRecord[]>([]);
   const [session, setSession] = useState<Session>(null);
 
   // Generate or load key pair on initial page load
@@ -35,29 +38,26 @@ const App = (): JSX.Element => {
 
   // Establish session with node when key pair is set
   useEffect(() => {
-    setSession(new Session({ keyPair, endpoint: ENDPOINT }));
+    setSession(new Session(ENDPOINT));
   }, [keyPair]);
 
   // Refresh chatlog when session is ready
   useEffect(() => {
     if (!session) return;
     const asyncEffect = async () => {
-      const entries = await Instance.query(
-        {},
-        { session, schema: CHAT_SCHEMA },
-      );
+      const entries = await session.queryEntries(CHAT_SCHEMA);
       setLog(entries);
     };
     asyncEffect();
   }, [session]);
 
   // Publish entries and refresh chat log to get the new message in the log
-  const handlePublish = async (message) => {
+  const handlePublish = async (message: string) => {
     await Instance.create(
       { message },
       { schema: CHAT_SCHEMA, session, keyPair },
     );
-    setLog(await Instance.query({}, { session, schema: CHAT_SCHEMA }));
+    setLog(await session.queryEntries(CHAT_SCHEMA));
   };
 
   return (

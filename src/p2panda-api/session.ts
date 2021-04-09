@@ -3,36 +3,24 @@ import p2panda from 'p2panda-js';
 
 import { Resolved } from '~/typescript/helpers';
 
-import { EntryArgs, log } from '.';
-
-type SessionProps = {
-  keyPair: string;
-  endpoint: string;
-};
-
-type EntryRecord = {
-  author: string;
-  entryBytes: string;
-  entryHash: string;
-  logId: number;
-  payloadBytes: string;
-  payloadHash: string;
-  seqNum: number;
-};
+import { log } from '.';
+import { EntryArgs, EntryRecord, EntryRecordEncoded } from './types';
 
 export default class Session {
   endpoint: string = null;
   private client = null;
-  log = [];
-  p2panda: Resolved<p2panda> = null;
+  p2panda: Resolved<typeof p2panda> = null;
 
-  constructor({ endpoint }: SessionProps) {
+  constructor(endpoint: Session['endpoint']) {
     this.endpoint = endpoint;
     const transport = new HTTPTransport(endpoint);
     this.client = new Client(new RequestManager([transport]));
   }
 
-  async _init(): Promise<void> {
+  // Load the WebAssembly p2panda library. Always await this function before
+  // using this.p2panda. Unfortunately this cannot be handled in the
+  // constructor as that cannot be asynchronous.
+  async init(): Promise<void> {
     if (this.p2panda != null) return;
     this.p2panda = await p2panda;
   }
@@ -59,13 +47,28 @@ export default class Session {
     return result;
   }
 
-  async queryEntries(schema: string): Promise<EntryRecord[]> {
+  async queryEntriesEncoded(schema: string): Promise<EntryRecordEncoded[]> {
     const result = await this.client.request({
       method: 'panda_queryEntries',
       params: { schema },
     });
     log('panda_queryEntries', result);
     return result.entries;
+  }
+
+  async queryEntries(schema: string): Promise<EntryRecord[]> {
+    await this.init();
+
+    const result = await this.queryEntriesEncoded(schema);
+    return Promise.all(
+      result.map(async (entry) => ({
+        ...entry,
+        decoded: await this.p2panda.decodeEntry(
+          entry.entryBytes,
+          entry.payloadBytes,
+        ),
+      })),
+    );
   }
 
   toString(): string {

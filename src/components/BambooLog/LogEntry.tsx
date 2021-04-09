@@ -1,8 +1,8 @@
 import React from 'react';
-import { Entry } from '~/p2panda-api';
+import type { EntryRecord } from '~/p2panda-api/types';
 
 type Props = {
-  entry: Entry;
+  entry: EntryRecord;
 };
 
 const formatEntryHash = (hash: string): string =>
@@ -26,7 +26,7 @@ export const LogEntry = ({ entry }: Props): JSX.Element => {
     <div className="flex-column">
       <div className="entry-data flex-row">
         <div>{entry.seqNum}</div>
-        <div>{formatEntryHash(entry.hash)}</div>
+        <div>{formatEntryHash(entry.entryHash)}</div>
       </div>
       <div className="entry-content flex-row">
         <div className="flex-column">

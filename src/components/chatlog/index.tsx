@@ -1,11 +1,11 @@
 import React from 'react';
-import { Entry } from '~/p2panda-api';
+import { EntryRecord } from '~/p2panda-api/types';
 import { PublishEntry } from './PublishEntry';
 
 type Props = {
-  log: Entry[];
+  log: EntryRecord[];
   setCurrentMessage: (message: string) => void;
-  setDebugEntry: (entry: Entry) => void;
+  setDebugEntry: (entry: EntryRecord) => void;
   handlePublish: (message: string) => Promise<void>;
 };
 

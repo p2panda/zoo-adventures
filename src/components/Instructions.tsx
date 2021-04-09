@@ -142,7 +142,7 @@ const entry = await Instance.create(
               This is the entry for the message you clicked:{' '}
             </p>
             <SyntaxHighlighter>{`${entryToString(
-              debugEntry.debugDecoded,
+              debugEntry.decoded,
             )}`}</SyntaxHighlighter>
           </>
         )}

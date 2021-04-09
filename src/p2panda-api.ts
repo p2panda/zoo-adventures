@@ -10,12 +10,23 @@ type SessionProps = {
 };
 
 export type Entry = {
-  encoded_entry: string;
-  encoded_message: string;
+  author: string;
+  encoded: string;
+  messageEncoded: string;
+  hash: string;
+  logId: number;
+  seqNum: number;
+  decoded: any;
+};
+
+type EntryRecord = {
+  author: string;
+  entry_bytes: string;
   entry_hash: string;
+  log_id: number;
+  payload_bytes: string;
+  payload_hash: string;
   seq_num: number;
-  decoded_entry: any;
-  debugDecoded?: any;
 };
 
 type EntryArgs = {
@@ -57,8 +68,13 @@ export class Session {
     return result;
   }
 
-  async queryEntries(): Promise<Entry[]> {
-    return this.log;
+  async queryEntries(schema: string): Promise<EntryRecord[]> {
+    const result = await this.client.request({
+      method: 'panda_queryEntries',
+      params: { schema },
+    });
+    log('panda_queryEntries', result);
+    return result.entries;
   }
 
   toString(): string {
@@ -81,7 +97,9 @@ type Fields = {
 
 // this is just an empty object now, but it will contain search params once we
 // have an api for that
-type SearchParams = Record<string, unknown>;
+type SearchParams = {
+  schema: string;
+};
 
 export class Instance {
   static p2panda = null;
@@ -95,7 +113,7 @@ export class Instance {
   static async create(
     fields: Fields,
     { keyPair, schema, session }: InstanceArgs,
-  ): Promise<Entry> {
+  ): Promise<void> {
     await this._init();
 
     const {
@@ -143,34 +161,33 @@ export class Instance {
 
     // Publish entry and store returned entryArgs for next entry
     this.entryArgs = await session.publishEntry(entryEncoded, encodedMessage);
-
-    const newEntry = {
-      encoded_entry: entryEncoded,
-      entry_hash: entryHash,
-      encoded_message: encodedMessage,
-      decoded_entry: decodeEntry(entryEncoded, encodedMessage),
-      seq_num: this.entryArgs.lastSeqNum ? this.entryArgs.lastSeqNum + 1 : 1,
-    };
-
-    session.log.push(newEntry);
-
-    return newEntry;
   }
 
   static async query(
-    searchParams: SearchParams,
+    { schema }: SearchParams,
     { session }: Pick<InstanceArgs, 'session' | 'schema'>,
   ): Promise<Entry[]> {
     await this._init();
-    const entries = await session.queryEntries();
+    const entries = await session.queryEntries(schema);
     return Promise.all(
-      entries.map(async (entry) => ({
-        ...entry,
-        debugDecoded: await this.p2panda.decodeEntry(
-          entry.encoded_entry,
-          entry.encoded_message,
-        ),
-      })),
+      entries.map(
+        async ({
+          author,
+          entry_bytes,
+          entry_hash,
+          log_id,
+          payload_bytes,
+          seq_num,
+        }) => ({
+          author,
+          decoded: await this.p2panda.decodeEntry(entry_bytes, payload_bytes),
+          encoded: entry_bytes,
+          messageEncoded: payload_bytes,
+          hash: entry_hash,
+          logId: log_id,
+          seqNum: seq_num,
+        }),
+      ),
     );
   }
 }

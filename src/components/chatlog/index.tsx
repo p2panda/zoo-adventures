@@ -9,6 +9,8 @@ type Props = {
   handlePublish: (message: string) => Promise<void>;
 };
 
+const formatAuthor = ({ author }) => `${author.slice(0, 6)}`;
+
 export const Chatlog = ({
   log,
   setCurrentMessage,
@@ -23,8 +25,13 @@ export const Chatlog = ({
     />
     <div className="messages">
       {log.map((entry) => (
-        <div key={entry.entry_hash} onClick={() => setDebugEntry(entry)}>
-          <h3>{`< ${entry.decoded_entry.message.fields.text.Text} >`}</h3>
+        <div
+          key={`${entry.logId}-${entry.seqNum}`}
+          onClick={() => setDebugEntry(entry)}
+        >
+          <h3>
+            {formatAuthor(entry)}: {entry.decoded.message.fields.text.Text}
+          </h3>
         </div>
       ))}
     </div>

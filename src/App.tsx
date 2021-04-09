@@ -3,7 +3,7 @@ import p2panda from 'p2panda-js';
 import { Entry, Instance, Session } from '~/p2panda-api';
 import { Instructions } from '~/components/Instructions';
 import { BambooLog } from '~/components/BambooLog';
-import { Chatlog } from './components/chatlog';
+import { Chatlog } from './components/Chatlog';
 
 import '~/styles.css';
 
@@ -18,6 +18,7 @@ const App = (): JSX.Element => {
   const [log, setLog] = useState<Entry[]>([]);
   const [session, setSession] = useState(null);
 
+  // Generate or load key pair on initial page load
   useEffect(() => {
     const asyncEffect = async () => {
       const { KeyPair } = await p2panda;
@@ -32,16 +33,36 @@ const App = (): JSX.Element => {
     asyncEffect();
   }, []);
 
+  // Establish session with node when key pair is set
   useEffect(() => {
     setSession(new Session({ keyPair, endpoint: ENDPOINT }));
   }, [keyPair]);
 
+  // Refresh chatlog when session resumes
+  useEffect(() => {
+    if (!session) return;
+    const asyncEffect = async () => {
+      const entries = await Instance.query(
+        { schema: CHAT_SCHEMA },
+        { session, schema: CHAT_SCHEMA },
+      );
+      setLog(entries);
+    };
+    asyncEffect();
+  }, [session]);
+
+  // Publish entries and refresh chat log to get the new message in the log
   const handlePublish = async (message) => {
     await Instance.create(
       { message },
       { schema: CHAT_SCHEMA, session, keyPair },
     );
-    setLog(await Instance.query({}, { session, schema: CHAT_SCHEMA }));
+    setLog(
+      await Instance.query(
+        { schema: CHAT_SCHEMA },
+        { session, schema: CHAT_SCHEMA },
+      ),
+    );
   };
 
   return (

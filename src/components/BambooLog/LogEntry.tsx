@@ -21,12 +21,12 @@ const formatMessage = (message: string): string => {
 };
 
 export const LogEntry = ({ entry }: Props): JSX.Element => {
-  const { message, entryHashBacklink, entryHashSkiplink } = entry.decoded_entry;
+  const { message, entryHashBacklink, entryHashSkiplink } = entry.decoded;
   return (
     <div className="flex-column">
       <div className="entry-data flex-row">
-        <div>{entry.seq_num}</div>
-        <div>{formatEntryHash(entry.entry_hash)}</div>
+        <div>{entry.seqNum}</div>
+        <div>{formatEntryHash(entry.hash)}</div>
       </div>
       <div className="entry-content flex-row">
         <div className="flex-column">

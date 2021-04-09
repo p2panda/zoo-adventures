@@ -13,14 +13,12 @@ const create = async (
   fields: { message: string },
   { keyPair, schema, session }: InstanceArgs,
 ): Promise<void> => {
-  await session.init();
-
   const {
     MessageFields,
     encodeCreateMessage,
     signEncodeEntry,
     KeyPair,
-  } = session.p2panda;
+  } = await session.loadWasm();
 
   // Hard coded field type for now
   const FIELD_TYPE = 'text';
@@ -53,7 +51,11 @@ const create = async (
   );
 
   // Publish entry and store returned entryArgs for next entry
-  await session.publishEntry(entryEncoded, encodedMessage);
+  const nextEntryArgs = await session.publishEntry(
+    entryEncoded,
+    encodedMessage,
+  );
+  session.setNextEntryArgs(keyPair.publicKey(), schema, nextEntryArgs);
 };
 
 export default { create };

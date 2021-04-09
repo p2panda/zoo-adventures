@@ -16,7 +16,7 @@ const App = (): JSX.Element => {
   const [debugEntry, setDebugEntry] = useState<Entry>(null);
   const [keyPair, setKeyPair] = useState(null);
   const [log, setLog] = useState<Entry[]>([]);
-  const [session, setSession] = useState(null);
+  const [session, setSession] = useState<Session>(null);
 
   // Generate or load key pair on initial page load
   useEffect(() => {
@@ -38,7 +38,7 @@ const App = (): JSX.Element => {
     setSession(new Session({ keyPair, endpoint: ENDPOINT }));
   }, [keyPair]);
 
-  // Refresh chatlog when session resumes
+  // Refresh chatlog when session is ready
   useEffect(() => {
     if (!session) return;
     const asyncEffect = async () => {
@@ -57,12 +57,7 @@ const App = (): JSX.Element => {
       { message },
       { schema: CHAT_SCHEMA, session, keyPair },
     );
-    setLog(
-      await Instance.query(
-        { schema: CHAT_SCHEMA },
-        { session, schema: CHAT_SCHEMA },
-      ),
-    );
+    setLog(await Instance.query({}, { session, schema: CHAT_SCHEMA }));
   };
 
   return (

@@ -21,12 +21,12 @@ export type Entry = {
 
 type EntryRecord = {
   author: string;
-  entry_bytes: string;
-  entry_hash: string;
-  log_id: number;
-  payload_bytes: string;
-  payload_hash: string;
-  seq_num: number;
+  entryBytes: string;
+  entryHash: string;
+  logId: number;
+  payloadBytes: string;
+  payloadHash: string;
+  seqNum: number;
 };
 
 type EntryArgs = {
@@ -97,9 +97,7 @@ type Fields = {
 
 // this is just an empty object now, but it will contain search params once we
 // have an api for that
-type SearchParams = {
-  schema: string;
-};
+type SearchParams = Record<string, null>;
 
 export class Instance {
   static p2panda = null;
@@ -164,8 +162,8 @@ export class Instance {
   }
 
   static async query(
-    { schema }: SearchParams,
-    { session }: Pick<InstanceArgs, 'session' | 'schema'>,
+    _searchParams: SearchParams,
+    { session, schema }: Pick<InstanceArgs, 'session' | 'schema'>,
   ): Promise<Entry[]> {
     await this._init();
     const entries = await session.queryEntries(schema);
@@ -173,19 +171,19 @@ export class Instance {
       entries.map(
         async ({
           author,
-          entry_bytes,
-          entry_hash,
-          log_id,
-          payload_bytes,
-          seq_num,
+          entryBytes,
+          entryHash,
+          logId,
+          payloadBytes,
+          seqNum,
         }) => ({
           author,
-          decoded: await this.p2panda.decodeEntry(entry_bytes, payload_bytes),
-          encoded: entry_bytes,
-          messageEncoded: payload_bytes,
-          hash: entry_hash,
-          logId: log_id,
-          seqNum: seq_num,
+          decoded: await this.p2panda.decodeEntry(entryBytes, payloadBytes),
+          encoded: entryBytes,
+          messageEncoded: payloadBytes,
+          hash: entryHash,
+          logId,
+          seqNum,
         }),
       ),
     );

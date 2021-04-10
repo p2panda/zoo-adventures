@@ -10,45 +10,6 @@ type Props = {
   debugEntry: Entry | null;
 };
 
-// This is all just to format the entry object nicely so it can be displayed correctly
-// There must be a better way.... I'm sure I am missing something simple ;-p
-
-const textToString = ({ Text }) => {
-  return `{ Text: '${Text}' }`;
-};
-
-const fieldsToString = ({ text }) => {
-  return `{
-          text: ${textToString(text)},
-        }`;
-};
-
-const messageToString = ({ action, fields, schema, version }) => {
-  return `{
-      action: '${action}',
-      fields:
-        ${fieldsToString(fields)},
-      schema: '${schema}',
-      version: ${version},
-    }`;
-};
-
-const entryToString = ({
-  entryHashBacklink,
-  entryHashSkiplink,
-  logId,
-  message,
-}) => {
-  const skiplink = entryHashSkiplink ? `'${entryHashSkiplink}'` : `null`;
-  return `{
-  entryHashBacklink: '${entryHashBacklink}',
-  entryHashSkiplink: ${skiplink},
-  logId: ${logId},
-  message:
-    ${messageToString(message)},
-}`;
-};
-
 export const Instructions = ({
   keyPair,
   session,
@@ -141,8 +102,10 @@ const entry = await Instance.create(
             <p id="debugEntry">
               This is the entry for the message you clicked:{' '}
             </p>
-            <SyntaxHighlighter>{`${entryToString(
+            <SyntaxHighlighter>{`${JSON.stringify(
               debugEntry.debugDecoded,
+              null,
+              2,
             )}`}</SyntaxHighlighter>
           </>
         )}

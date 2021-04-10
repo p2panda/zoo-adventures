@@ -18,9 +18,9 @@ const textToString = ({ Text }) => {
   return `{ Text: '${Text}' }`;
 };
 
-const fieldsToString = ({ text }) => {
+const fieldsToString = ({ message }) => {
   return `{
-          text: ${textToString(text)},
+          message: ${textToString(message)},
         }`;
 };
 

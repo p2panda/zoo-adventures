@@ -33,7 +33,7 @@ export const LogEntry = ({ entry }: Props): JSX.Element => {
           <b>{message.action}</b>
           <ul>
             <li>Schema: {formatCheckHash(message.schema)}</li>
-            <li>Message: {formatMessage(message.fields.text.Text)}</li>
+            <li>Message: {formatMessage(message.fields.message.Text)}</li>
             <li>BackLink: {formatCheckHash(entryHashBacklink)}</li>
             <li>SkipLink: {formatCheckHash(entryHashSkiplink)}</li>
           </ul>

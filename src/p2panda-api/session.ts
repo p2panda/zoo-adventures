@@ -7,9 +7,17 @@ import { log } from '.';
 import { Entry, EntryArgs, EntryRecord, EntryRecordEncoded } from './types';
 
 export default class Session {
-  endpoint: string = null;
-  private client = null;
+  // Address of a p2panda node that we can connect to
+  endpoint: string;
+
+  // an rpc client connected to the confgiured endpoint
+  private client: Client;
+
+  // The wassm library from p2panda-rs. To ensure that it is loaded before
+  // ussing it await `this.loadWasm()`
   p2panda: Resolved<typeof p2panda> = null;
+
+  // Cached arguments for the next entry
   nextEntryArgs: { [cacheKey: string]: EntryArgs } = {};
 
   constructor(endpoint: Session['endpoint']) {
@@ -33,24 +41,26 @@ export default class Session {
 
   async getNextEntryArgs(author: string, schema: string): Promise<EntryArgs> {
     const cacheKey = `${author}/${schema}`;
-    let rv = this.nextEntryArgs[cacheKey];
-    if (rv) {
+    const cachedValue = this.nextEntryArgs[cacheKey];
+    if (cachedValue) {
       // use cache
       delete this.nextEntryArgs[cacheKey];
-      log('panda_getEntryArguments [cached]', rv);
-      return rv;
+      log('panda_getEntryArguments [cached]', cachedValue);
+      return cachedValue;
     } else {
       // do rpc call
-      rv = await this.client.request({
+      const nextEntryArgs = await this.client.request({
         method: 'panda_getEntryArguments',
         params: { author, schema },
       });
-      log('panda_getEntryArguments', rv);
+      log('panda_getEntryArguments', nextEntryArgs);
+      return nextEntryArgs;
     }
-
-    return rv;
   }
 
+  /**
+   * Cache next entry args for a given author and schema
+   */
   setNextEntryArgs(author: string, schema: string, entryArgs: EntryArgs): void {
     const cacheKey = `${author}/${schema}`;
     this.nextEntryArgs[cacheKey] = entryArgs;

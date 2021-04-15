@@ -2,8 +2,7 @@ body,
 html {
   padding: 0px;
   margin: 0px;
-  font-family: 'Droid Sans Mono', Consolas, 'Liberation Mono', Menlo, Courier,
-    monospace;
+  font-family: 'Droid Sans Mono', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
   font-size: 18px;
 }
 
@@ -11,7 +10,7 @@ h1 {
   font-size: 40px;
 }
 
-ul{
+ul {
   margin: 0px;
 }
 
@@ -85,7 +84,7 @@ li {
   background-color: chartreuse;
   padding: 12px;
   height: 100%;
-} 
+}
 
 .entry-content div:only-child {
   justify-content: center;

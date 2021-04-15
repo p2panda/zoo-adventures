@@ -1,19 +1,23 @@
-import { RequestManager, HTTPTransport, Client } from '@open-rpc/client-js';
 import p2panda from 'p2panda-js';
+import { RequestManager, HTTPTransport, Client } from '@open-rpc/client-js';
 
-import { Resolved } from '~/typescript/helpers';
+import { log } from '~/p2panda-api';
+import {
+  EntryArgs,
+  EntryRecord,
+  EntryRecordEncoded,
+} from '~/p2panda-api/types';
 
-import { log } from '.';
-import { EntryArgs, EntryRecord, EntryRecordEncoded } from './types';
+import type { Resolved } from '~/typescript/helpers';
 
 export default class Session {
   // Address of a p2panda node that we can connect to
   endpoint: string;
 
-  // an rpc client connected to the confgiured endpoint
+  // An rpc client connected to the confgiured endpoint
   private client: Client;
 
-  // The wassm library from p2panda-rs. To ensure that it is loaded before
+  // The wasm library from p2panda-rs. To ensure that it is loaded before
   // ussing it await `this.loadWasm()`
   p2panda: Resolved<typeof p2panda> = null;
 
@@ -29,9 +33,8 @@ export default class Session {
 
   // Load and return the WebAssembly p2panda library.
   //
-  // Always await this function before
-  // using `this.p2panda`. Unfortunately this cannot be handled in the
-  // constructor as the contructor cannot be async.
+  // Always await this function before using `this.p2panda`. Unfortunately this
+  // cannot be handled in the constructor as the contructor cannot be async.
   async loadWasm(): Promise<Session['p2panda']> {
     if (this.p2panda == null) {
       this.p2panda = await p2panda;

@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
+
 import { Session } from '~/p2panda-api';
 import { SyntaxHighlighter } from '~/syntaxHighlighter';
+
 import type { EntryRecord } from '~/p2panda-api/types';
 
 type Props = {
@@ -10,9 +12,6 @@ type Props = {
   entries: EntryRecord[];
   debugEntry: EntryRecord | null;
 };
-
-// This is all just to format the entry object nicely so it can be displayed correctly
-// There must be a better way.... I'm sure I am missing something simple ;-p
 
 const textToString = ({ Text }) => {
   return `{ Text: '${Text}' }`;

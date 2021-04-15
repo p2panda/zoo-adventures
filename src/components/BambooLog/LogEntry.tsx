@@ -1,4 +1,5 @@
 import React from 'react';
+
 import type { EntryRecord } from '~/p2panda-api/types';
 
 type Props = {

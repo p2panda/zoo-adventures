@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import p2panda from 'p2panda-js';
 
+import { BambooLog } from '~/components/BambooLog';
+import { Chatlog } from '~/components/Chatlog';
 import { Instance, Session } from '~/p2panda-api';
 import { Instructions } from '~/components/Instructions';
-import { BambooLog } from '~/components/BambooLog';
-import { Chatlog } from './components/Chatlog';
 
-import type { EntryRecord } from './p2panda-api/types';
+import type { EntryRecord } from '~/p2panda-api/types';
 
 import '~/styles.css';
 

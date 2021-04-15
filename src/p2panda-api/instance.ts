@@ -1,7 +1,7 @@
-import { Resolved } from '~/typescript/helpers';
+import { Session } from '~/p2panda-api';
+import { Fields } from '~/p2panda-api/types';
 
-import { Session } from '.';
-import { Fields } from './types';
+import type { Resolved } from '~/typescript/helpers';
 
 type InstanceArgs = {
   // @ts-expect requires types exported from rust

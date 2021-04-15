@@ -26,7 +26,7 @@ export const Chatlog = ({
       setCurrentMessage={setCurrentMessage}
     />
     <div className="messages">
-      {log.slice(log.length - 10).map((entry) => (
+      {log.slice(-10).map((entry) => (
         <div
           key={`${entry.logId}-${entry.seqNum}-${entry.author}`}
           onClick={() => setDebugEntry(entry)}

@@ -28,7 +28,7 @@ export const Chatlog = ({
     <div className="messages">
       {log.slice(log.length - 10).map((entry) => (
         <div
-          key={`${entry.logId}-${entry.seqNum}`}
+          key={`${entry.logId}-${entry.seqNum}-${entry.author}`}
           onClick={() => setDebugEntry(entry)}
         >
           <h3>

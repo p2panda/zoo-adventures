@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 
+import { ENDPOINT, CHAT_SCHEMA } from '~/configs';
 import { Session } from '~/p2panda-api';
 import { SyntaxHighlighter } from '~/syntaxHighlighter';
 
@@ -52,7 +53,7 @@ const privateKey = keyPair.privateKey();
         <h2>Connect to a node</h2>
         <p>Running on your own computer or in the cloud.</p>
         <SyntaxHighlighter>
-          {`const endpoint = 'http://localhost:2020';
+          {`const endpoint = '${ENDPOINT}';
 const session = new Session(ENDPOINT);
 ${session ? `// => ${session}` : ''}`}
         </SyntaxHighlighter>
@@ -62,7 +63,7 @@ ${session ? `// => ${session}` : ''}`}
         <h2>Choose a schema</h2>
         <p>...or publish your own.</p>
         <SyntaxHighlighter>
-          {`const CHAT_SCHEMA = '0040cf94f6d6...';`}
+          {`const CHAT_SCHEMA = '${CHAT_SCHEMA.slice(0, 12)}...';`}
         </SyntaxHighlighter>
       </div>
 

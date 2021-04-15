@@ -31,7 +31,10 @@ const getMessageFields = async (
 /**
  * Sign and publish an entry given a prepared `Message`, `KeyPair` and `Session`
  */
-const signPublishEntry = async (message, { keyPair, schema, session }) => {
+const signPublishEntry = async (
+  messageEncoded,
+  { keyPair, schema, session },
+) => {
   const { signEncodeEntry, KeyPair } = await session.loadWasm();
 
   const entryArgs = await session.getNextEntryArgs(keyPair.publicKey(), schema);
@@ -45,7 +48,7 @@ const signPublishEntry = async (message, { keyPair, schema, session }) => {
   // Sign and encode entry passing in copy of keyPair
   const { entryEncoded } = signEncodeEntry(
     KeyPair.fromPrivateKey(keyPair.privateKey()),
-    message,
+    messageEncoded,
     entryArgs.entryHashSkiplink,
     entryArgs.entryHashBacklink,
     lastSeqNum,
@@ -53,7 +56,10 @@ const signPublishEntry = async (message, { keyPair, schema, session }) => {
   );
 
   // Publish entry and store returned entryArgs for next entry
-  const nextEntryArgs = await session.publishEntry(entryEncoded, message);
+  const nextEntryArgs = await session.publishEntry(
+    entryEncoded,
+    messageEncoded,
+  );
 
   // Cache next entry args for next publish
   session.setNextEntryArgs(keyPair.publicKey(), schema, nextEntryArgs);

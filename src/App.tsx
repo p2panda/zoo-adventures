@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useCallback, useState } from 'react';
 import p2panda from 'p2panda-js';
 
 import { BambooLog } from '~/components/BambooLog';
@@ -15,8 +15,23 @@ const App = (): JSX.Element => {
   const [currentMessage, setCurrentMessage] = useState<string>('');
   const [debugEntry, setDebugEntry] = useState<EntryRecord>(null);
   const [keyPair, setKeyPair] = useState(null);
-  const [log, setLog] = useState<EntryRecord[]>([]);
+  const [entries, setEntries] = useState<EntryRecord[]>([]);
   const [session, setSession] = useState<Session>(null);
+
+  const syncEntries = useCallback(async () => {
+    if (!session) {
+      return;
+    }
+    const unsortedEntries = await session.queryEntries(CHAT_SCHEMA);
+    setEntries(
+      unsortedEntries.sort((entryA, entryB) => {
+        return entryB.decoded.message.fields.date >
+          entryA.decoded.message.fields.date
+          ? 1
+          : -1;
+      }),
+    );
+  }, [session]);
 
   // Generate or load key pair on initial page load
   useEffect(() => {
@@ -33,19 +48,23 @@ const App = (): JSX.Element => {
     asyncEffect();
   }, []);
 
-  // Establish session with node when key pair is set
+  // Establish session in the beginning
   useEffect(() => {
     setSession(new Session(ENDPOINT));
-  }, [keyPair]);
+  }, []);
 
-  // Refresh chatlog when session is ready
+  // Refresh chat log when session is ready
   useEffect(() => {
-    if (!session) return;
-    const asyncEffect = async () => {
-      const entries = await session.queryEntries(CHAT_SCHEMA);
-      setLog(entries);
-    };
-    asyncEffect();
+    if (!session) {
+      return;
+    }
+
+    // Load incoming messages frequently
+    window.setInterval(() => {
+      syncEntries();
+    }, 5000);
+
+    syncEntries();
   }, [session]);
 
   // Publish entries and refresh chat log to get the new message in the log
@@ -55,11 +74,19 @@ const App = (): JSX.Element => {
         message: {
           Text: message,
         },
+        date: {
+          Text: new Date().toISOString(),
+        },
       },
       { schema: CHAT_SCHEMA, session, keyPair },
     );
-    setLog(await session.queryEntries(CHAT_SCHEMA));
+    syncEntries();
   };
+
+  // Filter my personal entries
+  const myEntries = entries.filter((entry) => {
+    return entry.author === keyPair.publicKey();
+  });
 
   return (
     <div className="home-wrapper flex-row">
@@ -67,7 +94,7 @@ const App = (): JSX.Element => {
         <Instructions
           currentMessage={currentMessage}
           debugEntry={debugEntry}
-          entries={log}
+          entries={entries}
           keyPair={keyPair}
           session={session}
         />
@@ -75,11 +102,11 @@ const App = (): JSX.Element => {
       <div className="right-panel-wrapper flex-column">
         <Chatlog
           handlePublish={handlePublish}
-          log={log}
+          log={entries}
           setCurrentMessage={setCurrentMessage}
           setDebugEntry={setDebugEntry}
         />
-        <BambooLog log={log} />
+        <BambooLog log={myEntries} />
       </div>
     </div>
   );

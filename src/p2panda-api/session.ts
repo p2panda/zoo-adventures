@@ -4,7 +4,7 @@ import p2panda from 'p2panda-js';
 import { Resolved } from '~/typescript/helpers';
 
 import { log } from '.';
-import { Entry, EntryArgs, EntryRecord, EntryRecordEncoded } from './types';
+import { EntryArgs, EntryRecord, EntryRecordEncoded } from './types';
 
 export default class Session {
   // Address of a p2panda node that we can connect to

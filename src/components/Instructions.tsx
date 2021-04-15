@@ -13,42 +13,6 @@ type Props = {
   debugEntry: EntryRecord | null;
 };
 
-const textToString = ({ Text }) => {
-  return `{ Text: '${Text}' }`;
-};
-
-const fieldsToString = ({ message }) => {
-  return `{
-          message: ${textToString(message)},
-        }`;
-};
-
-const messageToString = ({ action, fields, schema, version }) => {
-  return `{
-      action: '${action}',
-      fields:
-        ${fieldsToString(fields)},
-      schema: '${schema}',
-      version: ${version},
-    }`;
-};
-
-const entryToString = ({
-  entryHashBacklink,
-  entryHashSkiplink,
-  logId,
-  message,
-}) => {
-  const skiplink = entryHashSkiplink ? `'${entryHashSkiplink}'` : `null`;
-  return `{
-  entryHashBacklink: '${entryHashBacklink}',
-  entryHashSkiplink: ${skiplink},
-  logId: ${logId},
-  message:
-    ${messageToString(message)},
-}`;
-};
-
 export const Instructions = ({
   keyPair,
   session,
@@ -139,8 +103,10 @@ const entry = await Instance.create(
             <p id="debugEntry">
               This is the entry for the message you clicked:{' '}
             </p>
-            <SyntaxHighlighter>{`${entryToString(
+            <SyntaxHighlighter>{`${JSON.stringify(
               debugEntry.decoded,
+              null,
+              2,
             )}`}</SyntaxHighlighter>
           </>
         )}

@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import p2panda from 'p2panda-js';
 
 import { BambooLog } from '~/components/BambooLog';
@@ -18,10 +18,7 @@ const App = (): JSX.Element => {
   const [entries, setEntries] = useState<EntryRecord[]>([]);
   const [session, setSession] = useState<Session>(null);
 
-  const syncEntries = useCallback(async () => {
-    if (!session) {
-      return;
-    }
+  const syncEntries = async () => {
     const unsortedEntries = await session.queryEntries(CHAT_SCHEMA);
     setEntries(
       unsortedEntries.sort((entryA, entryB) => {
@@ -33,8 +30,12 @@ const App = (): JSX.Element => {
     );
   }, [session]);
 
-  // Generate or load key pair on initial page load
   useEffect(() => {
+    // Load incoming messages frequently
+    syncEntries();
+    window.setInterval(syncEntries, 5000);
+
+  // Generate or load key pair on initial page load
     const asyncEffect = async () => {
       const { KeyPair } = await p2panda;
       let privateKey = window.localStorage.getItem('privateKey');
@@ -47,25 +48,6 @@ const App = (): JSX.Element => {
     };
     asyncEffect();
   }, []);
-
-  // Establish session in the beginning
-  useEffect(() => {
-    setSession(new Session(ENDPOINT));
-  }, []);
-
-  // Refresh chat log when session is ready
-  useEffect(() => {
-    if (!session) {
-      return;
-    }
-
-    // Load incoming messages frequently
-    window.setInterval(() => {
-      syncEntries();
-    }, 5000);
-
-    syncEntries();
-  }, [session]);
 
   // Publish entries and refresh chat log to get the new message in the log
   const handlePublish = async (message: string) => {

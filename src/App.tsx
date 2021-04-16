@@ -11,12 +11,15 @@ import type { EntryRecord } from '~/p2panda-api/types';
 
 import '~/styles.css';
 
+const session = new Session(ENDPOINT);
+let syncInterval: number;
+
 const App = (): JSX.Element => {
   const [currentMessage, setCurrentMessage] = useState<string>('');
   const [debugEntry, setDebugEntry] = useState<EntryRecord>(null);
   const [keyPair, setKeyPair] = useState(null);
   const [entries, setEntries] = useState<EntryRecord[]>([]);
-  const [session, setSession] = useState<Session>(null);
+  const [isSyncToggled, setSyncToggled] = useState<boolean>(true);
 
   const syncEntries = async () => {
     const unsortedEntries = await session.queryEntries(CHAT_SCHEMA);
@@ -28,14 +31,20 @@ const App = (): JSX.Element => {
           : -1;
       }),
     );
-  }, [session]);
+  };
+
+  // Load incoming messages frequently when sync checkbox is toggled
+  useEffect(() => {
+    if (isSyncToggled) {
+      syncEntries();
+      syncInterval = window.setInterval(syncEntries, 5000);
+    } else {
+      clearInterval(syncInterval);
+    }
+  }, [isSyncToggled]);
 
   useEffect(() => {
-    // Load incoming messages frequently
-    syncEntries();
-    window.setInterval(syncEntries, 5000);
-
-  // Generate or load key pair on initial page load
+    // Generate or load key pair on initial page load
     const asyncEffect = async () => {
       const { KeyPair } = await p2panda;
       let privateKey = window.localStorage.getItem('privateKey');
@@ -87,6 +96,8 @@ const App = (): JSX.Element => {
           log={entries}
           setCurrentMessage={setCurrentMessage}
           setDebugEntry={setDebugEntry}
+          isSyncToggled={isSyncToggled}
+          toggleSync={() => setSyncToggled(!isSyncToggled)}
         />
         <BambooLog log={myEntries} />
       </div>

@@ -9,6 +9,8 @@ type Props = {
   setCurrentMessage: (message: string) => void;
   setDebugEntry: (entry: EntryRecord) => void;
   handlePublish: (message: string) => Promise<void>;
+  isSyncToggled: boolean;
+  toggleSync: () => void;
 };
 
 const formatAuthor = ({ author }) => `${author.slice(0, 6)}`;
@@ -18,13 +20,21 @@ export const Chatlog = ({
   setCurrentMessage,
   setDebugEntry,
   handlePublish,
+  isSyncToggled,
+  toggleSync,
 }: Props): JSX.Element => (
   <div className="chat-log flex-column">
     <h2>Message Log</h2>{' '}
-    <PublishEntry
-      handlePublish={handlePublish}
-      setCurrentMessage={setCurrentMessage}
-    />
+    <div>
+      <PublishEntry
+        handlePublish={handlePublish}
+        setCurrentMessage={setCurrentMessage}
+      />
+      <label style={{ marginLeft: '.5em' }}>
+        <input type="checkbox" checked={isSyncToggled} onChange={toggleSync} />{' '}
+        Sync
+      </label>
+    </div>
     <div className="messages">
       {log.slice(-10).map((entry) => (
         <div

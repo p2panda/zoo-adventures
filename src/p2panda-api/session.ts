@@ -18,7 +18,7 @@ export default class Session {
   private client: Client;
 
   // The wasm library from p2panda-rs. To ensure that it is loaded before
-  // ussing it await `this.loadWasm()`
+  // using it await `this.loadWasm()`
   p2panda: Resolved<typeof p2panda> = null;
 
   // Cached arguments for the next entry

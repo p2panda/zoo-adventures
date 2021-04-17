@@ -98,7 +98,7 @@ const App = (): JSX.Element => {
           isSyncToggled={isSyncToggled}
           toggleSync={() => setSyncToggled(!isSyncToggled)}
         />
-        <BambooLog log={myEntries} />
+        <BambooLog log={myEntries} setDebugEntry={setDebugEntry} />
       </div>
     </div>
   );

@@ -63,7 +63,7 @@ ${session ? `// => ${session}` : ''}`}
         <h2>Choose a schema</h2>
         <p>...or publish your own.</p>
         <SyntaxHighlighter>
-          {`const CHAT_SCHEMA = '${CHAT_SCHEMA.slice(0, 12)}...';`}
+          {`const CHAT_SCHEMA = '${CHAT_SCHEMA.slice(4, 10)}...';`}
         </SyntaxHighlighter>
       </div>
 

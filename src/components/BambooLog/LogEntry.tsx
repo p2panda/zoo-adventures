@@ -6,14 +6,11 @@ type Props = {
   entry: EntryRecord;
 };
 
-const formatEntryHash = (hash: string): string =>
-  `${hash.slice(hash.length - 8, hash.length - 4)} ${hash.slice(
-    hash.length - 4,
-  )}`;
+const formatEntryHash = (hash: string): string => hash.slice(4, 10);
 
 const formatCheckHash = (hash: string): string => {
   if (!hash) return 'null';
-  return `#${hash.slice(-4)}`;
+  return `#${hash.slice(4, 10)}`;
 };
 
 const formatMessage = (message: string): string => {

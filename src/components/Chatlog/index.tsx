@@ -41,7 +41,7 @@ export const Chatlog = ({
           key={`${entry.logId}-${entry.seqNum}-${entry.author}`}
           onClick={() => setDebugEntry(entry)}
         >
-          <h3>
+          <h3 className="message">
             {formatAuthor(entry)}: {entry.decoded.message.fields.message.Text}
           </h3>
         </div>

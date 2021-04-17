@@ -23,7 +23,7 @@ export const PublishEntry = ({
   };
 
   return (
-    <span className="composer">
+    <span>
       <label>
         Message:{' '}
         <input type="text" onChange={handleChange} value={entryMessage} />

@@ -1,9 +1,13 @@
+html,
+input {
+  font-family: 'Droid Sans Mono', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+  font-size: 18px;
+}
+
 body,
 html {
   padding: 0px;
   margin: 0px;
-  font-family: 'Droid Sans Mono', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
-  font-size: 18px;
 }
 
 h1 {
@@ -16,6 +20,10 @@ ul {
 
 li {
   list-style-type: none;
+}
+
+input[type="submit"] {
+  cursor: pointer;
 }
 
 .break-line * {
@@ -63,6 +71,10 @@ li {
   overflow-y: auto;
 }
 
+.message {
+  cursor: pointer;
+}
+
 .bamboo-log {
   flex: 0 0 15rem;
   max-width: 100%;
@@ -73,6 +85,7 @@ li {
   flex: 0 0 15rem;
   max-height: 12rem;
   padding-right: 6px;
+  cursor: pointer;
 }
 
 .log-item div:only-child {

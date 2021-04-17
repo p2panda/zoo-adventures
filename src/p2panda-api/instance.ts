@@ -1,4 +1,4 @@
-import { Session } from '~/p2panda-api';
+import { log, Session } from '~/p2panda-api';
 import { Fields } from '~/p2panda-api/types';
 
 import type { Resolved } from '~/typescript/helpers';
@@ -25,6 +25,7 @@ const getMessageFields = async (
     const fieldType = Object.keys(fields[fieldName])[0];
     messageFields.add(fieldName, fields[fieldName][fieldType]);
   }
+  log('getMessageFields', messageFields.toString());
   return messageFields;
 };
 

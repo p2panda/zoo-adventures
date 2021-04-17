@@ -36,7 +36,7 @@ const signPublishEntry = async (
   messageEncoded,
   { keyPair, schema, session },
 ) => {
-  const { signEncodeEntry, KeyPair } = await session.loadWasm();
+  const { signEncodeEntry } = await session.loadWasm();
 
   const entryArgs = await session.getNextEntryArgs(keyPair.publicKey(), schema);
 
@@ -48,7 +48,7 @@ const signPublishEntry = async (
 
   // Sign and encode entry passing in copy of keyPair
   const { entryEncoded } = signEncodeEntry(
-    KeyPair.fromPrivateKey(keyPair.privateKey()),
+    keyPair,
     messageEncoded,
     entryArgs.entryHashSkiplink,
     entryArgs.entryHashBacklink,

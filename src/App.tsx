@@ -24,9 +24,8 @@ const App = (): JSX.Element => {
   const syncEntries = async () => {
     const unsortedEntries = await session.queryEntries(CHAT_SCHEMA);
     setEntries(
-      unsortedEntries.sort((entryA, entryB) => {
-        return entryB.decoded.message.fields.date >
-          entryA.decoded.message.fields.date
+      unsortedEntries.sort(({ decoded: entryA }, { decoded: entryB }) => {
+        return entryA.message.fields.date.Text > entryB.message.fields.date.Text
           ? 1
           : -1;
       }),

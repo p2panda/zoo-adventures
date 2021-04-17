@@ -53,7 +53,7 @@ const privateKey = keyPair.privateKey();
         <h2>Connect to a node</h2>
         <p>Running on your own computer or in the cloud.</p>
         <SyntaxHighlighter>
-          {`const endpoint = '${ENDPOINT}';
+          {`const ENDPOINT = '${ENDPOINT}';
 const session = new Session(ENDPOINT);
 ${session ? `// => ${session}` : ''}`}
         </SyntaxHighlighter>

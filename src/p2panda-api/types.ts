@@ -11,7 +11,7 @@ export type EntryArgs = {
 /**
  * Entry record received from aquadoggo
  */
-export type EntryRecordEncoded = {
+export type EncodedEntry = {
   author: string;
   entryBytes: string;
   entryHash: string;
@@ -24,8 +24,8 @@ export type EntryRecordEncoded = {
 /**
  * Entry record from aquadoggo with decoded `Entry`
  */
-export type EntryRecord = EntryRecordEncoded & {
-  decoded: Entry;
+export type EntryRecord = Entry & {
+  encoded: EncodedEntry;
 };
 
 /**
@@ -49,11 +49,39 @@ export type Message = {
 };
 
 /**
- * Object containing values to be set on an instance
+ * Object containing message field values
  */
 export type Fields = {
-  // currently only a schema with only a message is supported
+  // currently only a schema with a text message is supported
   // [fieldname: string]: boolean | number | string;
+  [fieldname: string]: string;
+};
+
+/**
+ * Decoded entry containing optional `Message`
+ */
+export type EntryTagged = {
+  entryHashBacklink: string | null;
+  entryHashSkiplink: string | null;
+  logId: number;
+  message: MessageTagged | null;
+  seqNum: number;
+};
+
+/**
+ * Decoded form of a message, which can create, update or delete instances
+ */
+export type MessageTagged = {
+  action: 'create' | 'update' | 'delete';
+  schema: string;
+  fields: FieldsTagged;
+};
+
+/**
+ * Object containing message fields in tagged form
+ */
+export type FieldsTagged = {
+  // currently only a schema with a text message is supported
   [fieldname: string]: MessageValueText;
 };
 

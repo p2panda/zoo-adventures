@@ -1,7 +1,8 @@
 import { log, Session } from '~/p2panda-api';
-import { Fields } from '~/p2panda-api/types';
+import { Fields, FieldsTagged } from '~/p2panda-api/types';
 
 import type { Resolved } from '~/typescript/helpers';
+import { marshallRequestFields } from './utils';
 
 type InstanceArgs = {
   // @ts-expect requires types exported from rust
@@ -16,7 +17,7 @@ type InstanceArgs = {
 const getMessageFields = async (
   session: Session,
   _schema: string,
-  fields: Fields,
+  fields: FieldsTagged,
 ) => {
   const { MessageFields } = await session.loadWasm();
 
@@ -92,7 +93,8 @@ const create = async (
   const { encodeCreateMessage } = await session.loadWasm();
 
   // Create message
-  const messageFields = await getMessageFields(session, schema, fields);
+  const fieldsTagged = marshallRequestFields(fields);
+  const messageFields = await getMessageFields(session, schema, fieldsTagged);
   const encodedMessage = await encodeCreateMessage(schema, messageFields);
   await signPublishEntry(encodedMessage, { keyPair, schema, session });
 };

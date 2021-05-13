@@ -2,13 +2,10 @@ import p2panda from 'p2panda-js';
 import { RequestManager, HTTPTransport, Client } from '@open-rpc/client-js';
 
 import { log } from '~/p2panda-api';
-import {
-  EntryArgs,
-  EntryRecord,
-  EntryRecordEncoded,
-} from '~/p2panda-api/types';
+import { EntryArgs, EntryRecord, EncodedEntry } from '~/p2panda-api/types';
 
 import type { Resolved } from '~/typescript/helpers';
+import { marshallResponseFields } from './utils';
 
 export default class Session {
   // Address of a p2panda node that we can connect to
@@ -81,7 +78,7 @@ export default class Session {
     return result;
   }
 
-  async queryEntriesEncoded(schema: string): Promise<EntryRecordEncoded[]> {
+  async queryEntriesEncoded(schema: string): Promise<EncodedEntry[]> {
     const result = await this.client.request({
       method: 'panda_queryEntries',
       params: { schema },
@@ -92,13 +89,16 @@ export default class Session {
 
   async queryEntries(schema: string): Promise<EntryRecord[]> {
     const { decodeEntry } = await this.loadWasm();
-
     const result = await this.queryEntriesEncoded(schema);
     return Promise.all(
-      result.map(async (entry) => ({
-        ...entry,
-        decoded: await decodeEntry(entry.entryBytes, entry.payloadBytes),
-      })),
+      result.map(async (entry) => {
+        const decoded = await decodeEntry(entry.entryBytes, entry.payloadBytes);
+        decoded.message.fields = marshallResponseFields(decoded.message.fields);
+        return {
+          ...decoded,
+          encoded: entry,
+        };
+      }),
     );
   }
 

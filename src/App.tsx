@@ -40,6 +40,7 @@ const App = (): JSX.Element => {
     } else {
       clearInterval(syncInterval);
     }
+    return () => clearInterval(syncInterval);
   }, [isSyncToggled]);
 
   useEffect(() => {

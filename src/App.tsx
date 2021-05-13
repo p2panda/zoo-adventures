@@ -24,10 +24,8 @@ const App = (): JSX.Element => {
   const syncEntries = async () => {
     const unsortedEntries = await session.queryEntries(CHAT_SCHEMA);
     setEntries(
-      unsortedEntries.sort(({ decoded: entryA }, { decoded: entryB }) => {
-        return entryA.message.fields.date.Text > entryB.message.fields.date.Text
-          ? 1
-          : -1;
+      unsortedEntries.sort(({ message: messageA }, { message: messageB }) => {
+        return messageA.fields.date > messageB.fields.date ? 1 : -1;
       }),
     );
   };
@@ -62,12 +60,8 @@ const App = (): JSX.Element => {
   const handlePublish = async (message: string) => {
     await Instance.create(
       {
-        message: {
-          Text: message,
-        },
-        date: {
-          Text: new Date().toISOString(),
-        },
+        message,
+        date: new Date().toISOString(),
       },
       { schema: CHAT_SCHEMA, session, keyPair },
     );
@@ -75,7 +69,7 @@ const App = (): JSX.Element => {
   };
 
   // Filter my personal entries
-  const myEntries = entries.filter((entry) => {
+  const myEntries = entries.filter(({ encoded: entry }) => {
     return entry.author === keyPair.publicKey();
   });
 

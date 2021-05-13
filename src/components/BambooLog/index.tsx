@@ -16,7 +16,7 @@ export const BambooLog = ({ log, setDebugEntry }: Props): JSX.Element => (
       {log.map((entry) => (
         <div
           className="log-item"
-          key={entry.entryHash}
+          key={entry.encoded.entryHash}
           onClick={() => setDebugEntry(entry)}
         >
           <LogEntry entry={entry} />

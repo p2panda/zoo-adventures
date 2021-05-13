@@ -38,11 +38,11 @@ export const Chatlog = ({
     <div className="messages">
       {log.slice(-10).map((entry) => (
         <div
-          key={`${entry.logId}-${entry.seqNum}-${entry.author}`}
+          key={`${entry.logId}-${entry.seqNum}-${entry.encoded.author}`}
           onClick={() => setDebugEntry(entry)}
         >
           <h3 className="message">
-            {formatAuthor(entry)}: {entry.decoded.message.fields.message.Text}
+            {formatAuthor(entry.encoded)}: {entry.message.fields.message}
           </h3>
         </div>
       ))}

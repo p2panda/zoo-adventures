@@ -105,7 +105,7 @@ const entry = await Instance.create(
               This is the entry for the message you clicked:{' '}
             </p>
             <SyntaxHighlighter>{`${JSON.stringify(
-              debugEntry.decoded,
+              debugEntry,
               null,
               2,
             )}`}</SyntaxHighlighter>

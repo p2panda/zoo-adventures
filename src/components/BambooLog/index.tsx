@@ -1,17 +1,24 @@
 import React from 'react';
-import { LogEntry } from './LogEntry';
-import { Entry } from '~/p2panda-api';
+
+import { LogEntry } from '~/components/BambooLog/LogEntry';
+
+import type { EntryRecord } from '~/p2panda-api/types';
 
 type Props = {
-  log: Entry[];
+  log: EntryRecord[];
+  setDebugEntry: (entry: EntryRecord) => void;
 };
 
-export const BambooLog = ({ log }: Props): JSX.Element => (
+export const BambooLog = ({ log, setDebugEntry }: Props): JSX.Element => (
   <div className="bamboo-log flex-column">
     <h2>Bamboo Log</h2>{' '}
     <div className="flex-row">
       {log.map((entry) => (
-        <div className="log-item" key={entry.entry_hash}>
+        <div
+          className="log-item"
+          key={entry.encoded.entryHash}
+          onClick={() => setDebugEntry(entry)}
+        >
           <LogEntry entry={entry} />
         </div>
       ))}

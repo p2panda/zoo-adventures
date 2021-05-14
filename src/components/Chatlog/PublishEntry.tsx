@@ -23,12 +23,12 @@ export const PublishEntry = ({
   };
 
   return (
-    <div className="composer">
+    <span>
       <label>
         Message:{' '}
         <input type="text" onChange={handleChange} value={entryMessage} />
       </label>
       <input type="submit" value="Send" onClick={handleSubmit} />
-    </div>
+    </span>
   );
 };

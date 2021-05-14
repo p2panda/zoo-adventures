@@ -1,13 +1,17 @@
 import React, { useEffect } from 'react';
-import { Entry, Session } from '~/p2panda-api';
+
+import { ENDPOINT, CHAT_SCHEMA } from '~/configs';
+import { Session } from '~/p2panda-api';
 import { SyntaxHighlighter } from '~/syntaxHighlighter';
 
+import type { EntryRecord } from '~/p2panda-api/types';
+
 type Props = {
-  keyPair: any;
+  keyPair: Session['p2panda']['KeyPair'];
   session: Session;
   currentMessage: string;
-  entries: Entry[];
-  debugEntry: Entry | null;
+  entries: EntryRecord[];
+  debugEntry: EntryRecord | null;
 };
 
 export const Instructions = ({
@@ -49,10 +53,8 @@ const privateKey = keyPair.privateKey();
         <h2>Connect to a node</h2>
         <p>Running on your own computer or in the cloud.</p>
         <SyntaxHighlighter>
-          {`const endpoint = 'http://localhost:2020';
-const session = new Session({
-endpoint: ENDPOINT
-});
+          {`const ENDPOINT = '${ENDPOINT}';
+const session = new Session(ENDPOINT);
 ${session ? `// => ${session}` : ''}`}
         </SyntaxHighlighter>
       </div>
@@ -61,7 +63,7 @@ ${session ? `// => ${session}` : ''}`}
         <h2>Choose a schema</h2>
         <p>...or publish your own.</p>
         <SyntaxHighlighter>
-          {`const CHAT_SCHEMA = '0040cf94f6d6...';`}
+          {`const CHAT_SCHEMA = '${CHAT_SCHEMA.slice(4, 10)}...';`}
         </SyntaxHighlighter>
       </div>
 
@@ -103,7 +105,7 @@ const entry = await Instance.create(
               This is the entry for the message you clicked:{' '}
             </p>
             <SyntaxHighlighter>{`${JSON.stringify(
-              debugEntry.debugDecoded,
+              debugEntry,
               null,
               2,
             )}`}</SyntaxHighlighter>

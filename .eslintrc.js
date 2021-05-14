@@ -39,6 +39,10 @@ module.exports = {
     ],
     // Warn on prettier violations and continue with build
     'prettier/prettier': 1,
+    // We don't need prop-types when we are using Typescript
     'react/prop-types': 0,
+    // This is an experimental project, disable some safeguards!
+    'no-debugger': 'warn',
+    '@typescript-eslint/ban-ts-comment': 'warn',
   },
 };

@@ -1,24 +1,48 @@
 import React, { useEffect, useState } from 'react';
 import p2panda from 'p2panda-js';
-import { Entry, Instance, Session } from '~/p2panda-api';
-import { Instructions } from '~/components/Instructions';
+
 import { BambooLog } from '~/components/BambooLog';
-import { Chatlog } from './components/chatlog';
+import { Chatlog } from '~/components/Chatlog';
+import { ENDPOINT, CHAT_SCHEMA } from '~/configs';
+import { Instance, Session } from '~/p2panda-api';
+import { Instructions } from '~/components/Instructions';
+
+import type { EntryRecord } from '~/p2panda-api/types';
 
 import '~/styles.css';
 
-const ENDPOINT = 'http://localhost:2020';
-const CHAT_SCHEMA =
-  '0040cf94f6d605657e90c543b0c919070cdaaf7209c5e1ea58acb8f3568fa2114268dc9ac3bafe12af277d286fce7dc59b7c0c348973c4e9dacbe79485e56ac2a702';
+const session = new Session(ENDPOINT);
+let syncInterval: number;
 
 const App = (): JSX.Element => {
   const [currentMessage, setCurrentMessage] = useState<string>('');
-  const [debugEntry, setDebugEntry] = useState<Entry>(null);
+  const [debugEntry, setDebugEntry] = useState<EntryRecord>(null);
   const [keyPair, setKeyPair] = useState(null);
-  const [log, setLog] = useState<Entry[]>([]);
-  const [session, setSession] = useState(null);
+  const [entries, setEntries] = useState<EntryRecord[]>([]);
+  const [isSyncToggled, setSyncToggled] = useState<boolean>(true);
+
+  const syncEntries = async () => {
+    const unsortedEntries = await session.queryEntries(CHAT_SCHEMA);
+    setEntries(
+      unsortedEntries.sort(({ message: messageA }, { message: messageB }) => {
+        return messageA.fields.date > messageB.fields.date ? 1 : -1;
+      }),
+    );
+  };
+
+  // Load incoming messages frequently when sync checkbox is toggled
+  useEffect(() => {
+    if (isSyncToggled) {
+      syncEntries();
+      syncInterval = window.setInterval(syncEntries, 5000);
+    } else {
+      clearInterval(syncInterval);
+    }
+    return () => clearInterval(syncInterval);
+  }, [isSyncToggled]);
 
   useEffect(() => {
+    // Generate or load key pair on initial page load
     const asyncEffect = async () => {
       const { KeyPair } = await p2panda;
       let privateKey = window.localStorage.getItem('privateKey');
@@ -32,17 +56,22 @@ const App = (): JSX.Element => {
     asyncEffect();
   }, []);
 
-  useEffect(() => {
-    setSession(new Session({ keyPair, endpoint: ENDPOINT }));
-  }, [keyPair]);
-
-  const handlePublish = async (message) => {
+  // Publish entries and refresh chat log to get the new message in the log
+  const handlePublish = async (message: string) => {
     await Instance.create(
-      { message },
+      {
+        message,
+        date: new Date().toISOString(),
+      },
       { schema: CHAT_SCHEMA, session, keyPair },
     );
-    setLog(await Instance.query({}, { session, schema: CHAT_SCHEMA }));
+    syncEntries();
   };
+
+  // Filter my personal entries
+  const myEntries = entries.filter(({ encoded: entry }) => {
+    return entry.author === keyPair.publicKey();
+  });
 
   return (
     <div className="home-wrapper flex-row">
@@ -50,7 +79,7 @@ const App = (): JSX.Element => {
         <Instructions
           currentMessage={currentMessage}
           debugEntry={debugEntry}
-          entries={log}
+          entries={entries}
           keyPair={keyPair}
           session={session}
         />
@@ -58,11 +87,13 @@ const App = (): JSX.Element => {
       <div className="right-panel-wrapper flex-column">
         <Chatlog
           handlePublish={handlePublish}
-          log={log}
+          log={entries}
           setCurrentMessage={setCurrentMessage}
           setDebugEntry={setDebugEntry}
+          isSyncToggled={isSyncToggled}
+          toggleSync={() => setSyncToggled(!isSyncToggled)}
         />
-        <BambooLog log={log} />
+        <BambooLog log={myEntries} setDebugEntry={setDebugEntry} />
       </div>
     </div>
   );

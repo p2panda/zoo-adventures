@@ -10,7 +10,7 @@ authors = [
 ]
 license = "MIT"
 repository = "https://github.com/p2panda/beep-boop"
-default-run = "app"
+default-run = "beep-boop"
 edition = "2018"
 build = "src/build.rs"
 
@@ -18,9 +18,16 @@ build = "src/build.rs"
 tauri-build = { version = "1.0.0-beta.0" }
 
 [dependencies]
+async-std = "1.9.0"
+env_logger = "0.8.2"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 tauri = { version = "1.0.0-beta.1", features = ["api-all"] }
+
+# @TODO: Since `aquadoggo` we have to pull it in like that
+[dependencies.aquadoggo]
+git = "https://github.com/p2panda/aquadoggo"
+branch = "main"
 
 [features]
 default = ["custom-protocol"]

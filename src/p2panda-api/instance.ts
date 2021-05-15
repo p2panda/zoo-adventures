@@ -41,20 +41,14 @@ const signPublishEntry = async (
 
   const entryArgs = await session.getNextEntryArgs(keyPair.publicKey(), schema);
 
-  // If lastSeqNum is null don't try and convert to BigInt
-  // Can this be handled better in the wasm code?
-  const lastSeqNum = entryArgs.lastSeqNum
-    ? BigInt(entryArgs.lastSeqNum)
-    : entryArgs.lastSeqNum;
-
   // Sign and encode entry passing in copy of keyPair
   const { entryEncoded } = signEncodeEntry(
     keyPair,
     messageEncoded,
     entryArgs.entryHashSkiplink,
     entryArgs.entryHashBacklink,
-    lastSeqNum,
-    BigInt(entryArgs.logId),
+    entryArgs.lastSeqNum,
+    entryArgs.logId,
   );
 
   // Publish entry and store returned entryArgs for next entry

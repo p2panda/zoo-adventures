@@ -21,6 +21,7 @@
   "contributors": [
     "sophiiistika <sophiiistika@mailbox.org>",
     "adz <x1d@adz.garden>",
+    "sandreae <contact@samandreae.com>",
     "cafca <cafca@001.land>"
   ],
   "license": "MIT",
@@ -36,8 +37,7 @@
     "react-dom": "^17.0.1",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
-    "react-syntax-highlighter": "^15.4.3",
-    "tauri": "^0.14.1"
+    "react-syntax-highlighter": "^15.4.3"
   },
   "devDependencies": {
     "@babel/cli": "^7.12.17",
@@ -45,6 +45,7 @@
     "@babel/preset-env": "^7.12.17",
     "@babel/preset-react": "^7.12.13",
     "@babel/preset-typescript": "^7.12.17",
+    "@tauri-apps/cli": "^1.0.0-beta.2",
     "@types/react": "^17.0.2",
     "@types/react-dom": "^17.0.1",
     "@typescript-eslint/eslint-plugin": "^4.15.1",

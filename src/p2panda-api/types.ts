@@ -4,7 +4,7 @@
 export type EntryArgs = {
   entryHashSkiplink: string | null;
   entryHashBacklink: string | null;
-  lastSeqNum: number | null;
+  seqNum: number;
   logId: number;
 };
 

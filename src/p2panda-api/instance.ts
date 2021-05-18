@@ -47,7 +47,7 @@ const signPublishEntry = async (
     messageEncoded,
     entryArgs.entryHashSkiplink,
     entryArgs.entryHashBacklink,
-    entryArgs.lastSeqNum,
+    entryArgs.seqNum,
     entryArgs.logId,
   );
 

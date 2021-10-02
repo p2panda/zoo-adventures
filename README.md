@@ -1,6 +1,6 @@
 # beep-boop
 
-[p2panda](https://github.com/p2panda/design-document) client running as a statically hosted web or native [Tauri](https://tauri.studio/) desktop application.
+[p2panda](https://github.com/p2panda/design-document) demo chat client running as a statically hosted web or native [Tauri](https://tauri.studio/) desktop application. See it live [here](https://p2panda.org/demo/). ⬅️
 
 ## Requirements
 
@@ -32,4 +32,4 @@ npm run tauri:build
 
 ## License
 
-`MIT`
+[`MIT`](LICENSE)

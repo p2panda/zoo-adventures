@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 const path = require('path');
 
 const ESLintPlugin = require('eslint-webpack-plugin');

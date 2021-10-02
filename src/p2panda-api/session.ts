@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 import p2panda from 'p2panda-js';
 import { RequestManager, HTTPTransport, Client } from '@open-rpc/client-js';
 

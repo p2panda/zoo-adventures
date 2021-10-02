@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 import debug from 'debug';
 
 export const log = debug('p2panda');

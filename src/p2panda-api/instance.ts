@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 import { log, Session } from '~/p2panda-api';
 import { Fields, FieldsTagged } from '~/p2panda-api/types';
 

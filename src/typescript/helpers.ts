@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 /**
  * Resolve a promise's type recursively
  */

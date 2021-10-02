@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 module.exports = {
   // Parser to lint TypeScript code, see:
   // https://standardjs.com/index.html#typescript

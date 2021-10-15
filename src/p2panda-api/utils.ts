@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-import { Fields, FieldsTagged } from './types';
+import { Fields, FieldsTagged } from 'p2panda-js';
 
 /**
  * Add type tags to message fields before sending to node

@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 
-import p2panda from 'p2panda-js';
+import { wasm } from 'p2panda-js';
 import { RequestManager, HTTPTransport, Client } from '@open-rpc/client-js';
 
-import { log } from '~/p2panda-api';
-import { EntryArgs, EntryRecord, EncodedEntry } from '~/p2panda-api/types';
+import { log } from 'p2panda-js';
+import { EntryArgs, EntryRecord, EncodedEntry } from 'p2panda-js';
 
 import type { Resolved } from '~/typescript/helpers';
 import { marshallResponseFields } from './utils';
@@ -18,7 +18,7 @@ export default class Session {
 
   // The wasm library from p2panda-rs. To ensure that it is loaded before
   // using it await `this.loadWasm()`
-  p2panda: Resolved<typeof p2panda> = null;
+  wasm: Resolved<typeof wasm> = null;
 
   // Cached arguments for the next entry
   nextEntryArgs: { [cacheKey: string]: EntryArgs } = {};
@@ -34,11 +34,11 @@ export default class Session {
   //
   // Always await this function before using `this.p2panda`. Unfortunately this
   // cannot be handled in the constructor as the contructor cannot be async.
-  async loadWasm(): Promise<Session['p2panda']> {
-    if (this.p2panda == null) {
-      this.p2panda = await p2panda;
+  async loadWasm(): Promise<Session['wasm']> {
+    if (this.wasm == null) {
+      this.wasm = await wasm;
     }
-    return this.p2panda;
+    return this.wasm;
   }
 
   async getNextEntryArgs(author: string, schema: string): Promise<EntryArgs> {

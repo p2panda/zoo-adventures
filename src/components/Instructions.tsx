@@ -1,10 +1,8 @@
 import React, { useEffect } from 'react';
 
 import { ENDPOINT, CHAT_SCHEMA } from '~/configs';
-import { Session } from '~/p2panda-api';
+import { Session, EntryRecord } from 'p2panda-js';
 import { SyntaxHighlighter } from '~/syntaxHighlighter';
-
-import type { EntryRecord } from '~/p2panda-api/types';
 
 type Props = {
   keyPair: Session['p2panda']['KeyPair'];

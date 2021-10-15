@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: MIT
 
-import { log, Session } from '~/p2panda-api';
-import { Fields, FieldsTagged } from '~/p2panda-api/types';
+import { log, Session, Fields, FieldsTagged } from 'p2panda-js';
 
 import type { Resolved } from '~/typescript/helpers';
 import { marshallRequestFields } from './utils';
 
 type InstanceArgs = {
   // @ts-expect requires types exported from rust
-  keyPair: Resolved<Session['p2panda']['KeyPair']>;
+  keyPair: Resolved<Session['wasm']['KeyPair']>;
   schema: string;
   session: Session;
 };

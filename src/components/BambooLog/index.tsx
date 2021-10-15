@@ -2,7 +2,7 @@ import React from 'react';
 
 import { LogEntry } from '~/components/BambooLog/LogEntry';
 
-import type { EntryRecord } from '~/p2panda-api/types';
+import type { EntryRecord } from 'p2panda-js';
 
 type Props = {
   log: EntryRecord[];

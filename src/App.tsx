@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { createKeyPair, Session } from 'p2panda-js';
+import { createKeyPair, Session, wasm } from 'p2panda-js';
 
 import { BambooLog } from '~/components/BambooLog';
 import { Chatlog } from '~/components/Chatlog';
 import { ENDPOINT, CHAT_SCHEMA } from '~/configs';
-import { createInstance } from 'p2panda-js';
+import { 
+  createInstance,
+  deleteInstance,
+  updateInstance,
+  queryInstances,
+} from 'p2panda-js';
 import { Instructions } from '~/components/Instructions';
 
 import type { EntryRecord } from 'p2panda-js';
@@ -44,14 +49,14 @@ const App = (): JSX.Element => {
   useEffect(() => {
     // Generate or load key pair on initial page load
     const asyncEffect = async () => {
-      const keyPair = await createKeyPair();
       let privateKey = window.localStorage.getItem('privateKey');
       if (!privateKey) {
-        const keyPair = new createKeyPair();
+        const keyPair = await createKeyPair();
         privateKey = keyPair.privateKey();
         window.localStorage.setItem('privateKey', privateKey);
       }
-      setKeyPair(keyPair.fromPrivateKey(privateKey));
+      const { KeyPair } = await wasm;
+      setKeyPair(KeyPair.fromPrivateKey(privateKey));
     };
     asyncEffect();
   }, []);

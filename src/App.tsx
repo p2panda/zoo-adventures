@@ -4,12 +4,6 @@ import { createKeyPair, Session, wasm } from 'p2panda-js';
 import { BambooLog } from '~/components/BambooLog';
 import { Chatlog } from '~/components/Chatlog';
 import { ENDPOINT, CHAT_SCHEMA } from '~/configs';
-import { 
-  createInstance,
-  deleteInstance,
-  updateInstance,
-  queryInstances,
-} from 'p2panda-js';
 import { Instructions } from '~/components/Instructions';
 
 import type { EntryRecord } from 'p2panda-js';
@@ -63,7 +57,7 @@ const App = (): JSX.Element => {
 
   // Publish entries and refresh chat log to get the new message in the log
   const handlePublish = async (message: string) => {
-    await createInstance(
+    await session.create(
       {
         message,
         date: new Date().toISOString(),

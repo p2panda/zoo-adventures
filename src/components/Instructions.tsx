@@ -38,8 +38,7 @@ export const Instructions = ({
       <div>
         <h2>Make a key pair</h2>
         <SyntaxHighlighter>
-          {`const { KeyPair } = await p2panda;
-const keyPair = new KeyPair();
+          {`const keyPair = await createKeyPair();
 const publicKey = keyPair.publicKey();
 // => ${publicKey}
 const privateKey = keyPair.privateKey();
@@ -71,7 +70,7 @@ ${session ? `// => ${session}` : ''}`}
         <SyntaxHighlighter>{`const fields = {
   message: '${currentMessage}'
 };
-const entry = await Instance.create(
+const entry = await session.create(
   fields,
   { schema: CHAT_SCHEMA, session, keyPair },
 );`}</SyntaxHighlighter>
@@ -91,7 +90,7 @@ const entry = await Instance.create(
           below.
         </p>
         <SyntaxHighlighter>
-          {`const entries = await Instance.query({}, {
+          {`const entries = await session.query({
   schema: CHAT_SCHEMA,
   session
 });

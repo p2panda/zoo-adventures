@@ -2,7 +2,7 @@ import React from 'react';
 
 import { PublishEntry } from '~/components/Chatlog/PublishEntry';
 
-import type { EntryRecord } from '~/p2panda-api/types';
+import type { EntryRecord } from 'p2panda-js';
 
 type Props = {
   log: EntryRecord[];

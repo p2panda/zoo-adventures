@@ -4,6 +4,7 @@ const path = require('path');
 
 const ESLintPlugin = require('eslint-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 const getPath = (file) => {
   return path.resolve(__dirname, 'src', file);
@@ -24,7 +25,7 @@ module.exports = (env, argv) => {
       alias: {
         '~': path.resolve(__dirname, 'src'),
       },
-      extensions: ['.js', '.ts', '.tsx'],
+      extensions: ['.js', '.ts', '.tsx', '.wasm'],
     },
     module: {
       rules: [
@@ -43,7 +44,7 @@ module.exports = (env, argv) => {
         {
           test: /\.css$/,
           use: ['style-loader', 'css-loader'],
-        },
+        }
       ],
     },
     plugins: [
@@ -53,6 +54,11 @@ module.exports = (env, argv) => {
       }),
       new ESLintPlugin({
         extensions: ['.ts', '.tsx'],
+      }),
+      new CopyPlugin({
+        patterns: [
+          { from: 'node_modules/p2panda-js/lib/*.wasm', to: '[name][ext]'},
+        ],
       }),
     ],
     devtool: 'source-map',

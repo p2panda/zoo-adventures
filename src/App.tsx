@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import p2panda from 'p2panda-js';
+import { createKeyPair, Session, wasm } from 'p2panda-js';
 
 import { BambooLog } from '~/components/BambooLog';
 import { Chatlog } from '~/components/Chatlog';
 import { ENDPOINT, CHAT_SCHEMA } from '~/configs';
-import { Instance, Session } from '~/p2panda-api';
 import { Instructions } from '~/components/Instructions';
 
-import type { EntryRecord } from '~/p2panda-api/types';
+import type { EntryRecord } from 'p2panda-js';
 
 import '~/styles.css';
 
@@ -44,13 +43,13 @@ const App = (): JSX.Element => {
   useEffect(() => {
     // Generate or load key pair on initial page load
     const asyncEffect = async () => {
-      const { KeyPair } = await p2panda;
       let privateKey = window.localStorage.getItem('privateKey');
       if (!privateKey) {
-        const keyPair = new KeyPair();
+        const keyPair = await createKeyPair();
         privateKey = keyPair.privateKey();
         window.localStorage.setItem('privateKey', privateKey);
       }
+      const { KeyPair } = await wasm;
       setKeyPair(KeyPair.fromPrivateKey(privateKey));
     };
     asyncEffect();
@@ -58,7 +57,7 @@ const App = (): JSX.Element => {
 
   // Publish entries and refresh chat log to get the new message in the log
   const handlePublish = async (message: string) => {
-    await Instance.create(
+    await session.create(
       {
         message,
         date: new Date().toISOString(),

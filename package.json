@@ -32,7 +32,7 @@
   "dependencies": {
     "@open-rpc/client-js": "^1.6.2",
     "debug": "^4.3.1",
-    "p2panda-js": "^0.1.0",
+    "p2panda-js": "^0.2.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "react-router": "^5.2.0",
@@ -51,6 +51,7 @@
     "@typescript-eslint/eslint-plugin": "^4.15.1",
     "@typescript-eslint/parser": "^4.15.1",
     "babel-loader": "^8.2.2",
+    "copy-webpack-plugin": "^9.1.0",
     "core-js": "^3.9.0",
     "css-loader": "^5.2.0",
     "eslint": "^7.20.0",

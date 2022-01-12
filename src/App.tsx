@@ -22,6 +22,7 @@ const App = (): JSX.Element => {
 
   const syncEntries = async () => {
     const unsortedEntries = await session.queryEntries(CHAT_SCHEMA);
+
     setEntries(
       unsortedEntries.sort(
         ({ operation: operationA }, { operation: operationB }) => {

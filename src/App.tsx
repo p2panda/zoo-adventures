@@ -22,9 +22,10 @@ const App = (): JSX.Element => {
 
   const syncEntries = async () => {
     const unsortedEntries = await session.queryEntries(CHAT_SCHEMA);
+
     setEntries(
-      unsortedEntries.sort(({ message: messageA }, { message: messageB }) => {
-        return messageA.fields.date > messageB.fields.date ? 1 : -1;
+      unsortedEntries.sort(({ operation: opA }, { operation: opB }) => {
+        return opA.fields.created > opB.fields.created ? 1 : -1;
       }),
     );
   };
@@ -57,10 +58,12 @@ const App = (): JSX.Element => {
 
   // Publish entries and refresh chat log to get the new message in the log
   const handlePublish = async (message: string) => {
+    const [url, title] = message.split(' ', 2);
     await session.create(
       {
-        message,
-        date: new Date().toISOString(),
+        url: url,
+        title: title,
+        created: new Date().toISOString(),
       },
       { schema: CHAT_SCHEMA, session, keyPair },
     );

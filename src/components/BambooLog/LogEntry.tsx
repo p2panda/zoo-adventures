@@ -19,7 +19,7 @@ const formatMessage = (message: string): string => {
 };
 
 export const LogEntry = ({ entry }: Props): JSX.Element => {
-  const { message, entryHashBacklink, entryHashSkiplink } = entry;
+  const { operation, entryHashBacklink, entryHashSkiplink } = entry;
   return (
     <div className="flex-column">
       <div className="entry-data flex-row">
@@ -28,10 +28,10 @@ export const LogEntry = ({ entry }: Props): JSX.Element => {
       </div>
       <div className="entry-content flex-row">
         <div className="flex-column">
-          <b>{message.action}</b>
+          <b>{operation.action}</b>
           <ul>
-            <li>Schema: {formatCheckHash(message.schema)}</li>
-            <li>Message: {formatMessage(message.fields.message)}</li>
+            <li>Schema: {formatCheckHash(operation.schema)}</li>
+            <li>Message: {formatMessage(operation.fields.url)}</li>
             <li>BackLink: {formatCheckHash(entryHashBacklink)}</li>
             <li>SkipLink: {formatCheckHash(entryHashSkiplink)}</li>
           </ul>

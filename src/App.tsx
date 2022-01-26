@@ -58,7 +58,8 @@ const App = (): JSX.Element => {
 
   // Publish entries and refresh chat log to get the new message in the log
   const handlePublish = async (message: string) => {
-    const [url, title] = message.split(' ', 2);
+    const [url, ...titleSegments] = message.split(' ');
+    const title = titleSegments.join(' ');
     await session.create(
       {
         url: url,

@@ -41,6 +41,7 @@ export const Chatlog = ({
     <div className="messages">
       {log
         .slice(-10)
+        .reverse()
         .map((entry) => (
           <div
             key={`${entry.logId}-${entry.seqNum}-${entry.encoded.author}`}

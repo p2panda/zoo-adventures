@@ -22,10 +22,13 @@ const App = (): JSX.Element => {
 
   const syncEntries = async () => {
     const unsortedEntries = await session.queryEntries(CHAT_SCHEMA);
+
     setEntries(
-      unsortedEntries.sort(({ message: messageA }, { message: messageB }) => {
-        return messageA.fields.date > messageB.fields.date ? 1 : -1;
-      }),
+      unsortedEntries.sort(
+        ({ operation: operationA }, { operation: operationB }) => {
+          return operationA.fields.date > operationB.fields.date ? 1 : -1;
+        },
+      ),
     );
   };
 

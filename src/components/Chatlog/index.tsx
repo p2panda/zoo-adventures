@@ -42,7 +42,7 @@ export const Chatlog = ({
           onClick={() => setDebugEntry(entry)}
         >
           <h3 className="message">
-            {formatAuthor(entry.encoded)}: {entry.message.fields.message}
+            {formatAuthor(entry.encoded)}: {entry.operation.fields.message}
           </h3>
         </div>
       ))}

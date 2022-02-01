@@ -12,6 +12,17 @@ type Props = {
   debugEntry: EntryRecord | null;
 };
 
+// Represents any Entry as a JSON string while respecting `BigInt` instances.
+function stringify(value: EntryRecord): string {
+  return JSON.stringify(
+    value,
+    (_key, value) => {
+      return typeof value === 'bigint' ? value.toString() : value;
+    },
+    2,
+  );
+}
+
 export const Instructions = ({
   keyPair,
   session,
@@ -101,11 +112,7 @@ const entry = await session.create(
             <p id="debugEntry">
               This is the entry for the message you clicked:{' '}
             </p>
-            <SyntaxHighlighter>{`${JSON.stringify(
-              debugEntry,
-              null,
-              2,
-            )}`}</SyntaxHighlighter>
+            <SyntaxHighlighter>{`${stringify(debugEntry)}`}</SyntaxHighlighter>
           </>
         )}
       </div>

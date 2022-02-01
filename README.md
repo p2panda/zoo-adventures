@@ -1,6 +1,6 @@
 # beep-boop
 
-[p2panda](https://github.com/p2panda/design-document) demo chat client running as a statically hosted web or native [Tauri](https://tauri.studio/) desktop application. See it live [here](https://p2panda.org/demo/). ⬅️
+[p2panda](https://github.com/p2panda/handbook) demo chat client running as a statically hosted web or native [Tauri](https://tauri.studio/) desktop application. See it live [here](https://p2panda.org/demo/). ⬅️
 
 ## Requirements
 

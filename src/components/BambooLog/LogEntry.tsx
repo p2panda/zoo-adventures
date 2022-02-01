@@ -20,6 +20,7 @@ const formatMessage = (message: string): string => {
 
 export const LogEntry = ({ entry }: Props): JSX.Element => {
   const { operation, entryHashBacklink, entryHashSkiplink } = entry;
+
   return (
     <div className="flex-column">
       <div className="entry-data flex-row">

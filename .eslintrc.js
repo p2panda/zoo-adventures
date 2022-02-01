@@ -23,7 +23,6 @@ module.exports = {
     // Keep prettier rules last to make sure its style changes are not
     // overwritten by other rules
     'plugin:prettier/recommended',
-    'prettier/@typescript-eslint',
   ],
   plugins: ['@typescript-eslint', 'prettier'],
   rules: {

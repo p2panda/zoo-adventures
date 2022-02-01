@@ -67,7 +67,9 @@ module.exports = (env, argv) => {
       // This has to be the same value as in `tauri.conf.json` to enable
       // development within the native tauri webview container.
       port: 4000,
-      clientLogLevel: 'error',
+      client: {
+        logging: 'error',
+      },
     },
   };
 };

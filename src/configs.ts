@@ -2,4 +2,4 @@
 
 export const ENDPOINT = 'http://localhost:2020';
 export const CHAT_SCHEMA =
-  '0020c65567ae37efea293e34a9c7d13f8f2bf23dbdc3b5c7b9ab46293111c48fc78b';
+  '00200cf84048b0798942deba7b1b9fcd77ca72876643bd3fedfe612d4c6fb60436be';

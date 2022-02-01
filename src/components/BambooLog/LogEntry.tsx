@@ -25,7 +25,7 @@ export const LogEntry = ({ entry }: Props): JSX.Element => {
     <div className="flex-column">
       <div className="entry-data flex-row">
         <div>{entry.seqNum}</div>
-        <div>{formatEntryHash(entry.encoded.entryHash)}</div>
+        <div>{formatEntryHash(entry._meta.id)}</div>
       </div>
       <div className="entry-content flex-row">
         <div className="flex-column">

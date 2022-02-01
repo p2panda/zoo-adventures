@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { createKeyPair, Session, wasm } from 'p2panda-js';
 
-import { BambooLog } from '~/components/BambooLog';
+// import { BambooLog } from '~/components/BambooLog';
 import { Chatlog } from '~/components/Chatlog';
 import { ENDPOINT, CHAT_SCHEMA } from '~/configs';
 import { Instructions } from '~/components/Instructions';
@@ -13,32 +13,48 @@ import '~/styles.css';
 const session = new Session(ENDPOINT);
 let syncInterval: number;
 
+type Document = {
+  _meta: {
+    author: string;
+    deleted: boolean;
+    edited: boolean;
+    entries: string[];
+    id: string;
+    last_operation: string;
+    schema: string;
+  };
+};
+
+type Bookmark = Document & {
+  created: string;
+  title: string;
+  url: string;
+};
+
 const App = (): JSX.Element => {
   const [currentMessage, setCurrentMessage] = useState<string>('');
   const [debugEntry, setDebugEntry] = useState<EntryRecord>(null);
   const [keyPair, setKeyPair] = useState(null);
-  const [entries, setEntries] = useState<EntryRecord[]>([]);
+  const [entries, setEntries] = useState<Bookmark[]>([]);
   const [isSyncToggled, setSyncToggled] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const syncEntries = async () => {
     setError(null);
 
-    let unsortedEntries = [];
+    let unsortedEntries: Bookmark[] = [];
     try {
-      unsortedEntries = await session.queryEntries(CHAT_SCHEMA);
-    } catch(err) {
+      unsortedEntries = await session.query({ schema: CHAT_SCHEMA });
+    } catch (err) {
       setError(err.message);
       setSyncToggled(false);
       console.log('Error fetching entries', err);
     }
 
     setEntries(
-      unsortedEntries.sort(
-        ({ operation: operationA }, { operation: operationB }) => {
-          return operationA.fields.date > operationB.fields.date ? 1 : -1;
-        },
-      ),
+      unsortedEntries.sort(({ created: createdA }, { created: createdB }) => {
+        return new Date(createdA) > new Date(createdB) ? 1 : -1;
+      }),
     );
   };
 
@@ -84,9 +100,9 @@ const App = (): JSX.Element => {
   };
 
   // Filter my personal entries
-  const myEntries = entries.filter(({ encoded: entry }) => {
-    return entry.author === keyPair.publicKey();
-  });
+  // const myEntries = entries.filter(({ _meta: { author } }) => {
+  //   return author === keyPair.publicKey();
+  // });
 
   return (
     <div className="home-wrapper flex-row">
@@ -109,7 +125,6 @@ const App = (): JSX.Element => {
           toggleSync={() => setSyncToggled(!isSyncToggled)}
           error={error}
         />
-        <BambooLog log={myEntries} setDebugEntry={setDebugEntry} />
       </div>
     </div>
   );

@@ -14,7 +14,7 @@ type Props = {
   error?: string;
 };
 
-const formatAuthor = ({ author }) => `${author.slice(0, 6)}`;
+const formatAuthor = (author: string) => `${author.slice(0, 6)}`;
 
 export const Chatlog = ({
   log,
@@ -43,12 +43,12 @@ export const Chatlog = ({
         .slice(-10)
         .reverse()
         .map((entry) => (
-          <div
-            key={`${entry.logId}-${entry.seqNum}-${entry.encoded.author}`}
-            onClick={() => setDebugEntry(entry)}
-          >
+          <div key={entry._meta.id} onClick={() => setDebugEntry(entry)}>
             <h3 className="message">
-              {formatAuthor(entry.encoded)}: {entry.operation.fields.message}
+              {formatAuthor(entry._meta.author)}:{' '}
+              <a href={entry.url} target="_blank" rel="noreferrer noopener">
+                {entry.title}
+              </a>
             </h3>
           </div>
         ))}

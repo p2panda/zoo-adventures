@@ -11,6 +11,7 @@ type Props = {
   handlePublish: (message: string) => Promise<void>;
   isSyncToggled: boolean;
   toggleSync: () => void;
+  error?: string;
 };
 
 const formatAuthor = ({ author }) => `${author.slice(0, 6)}`;
@@ -22,6 +23,7 @@ export const Chatlog = ({
   handlePublish,
   isSyncToggled,
   toggleSync,
+  error,
 }: Props): JSX.Element => (
   <div className="chat-log flex-column">
     <h2>Message Log</h2>{' '}
@@ -35,17 +37,21 @@ export const Chatlog = ({
         Sync
       </label>
     </div>
+    {error && <div className="error-message">{error}</div>}
     <div className="messages">
-      {log.slice(-10).map((entry) => (
-        <div
-          key={`${entry.logId}-${entry.seqNum}-${entry.encoded.author}`}
-          onClick={() => setDebugEntry(entry)}
-        >
-          <h3 className="message">
-            {formatAuthor(entry.encoded)}: {entry.operation.fields.url} {entry.operation.fields.title}
-          </h3>
-        </div>
-      ))}
+      {log
+        .slice(-10)
+        .map((entry) => (
+          <div
+            key={`${entry.logId}-${entry.seqNum}-${entry.encoded.author}`}
+            onClick={() => setDebugEntry(entry)}
+          >
+            <h3 className="message">
+              {formatAuthor(entry.encoded)}: {entry.operation.fields.url}{' '}
+              {entry.operation.fields.title}
+            </h3>
+          </div>
+        ))}
     </div>
   </div>
 );

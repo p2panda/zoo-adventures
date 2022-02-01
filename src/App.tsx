@@ -19,9 +19,19 @@ const App = (): JSX.Element => {
   const [keyPair, setKeyPair] = useState(null);
   const [entries, setEntries] = useState<EntryRecord[]>([]);
   const [isSyncToggled, setSyncToggled] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   const syncEntries = async () => {
-    const unsortedEntries = await session.queryEntries(CHAT_SCHEMA);
+    setError(null);
+
+    let unsortedEntries = [];
+    try {
+      unsortedEntries = await session.queryEntries(CHAT_SCHEMA);
+    } catch(err) {
+      setError(err.message);
+      setSyncToggled(false);
+      console.log('Error fetching entries', err);
+    }
 
     setEntries(
       unsortedEntries.sort(({ operation: opA }, { operation: opB }) => {
@@ -95,6 +105,7 @@ const App = (): JSX.Element => {
           setDebugEntry={setDebugEntry}
           isSyncToggled={isSyncToggled}
           toggleSync={() => setSyncToggled(!isSyncToggled)}
+          error={error}
         />
         <BambooLog log={myEntries} setDebugEntry={setDebugEntry} />
       </div>

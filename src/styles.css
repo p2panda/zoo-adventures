@@ -112,3 +112,10 @@ input[type="submit"] {
   color: chartreuse;
   font-weight: 800;
 }
+
+.error-message {
+  outline: 1px solid red;
+  background-color: #fafafa;
+  padding: 5px 1em;
+  margin: 1em 1px;
+}

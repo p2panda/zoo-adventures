@@ -1,178 +1,19 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { GraphQLClient, gql } from 'graphql-request';
-import {
-  KeyPair,
-  encodeOperation,
-  initWebAssembly,
-  signAndEncodeEntry,
-  generateHash,
-} from 'p2panda-js';
+import { GraphQLClient } from 'graphql-request';
+import { initWebAssembly } from 'p2panda-js';
 
-import { ANIMALS } from './animals';
+import { fetchBoard, updateBoardField } from './board';
+import { loadKeyPair, loadLastMove, storeLastMove } from './storage';
+import { publicKeyToAnimal } from './animals';
 
-import type { FunctionComponent } from 'react';
-
-type Animal = string;
-type DocumentViewId = string;
-type FieldIndex = number;
-type Fields = string[];
-
-const PRIVATE_KEY_STORE = 'privateKey';
-const LAST_MOVE_STORE = 'lastMove';
 const BOARD_SIZE = 4;
 const UPDATE_INTERVAL = 2000; // ms
 
-const GQL_NEXT_ARGS = gql`
-  query NextArgs($publicKey: String!, $viewId: String) {
-    nextArgs(publicKey: $publicKey, viewId: $viewId) {
-      logId
-      seqNum
-      backlink
-      skiplink
-    }
-  }
-`;
-
-const GQL_PUBLISH = gql`
-  mutation Publish($entry: String!, $operation: String!) {
-    publish(entry: $entry, operation: $operation) {
-      logId
-      seqNum
-      backlink
-      skiplink
-    }
-  }
-`;
-
-type NextArgs = {
-  logId: string;
-  seqNum: string;
-  backlink?: string;
-  skiplink?: string;
-};
-
-async function nextArgs(
-  client: GraphQLClient,
-  publicKey: string,
-  viewId?: DocumentViewId,
-): Promise<NextArgs> {
-  const result = await client.request(GQL_NEXT_ARGS, {
-    publicKey,
-    viewId,
-  });
-
-  return result.nextArgs;
-}
-
-async function publish(
-  client: GraphQLClient,
-  entry: string,
-  operation: string,
-): Promise<NextArgs> {
-  const result = await client.request(GQL_PUBLISH, {
-    entry,
-    operation,
-  });
-
-  return result.publish;
-}
-
-function initialiseKeyPair(): KeyPair {
-  const privateKey = window.localStorage.getItem(PRIVATE_KEY_STORE);
-  if (privateKey) {
-    return new KeyPair(privateKey);
-  }
-
-  const keyPair = new KeyPair();
-  window.localStorage.setItem(PRIVATE_KEY_STORE, keyPair.privateKey());
-  return keyPair;
-}
-
-function loadLastMove(): DocumentViewId | null {
-  return window.localStorage.getItem(LAST_MOVE_STORE);
-}
-
-function storeLastMove(viewId: DocumentViewId) {
-  window.localStorage.setItem(LAST_MOVE_STORE, viewId);
-}
-
-function publicKeyToAnimal(publicKey: string): string {
-  const value = parseInt(publicKey.slice(0, 8), 16);
-  return ANIMALS[value % ANIMALS.length];
-}
-
-async function updateBoardField(
-  client: GraphQLClient,
-  keyPair: KeyPair,
-  schemaId: string,
-  viewId: DocumentViewId,
-  fieldIndex: FieldIndex,
-  animal: string,
-): Promise<DocumentViewId> {
-  const args = await nextArgs(client, keyPair.publicKey(), viewId);
-
-  const payload = encodeOperation({
-    action: 'update',
-    previousOperations: viewId.split('_'),
-    schemaId,
-    fields: {
-      [`game_field_${fieldIndex}`]: animal,
-    },
-  });
-
-  const entry = signAndEncodeEntry(
-    {
-      ...args,
-      payload,
-    },
-    keyPair,
-  );
-
-  await publish(client, entry, payload);
-
-  // Assume that our last operation id will be the latest view id for this node
-  return generateHash(entry);
-}
-
-async function fetchBoard(
-  client: GraphQLClient,
-  schemaId: string,
-  documentId: string,
-): Promise<{ viewId: DocumentViewId; fields: Fields }> {
-  const fields = new Array(BOARD_SIZE * BOARD_SIZE).fill(0).map((_, index) => {
-    return `game_field_${index + 1}`;
-  });
-
-  const query = gql`
-    query FetchBoard($documentId: String!) {
-      board: ${schemaId}(id: $documentId) {
-        meta {
-          viewId
-        }
-        fields {
-          ${fields.join(' ')}
-        }
-      }
-    }
-  `;
-
-  const result = await client.request(query, {
-    documentId,
-  });
-
-  return {
-    viewId: result.board.meta.viewId,
-    fields: fields.map((fieldName) => {
-      return result.board.fields[fieldName];
-    }),
-  };
-}
-
 type GameBoardProps = {
-  fields: Fields;
-  animal: Animal;
-  onSetField: (index: FieldIndex) => void;
+  fields: string[];
+  animal: string;
+  onSetField: (index: number) => void;
 };
 
 const StyledGameBoard = styled.div`
@@ -187,7 +28,6 @@ const GameBoardField = styled.div<{ alreadySet: boolean }>`
   align-content: center;
   background-color: #efefef;
   border-radius: 50%;
-  border: 0 #efefef solid;
   cursor: ${(props) => (props.alreadySet ? 'normal' : 'pointer')};
   display: inline-grid;
   text-align: center;
@@ -207,7 +47,7 @@ const GameBoardField = styled.div<{ alreadySet: boolean }>`
   }}
 `;
 
-const GameBoard: FunctionComponent<GameBoardProps> = ({
+const GameBoard: React.FC<GameBoardProps> = ({
   fields,
   onSetField,
   animal,
@@ -241,9 +81,9 @@ type GameProps = {
   config: Configuration;
 };
 
-const Game: FunctionComponent<GameProps> = ({ config }) => {
+const Game: React.FC<GameProps> = ({ config }) => {
   const keyPair = useMemo(() => {
-    return initialiseKeyPair();
+    return loadKeyPair();
   }, []);
 
   const client = useMemo(() => {
@@ -254,14 +94,14 @@ const Game: FunctionComponent<GameProps> = ({ config }) => {
     return publicKeyToAnimal(keyPair.publicKey());
   }, [keyPair]);
 
-  const [viewId, setViewId] = useState<DocumentViewId>();
-  const [fields, setFields] = useState<Fields>();
-  const [lastMove, setLastMove] = useState<DocumentViewId | null>(() => {
+  const [viewId, setViewId] = useState<string>();
+  const [fields, setFields] = useState<string[]>();
+  const [lastMove, setLastMove] = useState<string | null>(() => {
     return loadLastMove();
   });
 
   const onSetField = useCallback(
-    async (fieldIndex: FieldIndex) => {
+    async (fieldIndex: number) => {
       if (!viewId) {
         return;
       }
@@ -315,6 +155,7 @@ const Game: FunctionComponent<GameProps> = ({ config }) => {
         client,
         config.schemaId,
         config.documentId,
+        BOARD_SIZE,
       );
 
       setViewId(board.viewId);
@@ -347,7 +188,7 @@ export type Configuration = {
   documentId: string;
 };
 
-export const ZooAdventures: FunctionComponent<Configuration> = (config) => {
+export const ZooAdventures: React.FC<Configuration> = (config) => {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-export const ANIMALS = [
+const ANIMALS = [
   '🐒',
   '🦍',
   '🐶',
@@ -100,3 +100,8 @@ export const ANIMALS = [
   '🦟',
   '🦠',
 ];
+
+export function publicKeyToAnimal(publicKey: string): string {
+  const value = parseInt(publicKey.slice(0, 8), 16);
+  return ANIMALS[value % ANIMALS.length];
+}

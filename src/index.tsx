@@ -161,15 +161,25 @@ type GameBoardProps = {
 
 const StyledGameBoard = styled.div`
   display: grid;
-  grid-template-columns: repeat(${BOARD_SIZE}, 1fr);
-  grid-auto-rows: 200px;
-  gap: 1em;
+  font-size: 28px;
+  grid-template-columns: repeat(${BOARD_SIZE}, 60px);
+  grid-auto-rows: 60px;
+  gap: 17px;
 `;
 
 const GameBoardField = styled.div`
   display: inline-grid;
-  background-color: red;
+  text-align: center;
+  align-content: center;
+  background-color: #efefef;
+  border: 0 #efefef solid;
+  border-radius: 50%;
   cursor: pointer;
+  transition: background-color linear 20ms;
+
+  &:hover {
+    background-color: #ddd;
+  }
 `;
 
 const GameBoard: FunctionComponent<GameBoardProps> = ({

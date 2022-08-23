@@ -22,7 +22,7 @@ const GQL_PUBLISH = gql`
   }
 `;
 
-export type NextArgs = {
+type NextArgs = {
   logId: string;
   seqNum: string;
   backlink?: string;

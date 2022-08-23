@@ -6,6 +6,7 @@ import {
   encodeOperation,
   initWebAssembly,
   signAndEncodeEntry,
+  generateHash,
 } from 'p2panda-js';
 
 import { ANIMALS } from './animals';
@@ -18,6 +19,7 @@ type FieldIndex = number;
 type Fields = string[];
 
 const PRIVATE_KEY_STORE = 'privateKey';
+const LAST_MOVE_STORE = 'lastMove';
 const BOARD_SIZE = 4;
 const UPDATE_INTERVAL = 2000; // ms
 
@@ -87,6 +89,14 @@ function initialiseKeyPair(): KeyPair {
   return keyPair;
 }
 
+function loadLastMove(): DocumentViewId | null {
+  return window.localStorage.getItem(LAST_MOVE_STORE);
+}
+
+function storeLastMove(viewId: DocumentViewId) {
+  window.localStorage.setItem(LAST_MOVE_STORE, viewId);
+}
+
 function publicKeyToAnimal(publicKey: string): string {
   const value = parseInt(publicKey.slice(0, 8), 16);
   return ANIMALS[value % ANIMALS.length];
@@ -99,7 +109,7 @@ async function updateBoardField(
   viewId: DocumentViewId,
   fieldIndex: FieldIndex,
   animal: string,
-): Promise<void> {
+): Promise<DocumentViewId> {
   const args = await nextArgs(client, keyPair.publicKey(), viewId);
 
   const payload = encodeOperation({
@@ -120,6 +130,9 @@ async function updateBoardField(
   );
 
   await publish(client, entry, payload);
+
+  // Assume that our last operation id will be the latest view id for this node
+  return generateHash(entry);
 }
 
 async function fetchBoard(
@@ -225,29 +238,36 @@ const GameBoard: FunctionComponent<GameBoardProps> = ({
 };
 
 type GameProps = {
-  keyPair: KeyPair;
   config: Configuration;
 };
 
-const Game: FunctionComponent<GameProps> = ({ keyPair, config }) => {
+const Game: FunctionComponent<GameProps> = ({ config }) => {
+  const keyPair = useMemo(() => {
+    return initialiseKeyPair();
+  }, []);
+
   const client = useMemo(() => {
     return new GraphQLClient(config.endpoint);
   }, [config.endpoint]);
 
-  const publicKey = useMemo(() => {
-    return keyPair.publicKey();
-  }, [keyPair]);
-
   const animal = useMemo(() => {
-    return publicKeyToAnimal(publicKey);
-  }, [publicKey]);
+    return publicKeyToAnimal(keyPair.publicKey());
+  }, [keyPair]);
 
   const [viewId, setViewId] = useState<DocumentViewId>();
   const [fields, setFields] = useState<Fields>();
+  const [lastMove, setLastMove] = useState<DocumentViewId | null>(() => {
+    return loadLastMove();
+  });
 
   const onSetField = useCallback(
     async (fieldIndex: FieldIndex) => {
       if (!viewId) {
+        return;
+      }
+
+      // Do not allow making a move when player already did it one round ago
+      if (lastMove === viewId) {
         return;
       }
 
@@ -261,8 +281,12 @@ const Game: FunctionComponent<GameProps> = ({ keyPair, config }) => {
         return [...value];
       });
 
-      // Send update to node
-      await updateBoardField(
+      // Send update to node.
+      //
+      // The method gives us back the "latest" view id, that is, we assume that
+      // our last write is now the latest edge of the operation graph. But who
+      // knows, maybe some concurrent write by someone decided something else!
+      const latestViewId = await updateBoardField(
         client,
         keyPair,
         config.schemaId,
@@ -270,8 +294,19 @@ const Game: FunctionComponent<GameProps> = ({ keyPair, config }) => {
         fieldIndex,
         animal,
       );
+
+      // Set and persist last move
+      setLastMove(latestViewId);
+      storeLastMove(latestViewId);
+
+      // Temporarily guess that this might be the latest viewId from the
+      // perspective of the node as well. The next update will proof us right
+      // or wrong ..
+      //
+      // At least it helps us to block the player until the next update!
+      setViewId(latestViewId);
     },
-    [viewId, client, keyPair, config, animal],
+    [viewId, client, lastMove, keyPair, config, animal],
   );
 
   useEffect(() => {
@@ -295,7 +330,7 @@ const Game: FunctionComponent<GameProps> = ({ keyPair, config }) => {
     return () => {
       window.clearInterval(interval);
     };
-  }, [client, publicKey, config.schemaId, config.documentId]);
+  }, [client, config.schemaId, config.documentId]);
 
   return (
     <>
@@ -313,16 +348,16 @@ export type Configuration = {
 };
 
 export const ZooAdventures: FunctionComponent<Configuration> = (config) => {
-  const [keyPair, setKeyPair] = useState<KeyPair>();
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const init = async () => {
       await initWebAssembly();
-      setKeyPair(initialiseKeyPair());
+      setReady(true);
     };
 
     init();
   }, []);
 
-  return keyPair ? <Game keyPair={keyPair} config={config} /> : null;
+  return ready ? <Game config={config} /> : null;
 };

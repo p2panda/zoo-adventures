@@ -19,13 +19,16 @@
   ],
   "plugins": [
     "@typescript-eslint",
-    "prettier"
+    "prettier",
+    "react-hooks"
   ],
   "rules": {
     "comma-dangle": [
       "error",
       "always-multiline"
     ],
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
     "react/no-unescaped-entities": [
       "error",
       {

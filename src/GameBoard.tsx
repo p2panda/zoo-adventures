@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
+// All dimensions in pixels
 const FIELD_SIZE = 60;
 const GAP_SIZE = 17;
 const ICON_SIZE = 28;

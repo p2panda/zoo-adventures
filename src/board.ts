@@ -8,7 +8,10 @@ import {
 
 import { nextArgs, publish } from './request';
 
-export async function updateBoardField(
+/**
+ * We're making a move. Send that update to the board.
+ */
+export async function updateBoard(
   client: GraphQLClient,
   keyPair: KeyPair,
   schemaId: string,
@@ -41,6 +44,9 @@ export async function updateBoardField(
   return generateHash(entry);
 }
 
+/**
+ * Get the latest board game state from the node.
+ */
 export async function fetchBoard(
   client: GraphQLClient,
   schemaId: string,

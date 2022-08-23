@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { GraphQLClient } from 'graphql-request';
 
 import { GameBoard } from './GameBoard';
-import { fetchBoard, updateBoardField } from './board';
+import { fetchBoard, updateBoard } from './board';
 import { loadKeyPair, loadLastMove, storeLastMove } from './storage';
 import { publicKeyToAnimal } from './animals';
 
@@ -45,7 +45,7 @@ export const Game: React.FC<Props> = ({ config }) => {
   // updates from the node
   const [ready, setReady] = useState(true);
 
-  const updateBoard = useCallback(async () => {
+  const update = useCallback(async () => {
     const board = await fetchBoard(
       client,
       config.schemaId,
@@ -100,7 +100,7 @@ export const Game: React.FC<Props> = ({ config }) => {
       // The method gives us back the "latest" view id, that is, we assume that
       // our last write is now the latest edge of the operation graph. But who
       // knows, maybe some concurrent write by someone decided something else!
-      const latestViewId = await updateBoardField(
+      const latestViewId = await updateBoard(
         client,
         keyPair,
         config.schemaId,
@@ -118,15 +118,15 @@ export const Game: React.FC<Props> = ({ config }) => {
 
   useEffect(() => {
     const interval = window.setInterval(() => {
-      updateBoard();
+      update();
     }, config.updateIntervalMs);
 
-    updateBoard();
+    update();
 
     return () => {
       window.clearInterval(interval);
     };
-  }, [client, updateBoard, config.updateIntervalMs]);
+  }, [client, update, config.updateIntervalMs]);
 
   return (
     <>

@@ -14,7 +14,10 @@ npm run lint
 # Build library and demo
 npm run build
 
-# Show demo
+# Watch for changes and automatically run `build`
+npm run watch
+
+# Start server to host demo (needs building first)
 npm run serve
 ```
 

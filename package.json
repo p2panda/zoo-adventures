@@ -12,7 +12,8 @@
     "lint": "eslint --ext .ts --ext .tsx .",
     "rollup": "rollup -c rollup.config.ts --configPlugin typescript",
     "serve": "serve ./demo-dist",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "watch": "nodemon --watch './src/*' --exec 'npm run build' --ext js,ts,tsx,json"
   },
   "repository": {
     "type": "git",
@@ -44,6 +45,7 @@
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-react": "^7.30.1",
+    "nodemon": "^2.0.19",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1",
     "react-dom": "^18.2.0",
@@ -56,5 +58,8 @@
   },
   "peerDependency": {
     "react": "^18.2.0"
+  },
+  "dependencies": {
+    "p2panda-js": "^0.5.0"
   }
 }

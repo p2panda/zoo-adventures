@@ -17,23 +17,64 @@ export const Game: React.FC<Props> = ({ config }) => {
     return loadKeyPair();
   }, []);
 
-  const client = useMemo(() => {
-    return new GraphQLClient(config.endpoint);
-  }, [config.endpoint]);
-
   const animal = useMemo(() => {
     return publicKeyToAnimal(keyPair.publicKey());
   }, [keyPair]);
 
+  const client = useMemo(() => {
+    return new GraphQLClient(config.endpoint);
+  }, [config.endpoint]);
+
+  // Latest document view id of the game board
   const [viewId, setViewId] = useState<string>();
+
+  // State of the game board
   const [fields, setFields] = useState<string[]>();
+
+  // Remember document view id of our last move, this helps us to detect if we
+  // are the last player who updated the board
   const [lastMove, setLastMove] = useState<string | null>(() => {
     return loadLastMove();
   });
 
+  // Remember what the last update was, this helps us to detect if the node
+  // could send us something new
+  const [lastUpdate, setLastUpdate] = useState<string>();
+
+  // Block the user interface when we just made a move and we're waiting for
+  // updates from the node
+  const [ready, setReady] = useState(true);
+
+  const updateBoard = useCallback(async () => {
+    const board = await fetchBoard(
+      client,
+      config.schemaId,
+      config.documentId,
+      config.boardSize,
+    );
+
+    // Make sure to only affect the board state when we really have something
+    // new for the client. This prevents overriding temporarily set local-only
+    // state.
+    if (lastUpdate !== board.viewId) {
+      setViewId(board.viewId);
+      setFields(board.fields);
+      setLastUpdate(board.viewId);
+      setReady(true);
+    }
+  }, [
+    client,
+    config.boardSize,
+    config.documentId,
+    config.schemaId,
+    lastUpdate,
+  ]);
+
   const onSetField = useCallback(
     async (fieldIndex: number) => {
-      if (!viewId) {
+      // Do not do allow making a move when we're waiting for the latest state
+      // from the node
+      if (!viewId || !ready) {
         return;
       }
 
@@ -42,7 +83,9 @@ export const Game: React.FC<Props> = ({ config }) => {
         return;
       }
 
-      // Apply update locally first
+      setReady(false);
+
+      // Apply update locally first to see the changes directly
       setFields((value) => {
         if (!value) {
           return;
@@ -66,33 +109,14 @@ export const Game: React.FC<Props> = ({ config }) => {
         animal,
       );
 
-      // Set and persist last move
+      // Set and persist last move so we remember it when we come back later
       setLastMove(latestViewId);
       storeLastMove(latestViewId);
-
-      // Temporarily guess that this might be the latest viewId from the
-      // perspective of the node as well. The next update will proof us right
-      // or wrong ..
-      //
-      // At least it helps us to block the player until the next update!
-      setViewId(latestViewId);
     },
-    [viewId, client, lastMove, keyPair, config, animal],
+    [viewId, client, lastMove, keyPair, config, animal, ready],
   );
 
   useEffect(() => {
-    const updateBoard = async () => {
-      const board = await fetchBoard(
-        client,
-        config.schemaId,
-        config.documentId,
-        config.boardSize,
-      );
-
-      setViewId(board.viewId);
-      setFields(board.fields);
-    };
-
     const interval = window.setInterval(() => {
       updateBoard();
     }, config.updateIntervalMs);
@@ -102,13 +126,7 @@ export const Game: React.FC<Props> = ({ config }) => {
     return () => {
       window.clearInterval(interval);
     };
-  }, [
-    client,
-    config.boardSize,
-    config.documentId,
-    config.schemaId,
-    config.updateIntervalMs,
-  ]);
+  }, [client, updateBoard, config.updateIntervalMs]);
 
   return (
     <>

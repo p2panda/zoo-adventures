@@ -1,0 +1,16 @@
+{
+  "extends": "@tsconfig/node16/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "./lib",
+    "module": "esnext",
+    "jsx": "react",
+    "lib": ["dom"],
+    "types": ["node"]
+  },
+  "include": [
+    "./rollup.config.ts",
+    "./src/**/*",
+    "./demo/**/*"
+  ]
+}

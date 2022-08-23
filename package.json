@@ -1,0 +1,60 @@
+{
+  "name": "zoo-adventures",
+  "version": "0.1.0",
+  "description": "Hang out with the other animals in the zoo",
+  "type": "module",
+  "main": "./lib/cjs/index.js",
+  "module": "./lib/esm/index.js",
+  "types": "./lib/cjs/index.d.ts",
+  "scripts": {
+    "build": "run-s clear rollup",
+    "clear": "rimraf ./lib",
+    "lint": "eslint --ext .ts --ext .tsx .",
+    "rollup": "rollup -c rollup.config.ts --configPlugin typescript",
+    "serve": "serve ./demo-dist",
+    "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/p2panda/beep-boop.git"
+  },
+  "contributors": [
+    "adz <x1d@adz.garden>",
+    "cafca <cafca@001.land>",
+    "sandreae <contact@samandreae.com>"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/p2panda/beep-boop/issues"
+  },
+  "homepage": "https://github.com/p2panda/beep-boop#readme",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^22.0.2",
+    "@rollup/plugin-html": "^0.2.4",
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "@rollup/plugin-replace": "^4.0.0",
+    "@rollup/plugin-typescript": "^8.3.4",
+    "@tsconfig/node16": "^1.0.3",
+    "@types/node": "^18.7.6",
+    "@types/react": "^18.0.17",
+    "@types/react-dom": "^18.0.6",
+    "@typescript-eslint/eslint-plugin": "^5.34.0",
+    "@typescript-eslint/parser": "^5.34.0",
+    "eslint": "^8.22.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.30.1",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.7.1",
+    "react-dom": "^18.2.0",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.78.0",
+    "rollup-plugin-dts": "^4.2.2",
+    "rollup-plugin-terser": "^7.0.2",
+    "serve": "^14.0.1",
+    "typescript": "^4.7.4"
+  },
+  "peerDependency": {
+    "react": "^18.2.0"
+  }
+}

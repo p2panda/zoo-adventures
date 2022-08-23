@@ -201,11 +201,17 @@ const GameBoard: FunctionComponent<GameBoardProps> = ({
   return (
     <StyledGameBoard>
       {fields.map((field, index) => {
+        const alreadySet = field === animal;
+
         return (
           <GameBoardField
             key={`field-${index}`}
-            alreadySet={field === animal}
+            alreadySet={alreadySet}
             onClick={() => {
+              if (alreadySet) {
+                return;
+              }
+
               onSetField(index + 1);
             }}
           >

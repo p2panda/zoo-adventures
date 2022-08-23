@@ -19,6 +19,7 @@ type Fields = string[];
 
 const PRIVATE_KEY_STORE = 'privateKey';
 const BOARD_SIZE = 4;
+const UPDATE_INTERVAL = 2000; // ms
 
 const GQL_NEXT_ARGS = gql`
   query NextArgs($publicKey: String!, $viewId: String) {
@@ -274,7 +275,7 @@ const Game: FunctionComponent<GameProps> = ({ keyPair, config }) => {
   );
 
   useEffect(() => {
-    const init = async () => {
+    const updateBoard = async () => {
       const board = await fetchBoard(
         client,
         config.schemaId,
@@ -285,7 +286,15 @@ const Game: FunctionComponent<GameProps> = ({ keyPair, config }) => {
       setFields(board.fields);
     };
 
-    init();
+    const interval = window.setInterval(() => {
+      updateBoard();
+    }, UPDATE_INTERVAL);
+
+    updateBoard();
+
+    return () => {
+      window.clearInterval(interval);
+    };
   }, [client, publicKey, config.schemaId, config.documentId]);
 
   return (

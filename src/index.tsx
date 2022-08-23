@@ -8,6 +8,8 @@ import {
   signAndEncodeEntry,
 } from 'p2panda-js';
 
+import { ANIMALS } from './animals';
+
 import type { FunctionComponent } from 'react';
 
 type Fields = string[];
@@ -81,6 +83,11 @@ function initialiseKeyPair(): KeyPair {
   const keyPair = new KeyPair();
   window.localStorage.setItem(PRIVATE_KEY_STORE, keyPair.privateKey());
   return keyPair;
+}
+
+function publicKeyToAnimal(publicKey: string): string {
+  const value = parseInt(publicKey.slice(0, 8), 16);
+  return ANIMALS[value % ANIMALS.length];
 }
 
 async function updateBoardField(
@@ -162,6 +169,7 @@ const StyledGameBoard = styled.div`
 const GameBoardField = styled.div`
   display: inline-grid;
   background-color: red;
+  cursor: pointer;
 `;
 
 const GameBoard: FunctionComponent<GameBoardProps> = ({
@@ -175,7 +183,7 @@ const GameBoard: FunctionComponent<GameBoardProps> = ({
           <GameBoardField
             key={`field-${index}`}
             onClick={() => {
-              onSetField(index);
+              onSetField(index + 1);
             }}
           >
             {field}
@@ -201,7 +209,7 @@ const Game: FunctionComponent<GameProps> = ({ keyPair, config }) => {
   }, [keyPair]);
 
   const animal = useMemo(() => {
-    return '🐼';
+    return publicKeyToAnimal(publicKey);
   }, [publicKey]);
 
   const [viewId, setViewId] = useState<DocumentViewId>();
@@ -213,6 +221,17 @@ const Game: FunctionComponent<GameProps> = ({ keyPair, config }) => {
         return;
       }
 
+      // Apply update locally first
+      setFields((value) => {
+        if (!value) {
+          return;
+        }
+
+        value[fieldIndex - 1] = animal;
+        return [...value];
+      });
+
+      // Send update to node
       await updateBoardField(
         client,
         keyPair,

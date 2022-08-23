@@ -1,7 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { GraphQLClient, gql } from 'graphql-request';
-import { initWebAssembly, KeyPair } from 'p2panda-js';
+import {
+  KeyPair,
+  encodeOperation,
+  initWebAssembly,
+  signAndEncodeEntry,
+} from 'p2panda-js';
 
 import type { FunctionComponent } from 'react';
 
@@ -76,6 +81,36 @@ function initialiseKeyPair(): KeyPair {
   const keyPair = new KeyPair();
   window.localStorage.setItem(PRIVATE_KEY_STORE, keyPair.privateKey());
   return keyPair;
+}
+
+async function updateBoardField(
+  client: GraphQLClient,
+  keyPair: KeyPair,
+  schemaId: string,
+  viewId: DocumentViewId,
+  fieldIndex: FieldIndex,
+  animal: string,
+): Promise<void> {
+  const args = await nextArgs(client, keyPair.publicKey(), viewId);
+
+  const payload = encodeOperation({
+    action: 'update',
+    previousOperations: viewId.split('_'),
+    schemaId,
+    fields: {
+      [`game_field_${fieldIndex}`]: animal,
+    },
+  });
+
+  const entry = signAndEncodeEntry(
+    {
+      ...args,
+      payload,
+    },
+    keyPair,
+  );
+
+  await publish(client, entry, payload);
 }
 
 async function fetchBoard(
@@ -165,12 +200,30 @@ const Game: FunctionComponent<GameProps> = ({ keyPair, config }) => {
     return keyPair.publicKey();
   }, [keyPair]);
 
+  const animal = useMemo(() => {
+    return '🐼';
+  }, [publicKey]);
+
   const [viewId, setViewId] = useState<DocumentViewId>();
   const [fields, setFields] = useState<Fields>();
 
-  const onSetField = useCallback((index: FieldIndex) => {
-    console.log(index);
-  }, []);
+  const onSetField = useCallback(
+    async (fieldIndex: FieldIndex) => {
+      if (!viewId) {
+        return;
+      }
+
+      await updateBoardField(
+        client,
+        keyPair,
+        config.schemaId,
+        viewId,
+        fieldIndex,
+        animal,
+      );
+    },
+    [viewId, client, keyPair, config, animal],
+  );
 
   useEffect(() => {
     const init = async () => {

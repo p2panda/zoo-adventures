@@ -12,9 +12,10 @@ import { ANIMALS } from './animals';
 
 import type { FunctionComponent } from 'react';
 
-type Fields = string[];
-type FieldIndex = number;
+type Animal = string;
 type DocumentViewId = string;
+type FieldIndex = number;
+type Fields = string[];
 
 const PRIVATE_KEY_STORE = 'privateKey';
 const BOARD_SIZE = 4;
@@ -156,35 +157,46 @@ async function fetchBoard(
 
 type GameBoardProps = {
   fields: Fields;
+  animal: Animal;
   onSetField: (index: FieldIndex) => void;
 };
 
 const StyledGameBoard = styled.div`
   display: grid;
   font-size: 28px;
-  grid-template-columns: repeat(${BOARD_SIZE}, 60px);
-  grid-auto-rows: 60px;
   gap: 17px;
+  grid-auto-rows: 60px;
+  grid-template-columns: repeat(${BOARD_SIZE}, 60px);
 `;
 
-const GameBoardField = styled.div`
-  display: inline-grid;
-  text-align: center;
+const GameBoardField = styled.div<{ alreadySet: boolean }>`
   align-content: center;
   background-color: #efefef;
-  border: 0 #efefef solid;
   border-radius: 50%;
-  cursor: pointer;
+  border: 0 #efefef solid;
+  cursor: ${(props) => (props.alreadySet ? 'normal' : 'pointer')};
+  display: inline-grid;
+  text-align: center;
   transition: background-color linear 20ms;
+  user-select: none;
 
-  &:hover {
-    background-color: #ddd;
-  }
+  ${(props) => {
+    if (props.alreadySet) {
+      return;
+    }
+
+    return `
+      &:hover {
+        background-color: #ddd;
+      }
+    `;
+  }}
 `;
 
 const GameBoard: FunctionComponent<GameBoardProps> = ({
   fields,
   onSetField,
+  animal,
 }) => {
   return (
     <StyledGameBoard>
@@ -192,6 +204,7 @@ const GameBoard: FunctionComponent<GameBoardProps> = ({
         return (
           <GameBoardField
             key={`field-${index}`}
+            alreadySet={field === animal}
             onClick={() => {
               onSetField(index + 1);
             }}
@@ -269,7 +282,13 @@ const Game: FunctionComponent<GameProps> = ({ keyPair, config }) => {
     init();
   }, [client, publicKey, config.schemaId, config.documentId]);
 
-  return <>{fields && <GameBoard fields={fields} onSetField={onSetField} />}</>;
+  return (
+    <>
+      {fields && (
+        <GameBoard fields={fields} animal={animal} onSetField={onSetField} />
+      )}
+    </>
+  );
 };
 
 export type Configuration = {

@@ -1,6 +1,7 @@
 import pluginCommonJS from '@rollup/plugin-commonjs';
 import pluginDts from 'rollup-plugin-dts';
-import pluginHtml from '@rollup/plugin-html';
+import pluginHTML from '@rollup/plugin-html';
+import pluginJSON from '@rollup/plugin-json';
 import pluginReplace from '@rollup/plugin-replace';
 import pluginTypeScript from '@rollup/plugin-typescript';
 import { nodeResolve as pluginNodeResolve } from '@rollup/plugin-node-resolve';
@@ -40,7 +41,12 @@ function config(format: ModuleFormat): RollupOptions[] {
           plugins: [pluginTerser()],
         },
       ],
-      plugins: [pluginTypeScript(), pluginNodeResolve()],
+      plugins: [
+        pluginTypeScript(),
+        pluginCommonJS(),
+        pluginNodeResolve(),
+        pluginJSON(),
+      ],
     },
     {
       input,
@@ -75,11 +81,14 @@ function demoConfig(): RollupOptions[] {
           },
         }),
         pluginTypeScript(),
-        pluginHtml({
+        pluginHTML({
           title: PROJECT_NAME,
         }),
+        pluginJSON(),
+        pluginNodeResolve({
+          browser: true,
+        }),
         pluginCommonJS(),
-        pluginNodeResolve(),
       ],
     },
   ];

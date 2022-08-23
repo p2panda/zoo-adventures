@@ -1,6 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { detectWinner } from './winner';
+import { validAnimal } from './animals';
+
 // All dimensions in pixels
 const FIELD_SIZE = 60;
 const GAP_SIZE = 17;
@@ -13,6 +16,8 @@ type Props = {
 };
 
 export const GameBoard: React.FC<Props> = ({ fields, onSetField, animal }) => {
+  detectWinner(fields, 4, 4);
+
   return (
     <StyledGameBoard boardSize={Math.sqrt(fields.length)}>
       {fields.map((field, index) => {
@@ -33,7 +38,7 @@ export const GameBoard: React.FC<Props> = ({ fields, onSetField, animal }) => {
               onSetField(fieldIndex);
             }}
           >
-            {field}
+            {validAnimal(field) && field}
           </GameBoardField>
         );
       })}

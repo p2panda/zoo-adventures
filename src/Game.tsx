@@ -55,7 +55,7 @@ export const Game: React.FC<Props> = ({ config }) => {
 
     // Make sure to only affect the board state when we really have something
     // new for the client. This prevents overriding temporarily set local-only
-    // state.
+    // state
     if (lastUpdate !== board.viewId) {
       setViewId(board.viewId);
       setFields(board.fields);

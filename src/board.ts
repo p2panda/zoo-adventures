@@ -9,7 +9,7 @@ import {
 import { nextArgs, publish } from './request';
 
 /**
- * We're making a move. Send that update to the board.
+ * We're making a move. Send that update to the node.
  */
 export async function updateBoard(
   client: GraphQLClient,

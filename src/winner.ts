@@ -62,7 +62,13 @@ function diagonal(
   return [];
 }
 
-function winCombinations(boardSize: number, winSize: number): number[][] {
+/**
+ * Calculate all combinations on the board where player wins.
+ */
+export function winCombinations(
+  boardSize: number,
+  winSize: number,
+): number[][] {
   let result: number[][] = [];
 
   for (let x = 0; x < boardSize; x += 1) {
@@ -78,14 +84,10 @@ function winCombinations(boardSize: number, winSize: number): number[][] {
   return result;
 }
 
-export function detectWinner(
-  fields: string[],
-  boardSize: number,
-  winSize: number,
-) {
-  // Calculate all possible winning positions
-  const combinations = winCombinations(boardSize, winSize);
-
+/**
+ * Detect if a player won on the board.
+ */
+export function detectWinner(fields: string[], combinations: number[][]) {
   // Gather all current players and their positions
   const players = fields.reduce<{ [field: string]: number[] }>(
     (acc, field, index) => {

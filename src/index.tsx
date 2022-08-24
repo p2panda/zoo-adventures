@@ -4,6 +4,8 @@ import { Game, InitWasm } from './components';
 
 import type { Configuration } from './types';
 
+// @TODO: Change these to production values
+// Related issue: https://github.com/p2panda/zoo-adventures/issues/37
 const defaultConfiguration: Configuration = {
   boardSize: 4,
   winSize: 3,

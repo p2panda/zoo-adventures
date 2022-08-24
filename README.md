@@ -47,8 +47,17 @@ npm install
 
 The used schema for this game is already deployed in the p2panda network. If you want to to deploy it on your [local node](https://github.com/p2panda/aquadoggo), you can run:
 
-```bash
-node register-schema.js
+```
+$ npm run schema
+
+Usage: --privateKey [path] --boardSize [num] --endpoint [url]
+
+Options:
+      --help        Show help
+      --version     Show version number
+  -k, --privateKey  Path to file holding private key [default: Demo key]
+  -s, --boardSize   Size of the game board, use 4 for "4x4" for example [default: 4]
+  -e, --endpoint    Endpoint of p2panda node [default: "http://localhost:2020/graphql"]
 ```
 
 It will deploy the schema and create the game board document on your node hosted at `http://localhost:2020`.

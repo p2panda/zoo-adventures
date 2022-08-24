@@ -35,7 +35,6 @@ const StyledMessage = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  margin: 10px;
   margin: 75px 25px;
   padding: 10px;
 `;

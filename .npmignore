@@ -2,9 +2,9 @@
 .eslintignore
 .eslintrc.json
 .nvmrc
-.prettierignore
 .prettierrc
 demo-dist
+privateKey.txt
 register-schema.js
 rollup.config.ts
 screenshot.png

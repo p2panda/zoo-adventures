@@ -163,7 +163,7 @@ export const Game: React.FC<Props> = ({ config }) => {
               winners={winners}
             />
           </GameContainer>
-          {animal && <MyAnimal animal={animal} />}
+          {animal && <MyAnimal animal={animal} winSize={config.winSize} />}
         </Wrapper>
       )}
     </>

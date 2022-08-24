@@ -3,10 +3,15 @@ import styled from 'styled-components';
 
 type Props = {
   animal: string;
+  winSize: number;
 };
 
-export const MyAnimal: React.FC<Props> = ({ animal }) => {
-  return <StyledMyAnimal>You're playing {animal}</StyledMyAnimal>;
+export const MyAnimal: React.FC<Props> = ({ animal, winSize }) => {
+  return (
+    <StyledMyAnimal>
+      Put {winSize}x {animal} in a row to win
+    </StyledMyAnimal>
+  );
 };
 
 const StyledMyAnimal = styled.div`

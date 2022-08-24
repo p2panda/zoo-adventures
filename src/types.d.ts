@@ -5,6 +5,9 @@ export type Configuration = {
   /** Dimensions of the board, set to 4 when it is a 4x4 board */
   boardSize: number;
 
+  /** Required number of pieces in horizontal, vertical, diagonal row to win */
+  winSize: number;
+
   /** All players play on the same board, this is the document id of it */
   documentId: string;
 

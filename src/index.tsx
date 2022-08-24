@@ -7,6 +7,7 @@ import type { Configuration } from './types';
 
 const defaultConfiguration: Configuration = {
   boardSize: 4,
+  winSize: 4,
   documentId:
     '0020c301d6595e12cbd472d21ac4c1bdfde02ec4e8d7ea299f723130d64eb65e500d',
   endpoint: 'http://localhost:2020/graphql',

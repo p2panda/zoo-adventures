@@ -2,7 +2,7 @@
 
 Play with the other animals in the zoo.
 
-<img src="screenshot.png" width="350" />
+<img src="https://raw.githubusercontent.com/p2panda/zoo-adventures/main/screenshot.png" width="350" />
 
 This is a React component you can embed in your website. It will connect to a [p2panda](https://github.com/p2panda/handbook) node and allow you to collaboratively play the game in the p2panda network.
 

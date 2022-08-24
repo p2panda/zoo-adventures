@@ -75,6 +75,27 @@ function diagonal(
 
 /**
  * Calculate all combinations on the board where player wins.
+ *
+ * Given a boardSize of 3 and winSize of 3, we would receive the following
+ * combinations (as string values, with separator in-between):
+ *
+ * ```
+ * Board:
+ *
+ * 0 1 2
+ * 3 4 5
+ * 6 7 8
+ *
+ * Combinations:
+ *
+ * 0|1|2
+ * 3|4|5
+ * 6|7|8
+ * 0|3|6
+ * 1|4|7
+ * 2|5|8
+ * 0|4|8
+ * ```
  */
 export function winCombinations(boardSize: number, winSize: number): string[] {
   let result: string[] = [];
@@ -94,8 +115,17 @@ export function winCombinations(boardSize: number, winSize: number): string[] {
 
 /**
  * Detect if a player won on the board.
+ *
+ * Since we represent all winning combinations as strings we can simply match
+ * strings against each other to see if a player fullfills at least one
+ * combination.
  */
-export function detectWinner(fields: string[], combinations: number[][]) {
+export function detectWinner(
+  fields: string[],
+  combinations: string[],
+): string[] {
+  const winners: string[] = [];
+
   // Gather all current players and their positions
   const players = fields.reduce<{ [field: string]: string }>(
     (acc, field, index) => {
@@ -115,5 +145,19 @@ export function detectWinner(fields: string[], combinations: number[][]) {
     {},
   );
 
-  console.log(combinations, players);
+  // See if at least one winning combination string matches player position string
+  const playerKeys = Object.keys(players);
+  for (let p = 0; p < playerKeys.length; p += 1) {
+    for (let c = 0; c < combinations.length; c += 1) {
+      const player = playerKeys[p];
+      const positions = players[player];
+      const combination = combinations[c];
+
+      if (positions.includes(combination) && !winners.includes(player)) {
+        winners.push(player);
+      }
+    }
+  }
+
+  return winners;
 }

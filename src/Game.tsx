@@ -5,7 +5,7 @@ import { GameBoard } from './GameBoard';
 import { fetchBoard, updateBoard } from './board';
 import { loadKeyPair, loadLastMove, storeLastMove } from './storage';
 import { publicKeyToAnimal } from './animals';
-import { winCombinations } from './winner';
+import { detectWinner, winCombinations } from './winner';
 
 import type { Configuration } from './types';
 
@@ -26,12 +26,6 @@ export const Game: React.FC<Props> = ({ config }) => {
     return new GraphQLClient(config.endpoint);
   }, [config.endpoint]);
 
-  // Calculate all combinations on the board where a player wins. We only need
-  // to do that once.
-  const combinations = useMemo(() => {
-    return winCombinations(config.boardSize, config.winSize);
-  }, [config.boardSize, config.winSize]);
-
   // Latest document view id of the game board
   const [viewId, setViewId] = useState<string>();
 
@@ -51,6 +45,21 @@ export const Game: React.FC<Props> = ({ config }) => {
   // Block the user interface when we just made a move and we're waiting for
   // updates from the node
   const [ready, setReady] = useState(true);
+
+  // Calculate all combinations on the board where a player wins. We only need
+  // to do that once.
+  const combinations = useMemo(() => {
+    return winCombinations(config.boardSize, config.winSize);
+  }, [config.boardSize, config.winSize]);
+
+  // Calculate if we have any winners on the board.
+  const winners = useMemo(() => {
+    if (!fields) {
+      return [];
+    }
+
+    return detectWinner(fields, combinations);
+  }, [fields, combinations]);
 
   const update = useCallback(async () => {
     const board = await fetchBoard(

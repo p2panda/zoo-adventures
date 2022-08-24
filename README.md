@@ -1,4 +1,4 @@
-# beep-boop
+# zoo-adventures
 
 Play with the other animals in the zoo.
 

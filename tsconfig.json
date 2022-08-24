@@ -1,16 +1,16 @@
 {
+  "extends": "@tsconfig/node16/tsconfig.json",
   "compilerOptions": {
-    "baseUrl": "./",
-    "esModuleInterop": true,
+    "baseUrl": ".",
+    "outDir": "./lib",
+    "module": "esnext",
     "jsx": "react",
-    "module": "ES2020",
-    "moduleResolution": "node",
-    "noImplicitAny": false,
-    "paths": {
-      "~/*": ["./src/*"]
-    },
-    "sourceMap": true,
-    "target": "es5"
+    "lib": ["dom"],
+    "types": ["node"]
   },
-  "include": ["src/**/*"]
+  "include": [
+    "./rollup.config.ts",
+    "./src/**/*",
+    "./demo/**/*"
+  ]
 }

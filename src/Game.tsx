@@ -2,10 +2,11 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { GraphQLClient } from 'graphql-request';
 
 import { GameBoard } from './GameBoard';
+import { Message } from './Message';
+import { detectWinner, winCombinations } from './winner';
 import { fetchBoard, updateBoard } from './board';
 import { loadKeyPair, loadLastMove, storeLastMove } from './storage';
 import { publicKeyToAnimal } from './animals';
-import { detectWinner, winCombinations } from './winner';
 
 import type { Configuration } from './types';
 
@@ -25,6 +26,13 @@ export const Game: React.FC<Props> = ({ config }) => {
   const client = useMemo(() => {
     return new GraphQLClient(config.endpoint);
   }, [config.endpoint]);
+
+  // Is there a message we want to show to the user?
+  const [message, setMessage] = useState<string>();
+
+  const hideMessage = () => {
+    setMessage('');
+  };
 
   // Latest document view id of the game board
   const [viewId, setViewId] = useState<string>();
@@ -86,16 +94,12 @@ export const Game: React.FC<Props> = ({ config }) => {
     lastUpdate,
   ]);
 
-  const onSetField = useCallback(
+  const makeMove = useCallback(
     async (fieldIndex: number) => {
-      // Do not do allow making a move when we're waiting for the latest state
-      // from the node
-      if (!viewId || !ready) {
-        return;
-      }
-
-      // Do not allow making a move when player already did it one round ago
-      if (lastMove === viewId) {
+      // Do not do allow making a move when we just made a move or we're
+      // waiting for the latest state from the node
+      if (!viewId || !ready || lastMove === viewId) {
+        setMessage('Wait until another player made a move first');
         return;
       }
 
@@ -144,15 +148,22 @@ export const Game: React.FC<Props> = ({ config }) => {
     };
   }, [client, update, config.updateIntervalMs]);
 
+  useEffect(() => {
+    setMessage(`You're playing ${animal}!`);
+  }, [animal]);
+
   return (
     <>
       {fields && (
-        <GameBoard
-          onSetField={onSetField}
-          animal={animal}
-          fields={fields}
-          winners={winners}
-        />
+        <>
+          {message && <Message message={message} onClose={hideMessage} />}
+          <GameBoard
+            onSetField={makeMove}
+            animal={animal}
+            fields={fields}
+            winners={winners}
+          />
+        </>
       )}
     </>
   );

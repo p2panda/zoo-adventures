@@ -1,0 +1,12 @@
+*.tgz
+.eslintignore
+.eslintrc.json
+.nvmrc
+.prettierignore
+.prettierrc
+demo-dist
+register-schema.js
+rollup.config.ts
+screenshot.png
+src
+tsconfig.json

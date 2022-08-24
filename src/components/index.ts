@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 export { Game } from './Game';
 export { GameBoard } from './GameBoard';
 export { InitWasm } from './InitWasm';

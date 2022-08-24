@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 import fs from 'fs';
 
 import yargs from 'yargs';

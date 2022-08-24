@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 /**
  * Zoo Adventures game configuration.
  */

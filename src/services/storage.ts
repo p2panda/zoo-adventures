@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 import { KeyPair } from 'p2panda-js';
 
 const PRIVATE_KEY_STORE = 'privateKey';

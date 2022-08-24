@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 import { validAnimal } from './animals';
 
 import type { Winner } from '../types';

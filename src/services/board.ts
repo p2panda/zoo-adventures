@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 import { GraphQLClient, gql } from 'graphql-request';
 import {
   encodeOperation,

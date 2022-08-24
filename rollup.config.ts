@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 import pluginCommonJS from '@rollup/plugin-commonjs';
 import pluginDts from 'rollup-plugin-dts';
 import pluginHTML from '@rollup/plugin-html';

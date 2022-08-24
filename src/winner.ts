@@ -134,7 +134,7 @@ export function detectWinner(
     {},
   );
 
-  // See if at least one winning combination string matches player position string
+  // See if winning combinations match with the players position
   const playerKeys = Object.keys(players);
   for (let p = 0; p < playerKeys.length; p += 1) {
     for (let c = 0; c < combinations.length; c += 1) {

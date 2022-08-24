@@ -1,7 +1,6 @@
 import React from 'react';
 
-import { Game } from './Game';
-import { InitWasm } from './InitWasm';
+import { Game, InitWasm } from './components';
 
 import type { Configuration } from './types';
 

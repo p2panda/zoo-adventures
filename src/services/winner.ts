@@ -1,6 +1,6 @@
 import { validAnimal } from './animals';
 
-import type { Winner } from './types';
+import type { Winner } from '../types';
 
 function horizontal(
   x: number,

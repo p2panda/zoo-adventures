@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { validAnimal } from './animals';
+import { validAnimal } from '../services/animals';
 
-import type { Winner } from './types';
+import type { Winner } from '../types';
 
 // All dimensions in pixels
 const FIELD_SIZE = 60;

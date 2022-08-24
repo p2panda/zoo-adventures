@@ -2,15 +2,13 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
 import { GraphQLClient } from 'graphql-request';
 
-import { GameBoard } from './GameBoard';
-import { Message } from './Message';
-import { MyAnimal } from './MyAnimal';
-import { detectWinner, winCombinations } from './winner';
-import { fetchBoard, updateBoard } from './board';
-import { loadKeyPair, loadLastMove, storeLastMove } from './storage';
-import { publicKeyToAnimal } from './animals';
+import { GameBoard, Message, MyAnimal } from './';
+import { detectWinner, winCombinations } from '../services/winner';
+import { fetchBoard, updateBoard } from '../services/board';
+import { loadKeyPair, loadLastMove, storeLastMove } from '../services/storage';
+import { publicKeyToAnimal } from '../services/animals';
 
-import type { Configuration } from './types';
+import type { Configuration } from '../types';
 
 type Props = {
   config: Configuration;

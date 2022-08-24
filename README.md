@@ -19,7 +19,7 @@ npm i zoo-adventures
 Zoo Adventures is a React component you can embed in your website. It will connect to a [p2panda](https://github.com/p2panda/handbook) node and allow you to collaboratively play the game in the p2panda network.
 
 ```js
-import ZooAdventures from 'zoo-adventures';
+import { ZooAdventures } from 'zoo-adventures';
 
 const App = () => {
   return (

@@ -46,7 +46,9 @@ function config(format: ModuleFormat): RollupOptions[] {
       plugins: [
         pluginTypeScript(),
         pluginCommonJS(),
-        pluginNodeResolve(),
+        pluginNodeResolve({
+          browser: true,
+        }),
         pluginJSON(),
       ],
     },

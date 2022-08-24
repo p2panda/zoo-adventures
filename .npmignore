@@ -5,7 +5,7 @@
 .prettierrc
 demo-dist
 privateKey.txt
-register-schema.js
+register-schema.ts
 rollup.config.ts
 screenshot.png
 src

@@ -3,18 +3,26 @@ import styled from 'styled-components';
 
 import { validAnimal } from './animals';
 
+import type { Winner } from './types';
+
 // All dimensions in pixels
 const FIELD_SIZE = 60;
 const GAP_SIZE = 17;
 const ICON_SIZE = 28;
 
 type Props = {
+  onSetField: (index: number) => void;
   animal: string;
   fields: string[];
-  onSetField: (index: number) => void;
+  winners: Winner[];
 };
 
-export const GameBoard: React.FC<Props> = ({ fields, onSetField, animal }) => {
+export const GameBoard: React.FC<Props> = ({
+  onSetField,
+  animal,
+  fields,
+  winners,
+}) => {
   return (
     <StyledGameBoard boardSize={Math.sqrt(fields.length)}>
       {fields.map((field, index) => {
@@ -23,10 +31,13 @@ export const GameBoard: React.FC<Props> = ({ fields, onSetField, animal }) => {
         // Was this field already set by this player?
         const alreadySet = field === animal;
 
+        // Is this a winning field?
+        const winner = winners.some(({ player, combination }) => {
+          return field === player && combination.includes(index);
+        });
+
         return (
           <GameBoardField
-            key={`field-${fieldIndex}`}
-            alreadySet={alreadySet}
             onClick={() => {
               if (alreadySet) {
                 return;
@@ -34,6 +45,9 @@ export const GameBoard: React.FC<Props> = ({ fields, onSetField, animal }) => {
 
               onSetField(fieldIndex);
             }}
+            alreadySet={alreadySet}
+            key={`field-${fieldIndex}`}
+            winner={winner}
           >
             {validAnimal(field) && field}
           </GameBoardField>
@@ -52,9 +66,9 @@ const StyledGameBoard = styled.div<{ boardSize: number }>`
     `repeat(${props.boardSize}, ${FIELD_SIZE}px)`};
 `;
 
-const GameBoardField = styled.div<{ alreadySet: boolean }>`
+const GameBoardField = styled.div<{ alreadySet: boolean; winner: boolean }>`
   align-content: center;
-  background-color: #efefef;
+  background-color: ${(props) => (props.winner ? '#ffdb9a' : '#efefef')};
   border-radius: 50%;
   cursor: ${(props) => (props.alreadySet ? 'normal' : 'pointer')};
   display: inline-grid;
@@ -69,7 +83,7 @@ const GameBoardField = styled.div<{ alreadySet: boolean }>`
 
     return `
       &:hover {
-        background-color: #ddd;
+        background-color: ${props.winner ? '#ffc04d' : '#ddd'};
       }
     `;
   }}

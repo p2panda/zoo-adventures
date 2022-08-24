@@ -147,7 +147,12 @@ export const Game: React.FC<Props> = ({ config }) => {
   return (
     <>
       {fields && (
-        <GameBoard fields={fields} animal={animal} onSetField={onSetField} />
+        <GameBoard
+          onSetField={onSetField}
+          animal={animal}
+          fields={fields}
+          winners={winners}
+        />
       )}
     </>
   );

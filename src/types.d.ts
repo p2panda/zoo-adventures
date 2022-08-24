@@ -20,3 +20,14 @@ export type Configuration = {
   /** Interval to fetch latest board game state from node in milliseconds */
   updateIntervalMs: number;
 };
+
+/**
+ * Winning player with related combination on the board.
+ */
+export type Winner = {
+  /** Animal character of the player */
+  player: string;
+
+  /** Positions in the board which represent the winner */
+  combination: number[];
+};

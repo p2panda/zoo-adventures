@@ -1,5 +1,7 @@
 import { validAnimal } from './animals';
 
+import type { Winner } from './types';
+
 const SEPARATOR = '|';
 
 function horizontal(
@@ -123,8 +125,8 @@ export function winCombinations(boardSize: number, winSize: number): string[] {
 export function detectWinner(
   fields: string[],
   combinations: string[],
-): string[] {
-  const winners: string[] = [];
+): Winner[] {
+  const winners: Winner[] = [];
 
   // Gather all current players and their positions
   const players = fields.reduce<{ [field: string]: string }>(
@@ -153,8 +155,13 @@ export function detectWinner(
       const positions = players[player];
       const combination = combinations[c];
 
-      if (positions.includes(combination) && !winners.includes(player)) {
-        winners.push(player);
+      if (positions.includes(combination)) {
+        winners.push({
+          player,
+          combination: combination.split(SEPARATOR).map((value) => {
+            return parseInt(value, 10);
+          }),
+        });
       }
     }
   }

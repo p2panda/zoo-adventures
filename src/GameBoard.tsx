@@ -58,7 +58,7 @@ export const GameBoard: React.FC<Props> = ({
 };
 
 const StyledGameBoard = styled.div<{ boardSize: number }>`
-  display: grid;
+  display: inline-grid;
   font-size: ${ICON_SIZE}px;
   gap: ${GAP_SIZE}px;
   grid-auto-rows: ${FIELD_SIZE}px;

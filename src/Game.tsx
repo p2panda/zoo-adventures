@@ -1,8 +1,10 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import styled from 'styled-components';
 import { GraphQLClient } from 'graphql-request';
 
 import { GameBoard } from './GameBoard';
 import { Message } from './Message';
+import { MyAnimal } from './MyAnimal';
 import { detectWinner, winCombinations } from './winner';
 import { fetchBoard, updateBoard } from './board';
 import { loadKeyPair, loadLastMove, storeLastMove } from './storage';
@@ -148,23 +150,31 @@ export const Game: React.FC<Props> = ({ config }) => {
     };
   }, [client, update, config.updateIntervalMs]);
 
-  useEffect(() => {
-    setMessage(`You're playing ${animal}!`);
-  }, [animal]);
-
   return (
     <>
       {fields && (
-        <>
-          {message && <Message message={message} onClose={hideMessage} />}
-          <GameBoard
-            onSetField={makeMove}
-            animal={animal}
-            fields={fields}
-            winners={winners}
-          />
-        </>
+        <Wrapper>
+          <GameContainer>
+            {message && <Message message={message} onClose={hideMessage} />}
+            <GameBoard
+              onSetField={makeMove}
+              animal={animal}
+              fields={fields}
+              winners={winners}
+            />
+          </GameContainer>
+          {animal && <MyAnimal animal={animal} />}
+        </Wrapper>
       )}
     </>
   );
 };
+
+const GameContainer = styled.div`
+  display: inline-block;
+  position: relative;
+`;
+
+const Wrapper = styled.div`
+  text-align: center;
+`;

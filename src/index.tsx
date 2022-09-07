@@ -6,16 +6,14 @@ import { Game, InitWasm } from './components';
 
 import type { Configuration } from './types';
 
-// @TODO: Change these to production values
-// Related issue: https://github.com/p2panda/zoo-adventures/issues/37
 const defaultConfiguration: Configuration = {
   boardSize: 4,
   winSize: 3,
   documentId:
-    '0020c301d6595e12cbd472d21ac4c1bdfde02ec4e8d7ea299f723130d64eb65e500d',
-  endpoint: 'http://localhost:2020/graphql',
+    '00206e635f39093c4a78942cfb9ee07dc148daac373efd9882e2b651a39153eea75d',
+  endpoint: 'https://welle.liebechaos.org/graphql',
   schemaId:
-    'zoo_adventures_00209403784eea2ba5236f9083472f040a90babf4df1b64efbbaae58eb51aa67fd4d',
+    'zoo_adventures_0020d0ab014720c6849d99ab17f694bcedbc267614021acfb9559f2ee7f64bce396f',
   updateIntervalMs: 2000,
 };
 

@@ -66,6 +66,28 @@ function diagonal(
   return [];
 }
 
+function diagonalReverse(
+  x: number,
+  y: number,
+  boardSize: number,
+  winSize: number,
+): number[][] {
+  const from = x + y * boardSize;
+  const to = from + (winSize - 1) * boardSize - winSize + 1;
+
+  if (to < boardSize * boardSize) {
+    if (to > y * boardSize + boardSize * (winSize - 1) - 1) {
+      return [
+        new Array(winSize).fill(0).map((_, index) => {
+          return from + index * (boardSize - 1);
+        }),
+      ];
+    }
+  }
+
+  return [];
+}
+
 /**
  * Calculate all combinations on the board where player wins.
  *
@@ -87,6 +109,7 @@ function diagonal(
  * 1|4|7
  * 2|5|8
  * 0|4|8
+ * 2|4|6
  * ```
  */
 export function winCombinations(
@@ -101,6 +124,7 @@ export function winCombinations(
         ...horizontal(x, y, boardSize, winSize),
         ...vertical(x, y, boardSize, winSize),
         ...diagonal(x, y, boardSize, winSize),
+        ...diagonalReverse(x, y, boardSize, winSize),
       ]);
     }
   }

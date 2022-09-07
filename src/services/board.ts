@@ -17,15 +17,15 @@ export async function updateBoard(
   client: GraphQLClient,
   keyPair: KeyPair,
   schemaId: string,
-  viewId: string,
+  previous: string,
   fieldIndex: number,
   animal: string,
 ): Promise<string> {
-  const args = await nextArgs(client, keyPair.publicKey(), viewId);
+  const args = await nextArgs(client, keyPair.publicKey(), previous);
 
-  const payload = encodeOperation({
+  const operation = encodeOperation({
     action: 'update',
-    previousOperations: viewId.split('_'),
+    previous,
     schemaId,
     fields: {
       [`game_field_${fieldIndex}`]: animal,
@@ -35,12 +35,12 @@ export async function updateBoard(
   const entry = signAndEncodeEntry(
     {
       ...args,
-      payload,
+      operation,
     },
     keyPair,
   );
 
-  await publish(client, entry, payload);
+  await publish(client, entry, operation);
 
   // Assume that our last operation id will be the latest view id for this node
   return generateHash(entry);

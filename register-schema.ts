@@ -81,7 +81,7 @@ async function createFields(
   for (let i = 0; i < boardSize * boardSize; i += 1) {
     const args = await nextArgs(client, keyPair.publicKey());
 
-    const payload = encodeOperation({
+    const operation = encodeOperation({
       action: 'create',
       schemaId: 'schema_field_definition_v1',
       fields: {
@@ -93,12 +93,12 @@ async function createFields(
     const entry = signAndEncodeEntry(
       {
         ...args,
-        payload,
+        operation,
       },
       keyPair,
     );
 
-    const { backlink } = await publish(client, entry, payload);
+    const { backlink } = await publish(client, entry, operation);
     console.log(`Created schema field ${backlink}`);
     fields.push(backlink);
   }
@@ -127,7 +127,7 @@ async function createSchema(
     }),
   );
 
-  const payload = encodeOperation({
+  const operation = encodeOperation({
     action: 'create',
     schemaId: 'schema_definition_v1',
     fields: operationFields,
@@ -136,12 +136,12 @@ async function createSchema(
   const entry = signAndEncodeEntry(
     {
       ...args,
-      payload,
+      operation,
     },
     keyPair,
   );
 
-  const { backlink } = await publish(client, entry, payload);
+  const { backlink } = await publish(client, entry, operation);
   console.log(`Created schema ${name}_${backlink}`);
   return `${name}_${backlink}`;
 }
@@ -161,7 +161,7 @@ async function createBoard(
       return acc;
     }, {});
 
-  const payload = encodeOperation({
+  const operation = encodeOperation({
     action: 'create',
     schemaId,
     fields,
@@ -170,12 +170,12 @@ async function createBoard(
   const entry = signAndEncodeEntry(
     {
       ...args,
-      payload,
+      operation,
     },
     keyPair,
   );
 
-  const { backlink } = await publish(client, entry, payload);
+  const { backlink } = await publish(client, entry, operation);
   console.log(`Created board document ${backlink}`);
   return backlink;
 }

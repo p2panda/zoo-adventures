@@ -11,6 +11,7 @@
     "clear": "rimraf ./lib",
     "lint": "eslint --ext .ts --ext .tsx .",
     "rollup": "rollup -c rollup.config.ts --configPlugin typescript",
+    "schema": "ts-node --esm --transpileOnly ./register-schema.ts",
     "serve": "serve ./demo-dist",
     "typecheck": "tsc --noEmit",
     "watch": "nodemon --watch './src/*' --exec 'npm run build' --ext js,ts,tsx,json"

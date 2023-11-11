@@ -8,6 +8,12 @@
     "lib": ["dom", "dom.iterable", "esnext"],
     "outDir": "./lib"
   },
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node"
+  },
   "include": [
     "./rollup.config.ts",
     "./src/**/*",

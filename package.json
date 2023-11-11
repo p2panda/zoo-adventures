@@ -1,6 +1,6 @@
 {
   "name": "zoo-adventures",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Hang out with the other animals in the zoo",
   "type": "module",
   "main": "./lib/cjs/index.js",

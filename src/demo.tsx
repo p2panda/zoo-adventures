@@ -30,10 +30,10 @@ import { ZooAdventures } from './';
 // Configuration matches values from running `npm run schema`
 const config = {
   documentId:
-    '0020c301d6595e12cbd472d21ac4c1bdfde02ec4e8d7ea299f723130d64eb65e500d',
+    '0020823aa6ad04b6b0087b200385192f2afec7955e7c808c6565bf432544c9fa86c7',
   endpoint: 'http://localhost:2020/graphql',
   schemaId:
-    'zoo_adventures_00209403784eea2ba5236f9083472f040a90babf4df1b64efbbaae58eb51aa67fd4d',
+    'zoo_adventures_0020da644e6a1fb01af8f945c114ee8534a2ee740c38c707c94e41928281a32a0d8e',
 };
 
 const rootElem = document.createElement('div');

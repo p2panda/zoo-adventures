@@ -33,9 +33,9 @@ To configure the component you can pass in the following arguments:
 
 * `boardSize: number` Dimensions of the board, set to 4 when it is a 4x4 board (defaults to `4`)
 * `winSize: number` Required number of pieces in horizontal, vertical, diagonal row to win (defaults to `3`)
-* `documentId: string` All players play on the same board, this is the document id of it (defaults to `0020c301d659...`)
+* `documentId: string` All players play on the same board, this is the document id of it (defaults to `0020823a...`)
 * `endpoint: string` URL of the p2panda node (defaults to `http://localhost:2020/graphql`)
-* `schemaId: string` ID of the game board schema, make sure the board size matches the fields (defaults to `zoo_adventures_002094037...`)
+* `schemaId: string` ID of the game board schema, make sure the board size matches the fields (defaults to `zoo_adventures_0020da64...`)
 * `updateIntervalMs: number` Interval to fetch latest board game state from node in milliseconds (defaults to `2000`)
 
 ## Development

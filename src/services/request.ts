@@ -36,7 +36,9 @@ export async function nextArgs(
   publicKey: string,
   viewId?: string,
 ): Promise<NextArgs> {
-  const result = await client.request(GQL_NEXT_ARGS, {
+  const result = await client.request<{
+    nextArgs: NextArgs;
+  }>(GQL_NEXT_ARGS, {
     publicKey,
     viewId,
   });
@@ -49,7 +51,9 @@ export async function publish(
   entry: string,
   operation: string,
 ): Promise<NextArgs> {
-  const result = await client.request(GQL_PUBLISH, {
+  const result = await client.request<{
+    publish: NextArgs;
+  }>(GQL_PUBLISH, {
     entry,
     operation,
   });

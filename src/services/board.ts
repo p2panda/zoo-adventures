@@ -72,7 +72,16 @@ export async function fetchBoard(
     }
   `;
 
-  const result = await client.request(query, {
+  const result = await client.request<{
+    board: {
+      meta: {
+        viewId: string;
+      };
+      fields: {
+        [fieldName: string]: string;
+      };
+    };
+  }>(query, {
     documentId,
   });
 

@@ -26,7 +26,7 @@ export const GameBoard: React.FC<Props> = ({
   winners,
 }) => {
   return (
-    <StyledGameBoard boardSize={Math.sqrt(fields.length)}>
+    <StyledGameBoard $boardSize={Math.sqrt(fields.length)}>
       {fields.map((field, index) => {
         const fieldIndex = index + 1;
 
@@ -47,9 +47,9 @@ export const GameBoard: React.FC<Props> = ({
 
               onSetField(fieldIndex);
             }}
-            alreadySet={alreadySet}
+            $alreadySet={alreadySet}
+            $winner={winner}
             key={`field-${fieldIndex}`}
-            winner={winner}
           >
             {validAnimal(field) && field}
           </GameBoardField>
@@ -59,33 +59,33 @@ export const GameBoard: React.FC<Props> = ({
   );
 };
 
-const StyledGameBoard = styled.div<{ boardSize: number }>`
+const StyledGameBoard = styled.div<{ $boardSize: number }>`
   display: inline-grid;
   font-size: ${ICON_SIZE}px;
   gap: ${GAP_SIZE}px;
   grid-auto-rows: ${FIELD_SIZE}px;
   grid-template-columns: ${(props) =>
-    `repeat(${props.boardSize}, ${FIELD_SIZE}px)`};
+    `repeat(${props.$boardSize}, ${FIELD_SIZE}px)`};
 `;
 
-const GameBoardField = styled.div<{ alreadySet: boolean; winner: boolean }>`
+const GameBoardField = styled.div<{ $alreadySet: boolean; $winner: boolean }>`
   align-content: center;
-  background-color: ${(props) => (props.winner ? '#ffdb9a' : '#efefef')};
+  background-color: ${(props) => (props.$winner ? '#ffdb9a' : '#efefef')};
   border-radius: 50%;
-  cursor: ${(props) => (props.alreadySet ? 'normal' : 'pointer')};
+  cursor: ${(props) => (props.$alreadySet ? 'normal' : 'pointer')};
   display: inline-grid;
   text-align: center;
   transition: background-color linear 20ms;
   user-select: none;
 
   ${(props) => {
-    if (props.alreadySet) {
+    if (props.$alreadySet) {
       return;
     }
 
     return `
       &:hover {
-        background-color: ${props.winner ? '#ffc04d' : '#ddd'};
+        background-color: ${props.$winner ? '#ffc04d' : '#ddd'};
       }
     `;
   }}

@@ -1,18 +1,12 @@
 {
-  "extends": "@tsconfig/node16/tsconfig.json",
+  "extends": "@tsconfig/node18/tsconfig.json",
   "compilerOptions": {
     "baseUrl": ".",
-    "outDir": "./lib",
-    "module": "esnext",
     "jsx": "react",
-    "lib": ["dom"],
-    "types": ["node"]
-  },
-  "ts-node": {
-    "esm": true,
-    "experimentalSpecifierResolution": true,
-    "esModuleInterop": true,
-    "moduleResolution": "node"
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "outDir": "./lib"
   },
   "include": [
     "./rollup.config.ts",

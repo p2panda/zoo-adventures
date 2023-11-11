@@ -5,9 +5,9 @@ import pluginDts from 'rollup-plugin-dts';
 import pluginHTML from '@rollup/plugin-html';
 import pluginJSON from '@rollup/plugin-json';
 import pluginReplace from '@rollup/plugin-replace';
+import pluginTerser from '@rollup/plugin-terser';
 import pluginTypeScript from '@rollup/plugin-typescript';
 import { nodeResolve as pluginNodeResolve } from '@rollup/plugin-node-resolve';
-import { terser as pluginTerser } from 'rollup-plugin-terser';
 
 import type { RollupOptions, ModuleFormat } from 'rollup';
 
@@ -81,6 +81,9 @@ function demoConfig(): RollupOptions[] {
         pluginReplace({
           preventAssignment: true,
           values: {
+            // `graphql` package breaks here if we don't replace this as well
+            'globalThis.process.env.NODE_ENV': JSON.stringify('development'),
+            // `react` bundle
             'process.env.NODE_ENV': JSON.stringify('development'),
           },
         }),

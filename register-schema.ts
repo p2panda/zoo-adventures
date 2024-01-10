@@ -3,115 +3,41 @@
 import fs from 'fs';
 
 import yargs from 'yargs';
-import { GraphQLClient, gql } from 'graphql-request';
-import {
-  KeyPair,
-  OperationFields,
-  encodeOperation,
-  signAndEncodeEntry,
-} from 'p2panda-js';
+import { KeyPair, OperationFields, Session } from 'shirokuma';
 import { hideBin } from 'yargs/helpers';
 
 // This fixes getting an ECONNREFUSED when making a request against localhost
 import { setDefaultResultOrder } from 'node:dns';
 setDefaultResultOrder('ipv4first');
 
-type NextArgs = {
-  logId: string;
-  seqNum: string;
-  backlink?: string;
-  skiplink?: string;
-};
-
-async function nextArgs(
-  client: GraphQLClient,
-  publicKey: string,
-  viewId?: string,
-): Promise<NextArgs> {
-  const query = gql`
-    query NextArgs($publicKey: String!, $viewId: String) {
-      nextArgs(publicKey: $publicKey, viewId: $viewId) {
-        logId
-        seqNum
-        backlink
-        skiplink
-      }
-    }
-  `;
-
-  const result = await client.request(query, {
-    publicKey,
-    viewId,
-  });
-
-  return result.nextArgs;
-}
-
-async function publish(
-  client: GraphQLClient,
-  entry: string,
-  operation: string,
-): Promise<NextArgs> {
-  const query = gql`
-    mutation Publish($entry: String!, $operation: String!) {
-      publish(entry: $entry, operation: $operation) {
-        logId
-        seqNum
-        backlink
-        skiplink
-      }
-    }
-  `;
-
-  const result = await client.request(query, {
-    entry,
-    operation,
-  });
-
-  return result.publish;
-}
-
 async function createFields(
-  client: GraphQLClient,
-  keyPair: KeyPair,
+  session: Session,
   boardSize: number,
 ): Promise<string[]> {
   const fields: string[] = [];
 
   for (let i = 0; i < boardSize * boardSize; i += 1) {
-    const args = await nextArgs(client, keyPair.publicKey());
-
-    const operation = encodeOperation({
-      action: 'create',
-      schemaId: 'schema_field_definition_v1',
-      fields: {
+    const documentViewId = await session.create(
+      {
         name: `game_field_${i + 1}`,
         type: 'str',
       },
-    });
-
-    const entry = signAndEncodeEntry(
       {
-        ...args,
-        operation,
+        schemaId: 'schema_field_definition_v1',
       },
-      keyPair,
     );
 
-    const { backlink } = await publish(client, entry, operation);
-    console.log(`Created schema field ${backlink}`);
-    fields.push(backlink);
+    console.log(`Created schema field ${documentViewId}`);
+    fields.push(documentViewId as string);
   }
 
   return fields;
 }
 
 async function createSchema(
-  client: GraphQLClient,
-  keyPair: KeyPair,
+  session: Session,
   fields: string[],
 ): Promise<string> {
-  const args = await nextArgs(client, keyPair.publicKey());
   const name = 'zoo_adventures';
 
   const operationFields = new OperationFields({
@@ -127,33 +53,19 @@ async function createSchema(
     }),
   );
 
-  const operation = encodeOperation({
-    action: 'create',
+  const documentViewId = await session.create(operationFields, {
     schemaId: 'schema_definition_v1',
-    fields: operationFields,
   });
 
-  const entry = signAndEncodeEntry(
-    {
-      ...args,
-      operation,
-    },
-    keyPair,
-  );
-
-  const { backlink } = await publish(client, entry, operation);
-  console.log(`Created schema ${name}_${backlink}`);
-  return `${name}_${backlink}`;
+  console.log(`Created schema ${name}_${documentViewId}`);
+  return `${name}_${documentViewId}`;
 }
 
 async function createBoard(
-  client: GraphQLClient,
-  keyPair: KeyPair,
+  session: Session,
   schemaId: string,
   boardSize: number,
 ): Promise<string> {
-  const args = await nextArgs(client, keyPair.publicKey());
-
   const fields = new Array(boardSize * boardSize)
     .fill(0)
     .reduce((acc, _, index) => {
@@ -161,23 +73,12 @@ async function createBoard(
       return acc;
     }, {});
 
-  const operation = encodeOperation({
-    action: 'create',
+  const documentViewId = await session.create(fields, {
     schemaId,
-    fields,
   });
 
-  const entry = signAndEncodeEntry(
-    {
-      ...args,
-      operation,
-    },
-    keyPair,
-  );
-
-  const { backlink } = await publish(client, entry, operation);
-  console.log(`Created board document ${backlink}`);
-  return backlink;
+  console.log(`Created board document ${documentViewId}`);
+  return documentViewId as string;
 }
 
 function loadKeyPair(path: string) {
@@ -198,18 +99,18 @@ function loadKeyPair(path: string) {
 async function run(keyPair: KeyPair, boardSize: number, endpoint: string) {
   console.log('Create and deploy new "zoo_adventures" schema');
 
-  const client = new GraphQLClient(endpoint);
+  const session = new Session(endpoint).setKeyPair(keyPair);
 
   // Create the schema
-  const fields = await createFields(client, keyPair, boardSize);
-  const schemaId = await createSchema(client, keyPair, fields);
+  const fields = await createFields(session, boardSize);
+  const schemaId = await createSchema(session, fields);
 
   // Wait a little bit for node to register schema before we continue with
   // creating the first game board
   await new Promise((resolve) => setTimeout(resolve, 2000));
 
   // Create the game board which will be used by all players
-  const documentId = await createBoard(client, keyPair, schemaId, boardSize);
+  const documentId = await createBoard(session, schemaId, boardSize);
 
   console.log(`\nSchema ID: ${schemaId}\nDocument ID: ${documentId}`);
 }
@@ -241,6 +142,6 @@ type Args = {
 };
 
 const { boardSize, privateKey, endpoint } = argv as unknown as Args;
-const keyPair = loadKeyPair(privateKey);
+const keyPair = loadKeyPair(privateKey as string);
 
 run(keyPair, boardSize, endpoint);

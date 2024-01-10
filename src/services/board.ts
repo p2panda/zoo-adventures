@@ -1,49 +1,28 @@
 // SPDX-License-Identifier: MIT
 
 import { GraphQLClient, gql } from 'graphql-request';
-import {
-  encodeOperation,
-  generateHash,
-  KeyPair,
-  signAndEncodeEntry,
-} from 'p2panda-js';
-
-import { nextArgs, publish } from './request';
+import { DocumentViewId, KeyPair, Session } from 'shirokuma';
 
 /**
  * We're making a move. Send that update to the node.
  */
 export async function updateBoard(
-  client: GraphQLClient,
+  session: Session,
   keyPair: KeyPair,
   schemaId: string,
   previous: string,
   fieldIndex: number,
   animal: string,
-): Promise<string> {
-  const args = await nextArgs(client, keyPair.publicKey(), previous);
-
-  const operation = encodeOperation({
-    action: 'update',
-    previous,
-    schemaId,
-    fields: {
+): Promise<DocumentViewId> {
+  const documentViewId = await session.update(
+    {
       [`game_field_${fieldIndex}`]: animal,
     },
-  });
-
-  const entry = signAndEncodeEntry(
-    {
-      ...args,
-      operation,
-    },
-    keyPair,
+    previous,
+    { schemaId, keyPair },
   );
 
-  await publish(client, entry, operation);
-
-  // Assume that our last operation id will be the latest view id for this node
-  return generateHash(entry);
+  return documentViewId;
 }
 
 /**

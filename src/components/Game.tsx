@@ -11,6 +11,7 @@ import { loadKeyPair, loadLastMove, storeLastMove } from '../services/storage';
 import { publicKeyToAnimal } from '../services/animals';
 
 import type { Configuration } from '../types';
+import { Session } from 'shirokuma';
 
 type Props = {
   config: Configuration;
@@ -27,6 +28,10 @@ export const Game: React.FC<Props> = ({ config }) => {
 
   const client = useMemo(() => {
     return new GraphQLClient(config.endpoint);
+  }, [config.endpoint]);
+
+  const session = useMemo(() => {
+    return new Session(config.endpoint);
   }, [config.endpoint]);
 
   // Is there a message we want to show to the user?
@@ -123,7 +128,7 @@ export const Game: React.FC<Props> = ({ config }) => {
       // our last write is now the latest edge of the operation graph. But who
       // knows, maybe some concurrent write by someone decided something else!
       const latestViewId = await updateBoard(
-        client,
+        session,
         keyPair,
         config.schemaId,
         viewId,
@@ -132,10 +137,10 @@ export const Game: React.FC<Props> = ({ config }) => {
       );
 
       // Set and persist last move so we remember it when we come back later
-      setLastMove(latestViewId);
-      storeLastMove(latestViewId);
+      setLastMove(latestViewId as string);
+      storeLastMove(latestViewId as string);
     },
-    [viewId, client, lastMove, keyPair, config, animal, ready],
+    [viewId, session, lastMove, keyPair, config, animal, ready],
   );
 
   useEffect(() => {

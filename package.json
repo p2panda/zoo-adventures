@@ -69,7 +69,7 @@
   "dependencies": {
     "graphql": "^16.8.1",
     "graphql-request": "^6.1.0",
-    "p2panda-js": "^0.8.1",
+    "shirokuma": "^0.1.2",
     "styled-components": "^6.1.1"
   }
 }

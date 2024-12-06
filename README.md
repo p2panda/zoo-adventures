@@ -6,7 +6,7 @@ Play with the other animals in the zoo.
 
 There is no real winner, but you get some extra attention in the zoo when finishing a complete line! You can make one move, then you have to wait for someone else to go ahead before you can make another one.
 
-> The game is an experimental demo of [p2panda](https://github.com/p2panda/handbook) showing how you can build collaborative applications with custom schemas on the network. You can play with it on our [website](https://p2panda.org)!
+> The game is an experimental demo of p2panda showing how you can build collaborative applications with custom schemas on the network. You can play with it on our [website](https://aquadoggo.p2panda.org/)!
 
 ## Installation
 
@@ -16,7 +16,7 @@ npm i zoo-adventures
 
 ## Usage
 
-Zoo Adventures is a React component you can embed in your website. It will connect to a [p2panda](https://github.com/p2panda/handbook) node and allow you to collaboratively play the game in the p2panda network.
+Zoo Adventures is a React component you can embed in your website. It will connect to a [p2panda](https://aquadoggo.p2panda.org/) node and allow you to collaboratively play the game in the p2panda network.
 
 ```js
 import { ZooAdventures } from 'zoo-adventures';
